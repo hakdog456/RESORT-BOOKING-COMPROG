@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <Label Content="HI IF YOU WANT TO EXPERIMENT, CREATE A NEW BRANCH THANKS" HorizontalAlignment="Center" Height="99" VerticalAlignment="Center" Width="748" FontSize="24"/>
+        <Label Content="DUSTIN'S BRANCH" HorizontalAlignment="Left" Height="99" VerticalAlignment="Top" Width="748" FontSize="24" Margin="42,87,0,0"/>
 
     </Grid>
 </Window>
