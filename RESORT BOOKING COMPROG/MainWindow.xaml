@@ -5,9 +5,72 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RESORT_BOOKING_COMPROG"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Label Content="DUSTIN'S BRANCH" HorizontalAlignment="Left" Height="99" VerticalAlignment="Top" Width="748" FontSize="24" Margin="42,87,0,0"/>
+        Title="MainWindow" Height="720" Width="1280">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFF2FFD4"/>
+            <GradientStop Color="#FFEECCCC" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
 
+    <!--MAIN GRID-->
+    <Grid>
+        <!--LOGIN PAGE--> 
+        <Border x:Name="loginPage" ClipToBounds="True" Background="#FF141414" VerticalAlignment="Center" HorizontalAlignment="Center" d:IsHidden="True" >
+
+            <Grid ShowGridLines="True" Height="617" Width="915" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Image x:Name="image"  Grid.Column="0" Source="/ASSETS/loginPic.png" Grid.ColumnSpan="2" Margin="-37,-18,445,-8" />
+                <Label Grid.Column="1" Content="Welcome Back" HorizontalAlignment="Center" Margin="0,185,0,0" VerticalAlignment="Top" Foreground="White" FontSize="33" FontFamily="Poppins Thin" FontWeight="Bold"/>
+                <TextBox VerticalContentAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" Height="43" Margin="0,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="320" SelectionBrush="#FF5A5B5C" FontSize="16" FontFamily="Poppins" BorderBrush="{x:Null}"/>
+                <TextBox VerticalContentAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" Height="45" Margin="0,329,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="320" SelectionBrush="#FF5A5B5C" FontSize="16" FontFamily="Poppins" BorderBrush="{x:Null}"/>
+                <Button x:Name="loginBtn" Grid.Column="1" Content="Login" HorizontalAlignment="Center" Margin="0,396,0,0" VerticalAlignment="Top" Width="193" Height="41" Background="#FF66DF8A" Foreground="White" FontFamily="Poppins" FontSize="20" Click="Button_Click" Cursor="Hand">
+
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                        CornerRadius="10"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                                <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+
+                </Button>
+                <Image Grid.Column="1" Margin="178,80,179,437" Source="/ASSETS/practice logo.png" Stretch="Fill" Width="100" Height="100"/>
+
+            </Grid>
+
+        </Border>
+        
+        <!--ADMIN PAGE-->
+        <Grid ShowGridLines="True" x:Name="adminPageGrid" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" ></ColumnDefinition>
+                <ColumnDefinition Width="8*" ></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" ></RowDefinition>
+                <RowDefinition Height="9*" ></RowDefinition>
+            </Grid.RowDefinitions>
+            
+        </Grid>
+        
+
+        
+        
+    <!--END OF MAIN GRID-->
     </Grid>
+
+
+    
+
+
 </Window>
