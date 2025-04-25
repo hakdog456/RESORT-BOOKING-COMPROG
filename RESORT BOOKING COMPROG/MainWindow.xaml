@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RESORT_BOOKING_COMPROG"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280">
+        Title="MainWindow" Height="720" Width="1280" Loaded="Window_Loaded">
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
             <GradientStop Color="#FFF2FFD4"/>
@@ -15,7 +15,7 @@
 
     <!--MAIN GRID-->
     <Grid>
-        <!--LOGIN PAGE--> 
+        <!--LOGIN PAGE-->
         <Border x:Name="loginPage" ClipToBounds="True" Background="#FF141414" VerticalAlignment="Center" HorizontalAlignment="Center" d:IsHidden="True" >
 
             <Grid ShowGridLines="True" Height="617" Width="915" >
@@ -48,29 +48,138 @@
             </Grid>
 
         </Border>
-        
-        <!--ADMIN PAGE-->
-        <Grid ShowGridLines="True" x:Name="adminPageGrid" >
+
+        <!--MAIN PAGE-->
+        <Grid ShowGridLines="True" x:Name="mainPageGrid" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" ></ColumnDefinition>
                 <ColumnDefinition Width="8*" ></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
+            <!--<Grid.RowDefinitions>
                 <RowDefinition Height="1*" ></RowDefinition>
                 <RowDefinition Height="9*" ></RowDefinition>
-            </Grid.RowDefinitions>
-            
-        </Grid>
-        
+            </Grid.RowDefinitions>-->
 
-        
-        
-    <!--END OF MAIN GRID-->
+            <!--SIDE BAR-->
+            <Grid ShowGridLines="True" x:Name="sideBarGrid" Background="#FF242222" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" ></RowDefinition>
+                    <RowDefinition Height="5*" ></RowDefinition>
+                    <RowDefinition Height="1*" ></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <!--Title Side Bar-->
+                <StackPanel x:Name="titlePanel" Orientation="Horizontal" Margin="0,12,0,0" >
+                    <Image Source="/ASSETS/practice logo.png" VerticalAlignment="Top" Width="68" Margin="13,0,0,0" HorizontalAlignment="Left" />
+                    <Label>
+                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Poppins" FontSize="20" Foreground="White" Margin="6,0,0,0">
+                            SAN ANTONIO
+                            <LineBreak/>
+                            NOM PASS
+                        </TextBlock>
+                    </Label>
+                </StackPanel>
+
+                <!--NAVIGATION SIDE BAR-->
+                <StackPanel Grid.Row="1" x:Name="navPanel" Margin="10,0,10,0" >
+                    <!--POS SIDE BAR-->
+                    <Border x:Name="posSide" Cursor="Hand" CornerRadius="10" VerticalAlignment="Center" Height="40">
+                        <StackPanel Orientation="Horizontal" Height="NaN" >
+                            <Image Source="/ASSETS/ICONS/pos icon.png" Height="55" HorizontalAlignment="Left" VerticalAlignment="Center" />
+                            <Label VerticalContentAlignment="Center" Foreground="White" FontFamily="Poppins Thin" FontSize="16" VerticalAlignment="Center" >POS</Label>
+                        </StackPanel>
+                    </Border>
+
+                    <!--CALENDAR SIDE BAR--> 
+                    <Border x:Name="calSide" Cursor="Hand" CornerRadius="10" VerticalAlignment="Center" Margin="0,9,0,0" Height="40">
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="/ASSETS/ICONS/calendar.png" Height="40" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,0" />
+                            <Label VerticalContentAlignment="Center" Foreground="White" FontFamily="Poppins Thin" FontSize="16" Margin="6,0,0,0" >Calendar</Label>
+                        </StackPanel>
+                    </Border>
+
+                    <!--DASHBOARD SIDE BAR-->
+                    <Border x:Name="dashSide" Cursor="Hand" CornerRadius="10" VerticalAlignment="Center" Margin="0,9,0,0" Height="40">
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="/ASSETS/ICONS/dashboard.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12,0,0,0" />
+                            <Label VerticalContentAlignment="Center" Foreground="White" FontFamily="Poppins Thin" FontSize="16" Margin="9,0,0,0" >Dashboard</Label>
+                        </StackPanel>
+                    </Border>
+
+                    <!--ROOM MANAGEMENT SIDE BAR-->
+                    <Border x:Name="roomSide" Cursor="Hand" CornerRadius="10" VerticalAlignment="Center" Margin="0,9,0,0" Height="40">
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="/ASSETS/ICONS/bed.png" Height="35" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="7,0,0,0" />
+                            <Label VerticalContentAlignment="Center" Foreground="White" FontFamily="Poppins Thin" FontSize="16" Margin="9,0,0,0" >Room Management</Label>
+                        </StackPanel>
+                    </Border>
+
+                    <!--SECURITY SIDE BAR-->
+                    <Border x:Name="secSide" Cursor="Hand" CornerRadius="10" VerticalAlignment="Center" Margin="0,9,0,0" Height="40">
+                        <StackPanel Orientation="Horizontal" >
+                            <Image Source="/ASSETS/ICONS/security.png" Height="30" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
+                            <Label VerticalContentAlignment="Center" Foreground="White" FontFamily="Poppins Thin" FontSize="16" Margin="11,0,0,0" >Security</Label>
+                        </StackPanel>
+                    </Border>
+
+
+                </StackPanel>
+
+                <!--USER AND LOGOUT-->
+                <StackPanel Grid.Row="2" x:Name="userPanel" Margin="20,0,20,0" >
+                    <!--User-->
+                    <StackPanel>
+                        <Label  Foreground="#FFCDC9C6" FontSize="14">User</Label>
+                        <Label  Foreground="#FF5B5754" FontSize="8" VerticalAlignment="Top" Margin="5,-10,0,0">User Type</Label>
+                    </StackPanel>
+
+                    <!--Log out-->
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0" >
+                        <Image Source="/ASSETS/ICONS/log out.png" Width="25" Margin="6,0,0,0" />
+                        <Label Foreground="#FFCDC9C6" Margin="8,0,0,0">Logout</Label>
+                    </StackPanel>
+
+                </StackPanel>
+
+            </Grid>
+
+            <!--POS-->
+            <Grid x:Name="POS" Grid.Column="1 " Background="#FF313030" >
+                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">POS</Label>
+            </Grid>
+
+            <!--Calendar-->
+            <Grid x:Name="Calendar" Grid.Column="1 " Background="#FF313030" >
+                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Calendar</Label>
+            </Grid>
+
+            <!--Dashboard-->
+            <Grid x:Name="Dashboard" Grid.Column="1 " Background="#FF313030" >
+                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Dashboard</Label>
+            </Grid>
+
+            <!--Room Management-->
+            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" >
+                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Room Management</Label>
+            </Grid>
+
+            <!--Security-->
+            <Grid x:Name="Security" Grid.Column="1 " Background="#FF313030" >
+                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Security</Label>
+            </Grid>
+
+
+        </Grid>
+
+
+
+
+        <!--END OF MAIN GRID-->
     </Grid>
 
 
-    
+
 
 
 </Window>

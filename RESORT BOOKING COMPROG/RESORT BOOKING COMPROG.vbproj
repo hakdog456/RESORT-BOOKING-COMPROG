@@ -137,5 +137,23 @@
   <ItemGroup>
     <Resource Include="ASSETS\practice logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\pos icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\log out.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\dashboard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\calendar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\bed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\security.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>
