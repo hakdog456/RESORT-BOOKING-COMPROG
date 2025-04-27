@@ -1,4 +1,7 @@
-﻿Class MainWindow
+﻿Imports System.Collections.ObjectModel
+
+
+Class MainWindow
 
     'VARIABLES
     'PAGES
@@ -12,6 +15,9 @@
 
     'NAV BUTTONS
     Dim navBtns As New List(Of Border) From {posSide, calSide, dashSide, roomSide, secSide}
+
+    'ROOMS
+    Dim rooms As New ObservableCollection(Of Room)
 
 
 
@@ -51,6 +57,12 @@
         'Reinitializing views of grid
         views = New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
         navBtns = New List(Of Border) From {posSide, calSide, dashSide, roomSide, secSide}
+
+        'Testing Addition of rooms to Rooms View
+        rooms.Add(New Room("L101", "regular", 3, 1000))
+
+        'Assigining observable collections to list
+        RegularRoomsListBox.ItemsSource = rooms
 
     End Sub
 
