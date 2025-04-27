@@ -97,8 +97,68 @@
     End Sub
 
 
-
     'POS BUTTON CLICKED
+
+
+
+    'HOrizontal scroll wheel function of REGULAR ROOMS 
+    Private Sub lstTest_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
+        Dim scrollViewer As ScrollViewer = FindVisualChild(Of ScrollViewer)(RegularRoomsListBox)
+
+        If scrollViewer IsNot Nothing Then
+            If e.Delta < 0 Then
+                scrollViewer.LineRight()
+            Else
+                scrollViewer.LineLeft()
+            End If
+            e.Handled = True ' Stop normal vertical scrolling
+        End If
+    End Sub
+
+    'HOrizontal scroll wheel function of REGULAR ROOMS 
+    Private Sub Premium_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
+        Dim scrollViewer As ScrollViewer = FindVisualChild(Of ScrollViewer)(PremiumRoomsListBox)
+
+        If scrollViewer IsNot Nothing Then
+            If e.Delta < 0 Then
+                scrollViewer.LineRight()
+            Else
+                scrollViewer.LineLeft()
+            End If
+            e.Handled = True ' Stop normal vertical scrolling
+        End If
+    End Sub
+
+    'HOrizontal scroll wheel function of REGULAR ROOMS 
+    Private Sub Deluxe_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
+        Dim scrollViewer As ScrollViewer = FindVisualChild(Of ScrollViewer)(DeluxeRoomsListBox)
+
+        If scrollViewer IsNot Nothing Then
+            If e.Delta < 0 Then
+                scrollViewer.LineRight()
+            Else
+                scrollViewer.LineLeft()
+            End If
+            e.Handled = True ' Stop normal vertical scrolling
+        End If
+    End Sub
+
+
+    ' Helper to find ScrollViewer inside the ListBox
+    Private Function FindVisualChild(Of T As DependencyObject)(obj As DependencyObject) As T
+        For i As Integer = 0 To VisualTreeHelper.GetChildrenCount(obj) - 1
+            Dim child As DependencyObject = VisualTreeHelper.GetChild(obj, i)
+            If child IsNot Nothing AndAlso TypeOf child Is T Then
+                Return CType(child, T)
+            Else
+                Dim childOfChild As T = FindVisualChild(Of T)(child)
+                If childOfChild IsNot Nothing Then
+                    Return childOfChild
+                End If
+            End If
+        Next
+        Return Nothing
+    End Function
 
 
 End Class
