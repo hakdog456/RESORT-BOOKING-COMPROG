@@ -41,6 +41,7 @@ Class MainWindow
         ' Add any initialization after the InitializeComponent() call.
         Me.DataContext = Me
         selectedRoom = New Room("ojnanw", "ojbae", 1, 0)
+
     End Sub
 
 
@@ -137,7 +138,7 @@ Class MainWindow
         'Assigning Roomtypes as item source for RoomTypeListBox
         RoomTypeListBox.ItemsSource = roomTypes
 
-
+        startDate.SelectedDate = Date.Now
 
 
     End Sub
@@ -197,6 +198,89 @@ Class MainWindow
         roomTypeTxtBox.Text = selectedRoom.Type
         roomOccupancyTxtBox.Text = selectedRoom.Capacity
         roomPriceTxtBox.Text = selectedRoom.Price
+
+    End Sub
+
+
+    'When date in date picker is changed
+    Private Sub selectedDateChangedFunc(sender As Object, e As SelectionChangedEventArgs)
+
+        Dim selectedStartDate As Date? = startDate.SelectedDate
+        Dim selectedEndDate As Date? = endDate.SelectedDate
+
+        Dim finalStartDateTime As Date
+        Dim finalEndDateTime As Date
+
+        If selectedStartDate.HasValue And selectedEndDate.HasValue Then
+            Dim startDate = selectedStartDate.Value
+            Dim endDate = selectedEndDate.Value
+
+            Dim startTime = startTimeTxtbox.Text.Trim()
+            Dim endTime = endTimeTxtbox.Text.Trim()
+
+            Dim startParsedTime As Date
+            Dim endParsedTime As Date
+
+
+
+            If Date.TryParse(startTime, startParsedTime) And Date.TryParse(endTime, endParsedTime) Then
+                finalStartDateTime = New Date(startDate.Year, startDate.Month, startDate.Day, startParsedTime.Hour, startParsedTime.Minute, 0)
+                finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
+            End If
+
+            selectedRoom.Bookings.Add(New Booking(finalStartDateTime, finalEndDateTime))
+        End If
+
+
+        'Calculating for the difference of days from starting to end
+        Dim difference As TimeSpan = finalEndDateTime - finalStartDateTime
+        Dim daysGap As Integer = difference.Days
+        Dim hoursGap As Integer = difference.TotalHours
+
+        totalDaysTxtBox.Text = daysGap
+        amountPayTxtBox.Text = daysGap * selectedRoom.Price
+
+
+
+
+    End Sub
+
+    'CONFIRM BOOK BUTTON
+    Private Sub confirmBookBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles confirmBookBtn.MouseDown
+        Dim selectedStartDate As Date? = startDate.SelectedDate
+        Dim selectedEndDate As Date? = endDate.SelectedDate
+
+        Dim finalStartDateTime As Date
+        Dim finalEndDateTime As Date
+
+        If selectedStartDate.HasValue And selectedEndDate.HasValue Then
+            Dim startDate = selectedStartDate.Value
+            Dim endDate = selectedEndDate.Value
+
+            Dim startTime = startTimeTxtbox.Text.Trim()
+            Dim endTime = endTimeTxtbox.Text.Trim()
+
+            Dim startParsedTime As Date
+            Dim endParsedTime As Date
+
+
+
+            If Date.TryParse(startTime, startParsedTime) And Date.TryParse(endTime, endParsedTime) Then
+                finalStartDateTime = New Date(startDate.Year, startDate.Month, startDate.Day, startParsedTime.Hour, startParsedTime.Minute, 0)
+                finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
+            End If
+
+            selectedRoom.Bookings.Add(New Booking(finalStartDateTime, finalEndDateTime))
+        End If
+
+
+        MsgBox(selectedRoom.Bookings(0).ToString())
+
+        'Calculating for the difference of days from starting to end
+        Dim difference As TimeSpan = finalEndDateTime - finalStartDateTime
+        Dim hoursGap As Integer = difference.TotalHours
+        MsgBox(hoursGap)
+
     End Sub
 
 
