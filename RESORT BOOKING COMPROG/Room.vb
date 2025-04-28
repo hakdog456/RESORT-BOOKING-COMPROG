@@ -7,7 +7,7 @@ Public Class Room
     Public Property Capacity As Integer
     Public Property Price As Double
     Public Property Active As Boolean = True
-    Public Property Reservations As List(Of Dictionary(Of String, Object))
+    Public Property Bookings As List(Of Booking)
     Public Property Features As List(Of String)
     Public Property Pictures As List(Of Object)
     Public Property Color As String

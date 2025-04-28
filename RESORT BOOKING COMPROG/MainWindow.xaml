@@ -16,7 +16,7 @@
     <!--MAIN GRID-->
     <Grid>
         <!--LOGIN PAGE-->
-        <Border x:Name="loginPage" ClipToBounds="True" Background="#FF141414" VerticalAlignment="Center" HorizontalAlignment="Center" d:IsHidden="True" >
+        <Border x:Name="loginPage" ClipToBounds="True" Background="#FF141414" VerticalAlignment="Center" HorizontalAlignment="Center" >
 
             <Grid ShowGridLines="True" Height="617" Width="915" >
                 <Grid.ColumnDefinitions>
@@ -166,141 +166,99 @@
                 <Grid ShowGridLines="True" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" x:Name="PosRoomCheck" Margin="5,10,10,10" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" ></RowDefinition>
-                        <RowDefinition Height="1*" ></RowDefinition>
-                        <RowDefinition Height="3*" ></RowDefinition>
-                        <RowDefinition Height="1*" ></RowDefinition>
-                        <RowDefinition Height="3*" ></RowDefinition>
-                        <RowDefinition Height="1*" ></RowDefinition>
-                        <RowDefinition Height="3*" ></RowDefinition>
-                        <RowDefinition Height="5*" ></RowDefinition>
+                        <RowDefinition Height="17*" ></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <!-- VIEW ROOMS TITLE-->
                     <Label Grid.Row="0" x:Name="RoomCheckTitle" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="24" >ROOMS</Label>
 
-                    <!--REGULAR ROOMS TITLE-->
-                    <Label Grid.Row="1" x:Name="RegularRoomsTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Poppins" Foreground="White" >REGULAR ROOMS</Label>
-
-                    <!--REGULAR ROOMS LIST -->
-                    <ListBox ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                             PreviewMouseWheel="lstTest_PreviewMouseWheel"
-                             Grid.Row="2" x:Name="RegularRoomsListBox" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" >
-
-                        <!--Change Orientation-->
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" ></StackPanel>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-
-                        <!--Rooms Items List Template-->
+                    <!--ROOM TYPES-->
+                    <ListBox x:Name="RoomTypeListBox" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1" Background="{x:Null}" BorderBrush="{x:Null}" >
+                        <!--ROOM TYPES TEMPLATE-->
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                                    <Label Content="{Binding Name}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="{Binding getStatusColor}" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center"></Label>
-                                </Border>
+                                <Grid ShowGridLines="True" Height="150" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="1*" ></RowDefinition>
+                                        <RowDefinition Height="2*" ></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <Label Content="{Binding Name}" Grid.Row="0" VerticalAlignment="Center" FontFamily="Poppins" Foreground="White" ></Label>
+
+                                    <ListBox ItemsSource="{Binding Rooms}"
+                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                    PreviewMouseWheel="HorizontalListBox_PreviewMouseWheel"
+                                    Grid.Row="1"  Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Height="110" >
+
+                                        <!--Change Orientation-->
+                                        <ListBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal" ></StackPanel>
+                                            </ItemsPanelTemplate>
+                                        </ListBox.ItemsPanel>
+
+                                        <!--Rooms Items List Template-->
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
+                                                    <Label Content="{Binding Name}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="{Binding getStatusColor}" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center"></Label>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+
+                                        <!--Sample Items-->
+
+                                    </ListBox>
+
+                                </Grid>
+
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-                        
+
+                        <!--Sample item of Room Types-->
+                        <!--<Grid ShowGridLines="True" x:Name="RoomType" Height="150" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="2*" ></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Label Grid.Row="0" x:Name="regRooms" VerticalAlignment="Center" FontFamily="Poppins" Foreground="White" >REGULAR ROOMS</Label>
+
+                            <ListBox
+                                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                        PreviewMouseWheel="lstTest_PreviewMouseWheel"
+                                        Grid.Row="1" x:Name="RegularRoomsListBox" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Height="110" >
+
+                                -->
+                        <!--Change Orientation-->
+                        <!--
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" ></StackPanel>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                -->
+                        <!--Rooms Items List Template-->
+                        <!--
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
+                                            <Label Content="{Binding Name}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="{Binding getStatusColor}" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center"></Label>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                                -->
                         <!--Sample Items-->
-                        
-                    </ListBox>
+                        <!--
 
-                    <!--PREMIUM ROOMS TITLE-->
-                    <Label Grid.Row="3" x:Name="PremiumRoomsTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Poppins" Foreground="White" >PREMIUM ROOMS</Label>
+                            </ListBox>
 
-                    <!--PREMIUM ROOMS LIST -->
-                    <ListBox ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                              ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                              PreviewMouseWheel="Premium_PreviewMouseWheel"
-                              Grid.Row="4" x:Name="PremiumRoomsListBox" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" >
+                        </Grid>-->
 
-
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" ></StackPanel>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-
-                        <!--Sample Items-->
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFF57879" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFA1E6B2" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFF57879" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFA1E6B2" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFF57879" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFA1E6B2" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFF57879" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFA1E6B2" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFF57879" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFA1E6B2" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">P101</Label>
-                        </Border>
 
                     </ListBox>
-
-                    <!--DELUXE ROOMS TITLE-->
-                    <Label Grid.Row="5" x:Name="DeluxeRoomsTitle" VerticalAlignment="Center" HorizontalAlignment="Left" FontFamily="Poppins" Foreground="White" >DELUXE ROOMS</Label>
-
-                    <!--DELUXE ROOMS LIST -->
-                    <ListBox ScrollViewer.HorizontalScrollBarVisibility="Auto" 
-                               ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                               PreviewMouseWheel="Deluxe_PreviewMouseWheel"
-                               Grid.Row="6" x:Name="DeluxeRoomsListBox" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" >
-
-
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" ></StackPanel>
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-
-                        <!--Sample Items-->
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFF57879" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">D101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFA1E6B2" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">D101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFF57879" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">D101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFA1E6B2" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">D101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFF57879" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">D101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFA1E6B2" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">D101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFF57879" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">D101</Label>
-                        </Border>
-                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                            <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="#FFA1E6B2" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center">D101</Label>
-                        </Border>
-
-                    </ListBox>
-
 
                 </Grid>
 
