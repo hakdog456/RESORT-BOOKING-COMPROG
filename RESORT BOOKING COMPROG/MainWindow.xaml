@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RESORT_BOOKING_COMPROG"
         mc:Ignorable="d"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+
         Title="MainWindow" Height="720" Width="1280" Loaded="Window_Loaded">
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -449,7 +451,7 @@
                         <!--Start Date-->
                         <Label  Grid.Column="0" Grid.Row="5" FontFamily="Poppins" Foreground="White" >Start Date</Label>
                         <Border CornerRadius="5" BorderThickness="1" Grid.Row="6" Grid.Column="0"  BorderBrush="White"   >
-                            <DatePicker xmlns:sys="clr-namespace:System;assembly=mscorlib" SelectedDate="{x:Static sys:DateTime.Now}" x:Name="startDate" Grid.Row="6" VerticalAlignment="Center" BorderBrush="{x:Null}" >
+                            <DatePicker DisplayDateStart="{x:Static sys:DateTime.Today}" SelectedDateChanged="selectedDateChangedFunc" x:Name="startDate" Grid.Row="6" VerticalAlignment="Center" BorderBrush="{x:Null}" >
                             </DatePicker>
                         </Border>
 
@@ -464,7 +466,7 @@
                         <!--End Date-->
                         <Label  Grid.Column="2" Grid.Row="5" FontFamily="Poppins" Foreground="White" >End Date</Label>
                         <Border CornerRadius="5" BorderThickness="1" Grid.Row="6" Grid.Column="2"  BorderBrush="White" Margin="5,0,0,0"   >
-                            <DatePicker x:Name="endDate" Grid.Column="2" Grid.Row="6" VerticalAlignment="Center" />
+                            <DatePicker DisplayDateStart="{x:Static sys:DateTime.Today}" SelectedDateChanged="selectedDateChangedFunc" x:Name="endDate" Grid.Column="2" Grid.Row="6" VerticalAlignment="Center" />
                         </Border>
 
                         <!--Time Check Out-->
