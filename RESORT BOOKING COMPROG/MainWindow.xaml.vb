@@ -1,7 +1,9 @@
 ﻿Imports System.Collections.ObjectModel
-
+Imports System.ComponentModel
+Imports System.Runtime.CompilerServices
 
 Class MainWindow
+    Implements INotifyPropertyChanged
 
     'VARIABLES
     'PAGES
@@ -10,17 +12,41 @@ Class MainWindow
     'MAIN PAGE VIEWS
     Dim views As New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
 
-    'SELECTED PAGE
-    Dim activePage As String = "login"
-
     'NAV BUTTONS
     Dim navBtns As New List(Of Border) From {posSide, calSide, dashSide, roomSide, secSide}
+
+    'POS WINDOWS
+    Dim posWindows As New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
 
     'ROOMS
     Dim rooms As New ObservableCollection(Of Room)
 
+    'ROOM TYPES
+    Dim roomTypes As New ObservableCollection(Of RoomType)
 
 
+
+
+    'VARIABLE SELECTIONS
+    'Public Property selectedRoom As Room
+    Private selectedRoom As Room
+
+
+    'HAYST EWAN KO TOH
+    Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        Me.DataContext = Me
+        selectedRoom = New Room("ojnanw", "ojbae", 1, 0)
+    End Sub
+
+
+
+    'PRORTY CHANGE
+    Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
 
     'FUNCTIONS
@@ -33,6 +59,18 @@ Class MainWindow
                 grid.Visibility = Visibility.Collapsed
             End If
 
+        Next
+
+    End Sub
+
+    'GENERIC VIEW SELECTOR FOR GRIDS
+    Sub selectViewGeneric(selected As Object, list As List(Of Grid))
+        For Each grid As Grid In list
+            If selected Is grid Then
+                grid.Visibility = Visibility.Visible
+            Else
+                grid.Visibility = Visibility.Collapsed
+            End If
         Next
 
     End Sub
@@ -53,16 +91,54 @@ Class MainWindow
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
         'Hiding main page
         mainPageGrid.Visibility = Visibility.Collapsed
+        PosRoomBookingGrid.Visibility = Visibility.Collapsed
+        PosRoomDetailsGrid.Visibility = Visibility.Collapsed
 
         'Reinitializing views of grid
         views = New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
         navBtns = New List(Of Border) From {posSide, calSide, dashSide, roomSide, secSide}
+        posWindows = New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
 
-        'Testing Addition of rooms to Rooms View
-        rooms.Add(New Room("L101", "regular", 3, 1000))
 
-        'Assigining observable collections to list
-        RegularRoomsListBox.ItemsSource = rooms
+        'Adding room types and rooms per room type
+        Dim regular As New RoomType("REGULAR", "#51B961")
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+
+        Dim unavailableRoom As New Room("UNavailable", "regular", 3, 1000)
+        unavailableRoom.Active = False
+        unavailableRoom.Features.Add("✓ Apaka Pangit")
+        unavailableRoom.Features.Add("✓ SOBRANG LATINA")
+        unavailableRoom.Bookings.Add(New Booking(Now, Now))
+        regular.AddRoom(unavailableRoom)
+
+        Dim premium As New RoomType("PREMIUM", "#51B961")
+        premium.AddRoom(New Room("hahaha", "Premium", 3, 1000))
+
+        roomTypes.Add(regular)
+        roomTypes.Add(regular)
+        roomTypes.Add(regular)
+        roomTypes.Add(regular)
+        roomTypes.Add(regular)
+        roomTypes.Add(regular)
+        roomTypes.Add(premium)
+
+        'Assigning Roomtypes as item source for RoomTypeListBox
+        RoomTypeListBox.ItemsSource = roomTypes
+
+
+
 
     End Sub
 
@@ -109,54 +185,42 @@ Class MainWindow
     End Sub
 
 
-    'POS BUTTON CLICKED
-
-
-
-    'HOrizontal scroll wheel function of REGULAR ROOMS 
-    Private Sub lstTest_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
-        Dim scrollViewer As ScrollViewer = FindVisualChild(Of ScrollViewer)(RegularRoomsListBox)
-
-        If scrollViewer IsNot Nothing Then
-            If e.Delta < 0 Then
-                scrollViewer.LineRight()
-            Else
-                scrollViewer.LineLeft()
-            End If
-            e.Handled = True ' Stop normal vertical scrolling
-        End If
+    'VIEW ROOMS BUTTON CLICKED
+    Private Sub viewRoomsBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles viewRoomsBtn.MouseDown
+        selectViewGeneric(PosRoomCheck, posWindows)
     End Sub
 
-    'HOrizontal scroll wheel function of REGULAR ROOMS 
-    Private Sub Premium_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
-        Dim scrollViewer As ScrollViewer = FindVisualChild(Of ScrollViewer)(PremiumRoomsListBox)
-
-        If scrollViewer IsNot Nothing Then
-            If e.Delta < 0 Then
-                scrollViewer.LineRight()
-            Else
-                scrollViewer.LineLeft()
-            End If
-            e.Handled = True ' Stop normal vertical scrolling
-        End If
+    'BOOK BUTTON
+    Private Sub bookBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles bookBtn.MouseDown
+        selectViewGeneric(PosRoomBookingGrid, posWindows)
+        roomNameTxtBox.Text = selectedRoom.Name
+        roomTypeTxtBox.Text = selectedRoom.Type
+        roomOccupancyTxtBox.Text = selectedRoom.Capacity
+        roomPriceTxtBox.Text = selectedRoom.Price
     End Sub
 
-    'HOrizontal scroll wheel function of REGULAR ROOMS 
-    Private Sub Deluxe_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
-        Dim scrollViewer As ScrollViewer = FindVisualChild(Of ScrollViewer)(DeluxeRoomsListBox)
 
-        If scrollViewer IsNot Nothing Then
-            If e.Delta < 0 Then
-                scrollViewer.LineRight()
-            Else
-                scrollViewer.LineLeft()
+
+    'Generic horizontal scroll wheel function for ListBoxes
+    Private Sub HorizontalListBox_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
+        Dim listBox As ListBox = TryCast(sender, ListBox)
+
+        If listBox IsNot Nothing Then
+            Dim scrollViewer As ScrollViewer = FindVisualChild(Of ScrollViewer)(listBox)
+
+            If scrollViewer IsNot Nothing Then
+                If e.Delta < 0 Then
+                    scrollViewer.LineRight()
+                Else
+                    scrollViewer.LineLeft()
+                End If
+                e.Handled = True ' Stop normal vertical scrolling
             End If
-            e.Handled = True ' Stop normal vertical scrolling
         End If
     End Sub
 
 
-    ' Helper to find ScrollViewer inside the ListBox
+    ' Helper to find ScrollViewer inside the ListBox / Function helper for horizontal scrolling
     Private Function FindVisualChild(Of T As DependencyObject)(obj As DependencyObject) As T
         For i As Integer = 0 To VisualTreeHelper.GetChildrenCount(obj) - 1
             Dim child As DependencyObject = VisualTreeHelper.GetChild(obj, i)
@@ -170,6 +234,57 @@ Class MainWindow
             End If
         Next
         Return Nothing
+    End Function
+
+    'View Room Function - when a room is clicked
+    Private Sub ViewRoom(sender As Object, e As MouseButtonEventArgs)
+        selectViewGeneric(PosRoomDetailsGrid, posWindows)
+
+        'Get the ui element that was clicked
+        Dim clickedElement As DependencyObject = TryCast(sender, DependencyObject)
+
+        If clickedElement IsNot Nothing Then
+            'Traverse up the visual tree to find the listboxItem
+            Dim listBoxItem As ListBoxItem = TryFindAncestor(Of ListBoxItem)(clickedElement)
+
+            If listBoxItem IsNot Nothing Then
+                Dim room As Room = TryCast(listBoxItem.DataContext, Room)
+
+                If room IsNot Nothing Then
+                    selectedRoom = room
+
+                    roomName.Content = "Room: " & selectedRoom.Name
+                    roomType.Content = "Type: " & selectedRoom.Type
+                    roomCapacity.Content = "Capacity: " & selectedRoom.Capacity
+                    roomPrice.Content = "Price/Night: " & selectedRoom.Price
+                    If selectedRoom.Active Then
+                        roomStatus.Content = "Available"
+                        roomStatus.Foreground = New SolidColorBrush(Colors.Green)
+                    Else
+                        roomStatus.Content = "Not Available"
+                        roomStatus.Foreground = New SolidColorBrush(Colors.Red)
+                    End If
+
+                    roomFeatures.ItemsSource = selectedRoom.Features
+                    roomBookings.ItemsSource = selectedRoom.Bookings
+
+                End If
+
+            End If
+
+        End If
+
+    End Sub
+
+    'Helper Function for finding ancestor in visual tree listbox
+    Private Function TryFindAncestor(Of T As DependencyObject)(depObj As DependencyObject) As T
+        Dim parent As DependencyObject = VisualTreeHelper.GetParent(depObj)
+
+        While parent IsNot Nothing AndAlso Not TypeOf parent Is T
+            parent = VisualTreeHelper.GetParent(parent)
+        End While
+
+        Return TryCast(parent, T)
     End Function
 
 

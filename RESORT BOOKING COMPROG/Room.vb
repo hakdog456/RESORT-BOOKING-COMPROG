@@ -7,9 +7,9 @@ Public Class Room
     Public Property Capacity As Integer
     Public Property Price As Double
     Public Property Active As Boolean = True
-    Public Property Reservations As List(Of Dictionary(Of String, Object))
-    Public Property Features As List(Of String)
-    Public Property Pictures As List(Of Object)
+    Public Property Bookings As New List(Of Booking) From {}
+    Public Property Features As New List(Of String) From {}
+    Public Property Pictures As New List(Of Object) From {}
     Public Property Color As String
 
 
@@ -45,6 +45,7 @@ Public Class Room
             Return statusColor()
         End Get
     End Property
+
 
 
 
