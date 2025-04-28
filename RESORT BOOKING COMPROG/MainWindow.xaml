@@ -157,13 +157,44 @@
                 </Grid.RowDefinitions>
 
                 <!--ROOM CHECKER BOX-->
-                <Grid Grid.Row="0" Grid.Column="0" x:Name="roomCheckerBox" Margin="10,10,5,0" >
-                    <Label HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White">Room Chcker Box</Label>
+                <Grid Grid.Row="0" Grid.Column="0" x:Name="roomCheckerBox" Margin="10,10,15,0" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"></RowDefinition>
+                        <RowDefinition Height="1*" ></RowDefinition>
+                        <RowDefinition Height="1*" ></RowDefinition>
+                        <RowDefinition Height="2*" ></RowDefinition>
+                    </Grid.RowDefinitions>                    
+
+                    <!--Title - Room Checker-->
+                    <Label Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontFamily="Poppins" FontSize="14">ROOM CHECKER</Label>
+
+                    <!--Available Rooms-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" >
+                        <Border  CornerRadius="50" Background="#FF55DA72" Width="15" Height="15"></Border>
+                        <Label Name="availableRooms" ></Label>
+                        <Label Foreground="White"  >AVAILABLE ROOMS</Label>
+                    </StackPanel>
+
+                    <!--UnAvailable Rooms-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" >
+                        <Border  CornerRadius="50" Background="#FFFE8080" Width="15" Height="15"></Border>
+                        <Label Name="unavailableRooms" ></Label>
+                        <Label Foreground="White"  >UNAVAILABLE ROOMS</Label>
+                    </StackPanel>
+                    
+                    <!--ROOM CHECKER BUTTON-->
+                    <Border BorderThickness="2" Cursor="Hand" x:Name="viewRoomsBtn" CornerRadius="20" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center" Height="35" Background="#FFF4F9FB" Padding="15,0,15,0" BorderBrush="#FF494949" >
+                        <Label Foreground="#FF494949" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            View All Available Rooms
+                        </Label>
+                    </Border>
+
+
                 </Grid>
 
 
                 <!--POS - ROOM CHECK-->
-                <Grid ShowGridLines="True" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" x:Name="PosRoomCheck" Margin="5,10,10,10" >
+                <Grid ShowGridLines="True" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" x:Name="PosRoomCheck" Margin="5,10,10,10" d:IsHidden="True" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" ></RowDefinition>
                         <RowDefinition Height="17*" ></RowDefinition>
@@ -200,7 +231,7 @@
                                         <!--Rooms Items List Template-->
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
+                                                <Border  ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White" MouseDown="ViewRoom">
                                                     <Label Content="{Binding Name}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="{Binding getStatusColor}" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center"></Label>
                                                 </Border>
                                             </DataTemplate>
@@ -262,6 +293,269 @@
 
                 </Grid>
 
+                <!--POS - ROOM DETAILS-->
+                <Grid x:Name="PosRoomDetailsGrid" ShowGridLines="True" Grid.Column="1" Grid.RowSpan="2" Margin="5,10,10,10" d:IsHidden="True" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" ></RowDefinition>
+                        <RowDefinition Height="10*" ></RowDefinition>
+                        <RowDefinition Height="2*" ></RowDefinition>
+                        <RowDefinition Height="5*" ></RowDefinition>
+                    </Grid.RowDefinitions>
+                    
+                    <!--Room Details Title-->
+                    <Label Grid.Row="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="24" >ROOM DETAILS</Label>
+
+                    <!--Room Details Main Grid-->
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" ></ColumnDefinition>
+                            <ColumnDefinition Width="1*" ></ColumnDefinition>
+                            <ColumnDefinition Width="1*" ></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <!--Room Info-->
+                        <Grid x:Name="roomInfo" Grid.Column="1" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="6*" ></RowDefinition>
+                                <RowDefinition Height="5*" ></RowDefinition>
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0" >
+                                <Label Foreground="White" FontFamily="Poppins">Room Info:</Label>
+                                <Label x:Name="roomName" Foreground="White" FontFamily="Poppins">Room: Sample Name</Label>
+                                <Label x:Name="roomType" Foreground="White" FontFamily="Poppins">Type: Sample Type</Label>
+                                <Label x:Name="roomCapacity" Foreground="White" FontFamily="Poppins">Capacoty: Sample Capacity</Label>
+                                <Label x:Name="roomPrice" Foreground="White" FontFamily="Poppins">Price/Night: 2000</Label>
+                                <StackPanel Orientation="Horizontal" >
+                                    <Label Foreground="White" FontFamily="Poppins">Status:</Label>
+                                    <Label x:Name="roomStatus" Foreground="White" FontFamily="Poppins"></Label>
+
+                                </StackPanel>
+                                <Label Foreground="White" FontFamily="Poppins">Bookings:</Label>
+                            </StackPanel>
+
+                            <!--Bookings List Box-->
+                            <ListBox Name="roomBookings" Grid.Row="1" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding}" Foreground="White" FontFamily="Poppins"></Label>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                                
+                            </ListBox>
+                        </Grid>
+                            
+
+                        <!--Room Features-->
+                        <Grid Grid.Column="2" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="10*" ></RowDefinition>
+                            </Grid.RowDefinitions>
+                            
+                            <!--Title-->
+                            <Label Foreground="White" FontFamily="Poppins">Features:</Label>
+
+                            <!--Item Template- features--> 
+                            <ListBox Name="roomFeatures" Grid.Row="1" Margin="5,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding}" Foreground="White" FontFamily="Poppins"></Label>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+
+                    
+
+                    </Grid>
+                    
+                    <!--Room details buttons-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" >
+                        <!--Book button-->
+                        <Border Cursor="Hand" x:Name="bookBtn" CornerRadius="7" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF73DEEE" Padding="20,0,20,0" Margin="0,0,5,0">
+                            <Label Foreground="White" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center">Book</Label>
+                        </Border>
+
+                        <!--Cancel button-->
+                        <Border MouseDown="viewRoomsBtn_MouseDown" Cursor="Hand" x:Name="cancelViewRoomBtn" CornerRadius="7" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FFFE8080" Padding="20,0,20,0" Margin="5,0,0,0">
+                            <Label Foreground="White" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center">Cancel</Label>
+                        </Border>
+                    </StackPanel>
+                    
+                    
+
+                </Grid>
+                
+
+                <!--POS - ROOM BOOKING-->
+                <Grid x:Name="PosRoomBookingGrid" ShowGridLines="True" Grid.Column="1" Grid.RowSpan="2" Margin="5,10,10,10" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" ></RowDefinition>
+                        <RowDefinition Height="17*" ></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <!--Room Booking Title-->
+                    <Label Grid.Row="0" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="24" >BOOKING</Label>
+
+                    <!--Room Booking Main Grid-->
+                    <Grid Grid.Row="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1.5*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1.1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1.1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1.1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1.1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1.1*" ></RowDefinition>
+                            <RowDefinition Height="6*" ></RowDefinition>
+                            <RowDefinition Height="1.5*" ></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!--Title Booking-->
+                        <Label Grid.Row="0" Grid.ColumnSpan="2" Foreground="White" FontFamily="Poppins" FontSize="18" VerticalAlignment="Center"  >Customer Details</Label>
+                        
+                        <!--Form-->
+                        <!--Name-->
+                        <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" FontFamily="Poppins" Foreground="White" >Name</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" BorderBrush="White" Margin="0,0,5,0"   >
+                            <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                        </Border>
+
+                        <!--Contact Number-->
+                        <Label Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" FontFamily="Poppins" Foreground="White" >Contact Number</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="2" BorderBrush="White" Margin="5,0,0,0"   >
+                            <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                        </Border>
+
+                        <!--Email-->
+                        <Label Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="3" FontFamily="Poppins" Foreground="White" >Email</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" BorderBrush="White"   >
+                            <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                        </Border>
+                        
+                        <!--Start Date-->
+                        <Label  Grid.Column="0" Grid.Row="5" FontFamily="Poppins" Foreground="White" >Start Date</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="6" Grid.Column="0"  BorderBrush="White"   >
+                            <DatePicker xmlns:sys="clr-namespace:System;assembly=mscorlib" SelectedDate="{x:Static sys:DateTime.Now}" x:Name="startDate" Grid.Row="6" VerticalAlignment="Center" BorderBrush="{x:Null}" >
+                            </DatePicker>
+                        </Border>
+
+                        <!--Time Check In-->
+                        <Label Grid.Column="1" Grid.Row="5" FontFamily="Poppins" Foreground="White" >Time Check In</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="6" Grid.Column="1"  BorderBrush="White" Margin="5,0,0,0"   >
+                            <TextBox x:Name="startTimeTxtbox" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+                                12:00
+                            </TextBox>
+                        </Border>
+
+                        <!--End Date-->
+                        <Label  Grid.Column="2" Grid.Row="5" FontFamily="Poppins" Foreground="White" >End Date</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="6" Grid.Column="2"  BorderBrush="White" Margin="5,0,0,0"   >
+                            <DatePicker x:Name="endDate" Grid.Column="2" Grid.Row="6" VerticalAlignment="Center" />
+                        </Border>
+
+                        <!--Time Check Out-->
+                        <Label Grid.Column="3" Grid.Row="5" FontFamily="Poppins" Foreground="White" >Time Check In</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="6" Grid.Column="3"  BorderBrush="White" Margin="5,0,0,0"   >
+                            <TextBox x:Name="endTimeTxtbox" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+                                12:00
+                            </TextBox>
+                        </Border>
+
+                        <!--Room Name-->
+                        <Label Grid.Column="0" Grid.Row="7" FontFamily="Poppins" Foreground="White" >Room Name</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="8" Grid.Column="0"  BorderBrush="White"   >
+                            <TextBox x:Name="roomNameTxtBox" VerticalContentAlignment="Center" Grid.Row="7" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+                                
+                            </TextBox>
+                        </Border>
+
+                        <!--Room Type-->
+                        <Label Grid.Column="1" Grid.Row="7" FontFamily="Poppins" Foreground="White" >Room Type</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="8" Grid.Column="1"  BorderBrush="White" Margin="5,0,0,0"   >
+                            <TextBox x:Name="roomTypeTxtBox" VerticalContentAlignment="Center" Grid.Row="7" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+
+                            </TextBox>
+                        </Border>
+
+                        <!--Room Occupancy-->
+                        <Label Grid.Column="2" Grid.Row="7" FontFamily="Poppins" Foreground="White" >Room Occupancy</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="8" Grid.Column="2"  BorderBrush="White" Margin="5,0,0,0"   >
+                            <TextBox x:Name="roomOccupancyTxtBox" VerticalContentAlignment="Center" Grid.Row="7" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+
+                            </TextBox>
+                        </Border>
+
+                        <!--Room Party Size-->
+                        <Label Grid.Column="3" Grid.Row="7" FontFamily="Poppins" Foreground="White" >Party Size</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="8" Grid.Column="3"  BorderBrush="White" Margin="5,0,0,0"   >
+                            <TextBox x:Name="partySizeTxtBox" VerticalContentAlignment="Center" Grid.Row="7" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+                                
+                            </TextBox>
+                        </Border>
+
+                        <!--Room Price-->
+                        <Label Grid.Column="0" Grid.Row="9" FontFamily="Poppins" Foreground="White" >Room Price</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="10" Grid.Column="0"  BorderBrush="White"   >
+                            <TextBox x:Name="roomPriceTxtBox" VerticalContentAlignment="Center" Grid.Row="7" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+
+                            </TextBox>
+                        </Border>
+
+                        <!--Total Days-->
+                        <Label Grid.Column="1" Grid.Row="9" FontFamily="Poppins" Foreground="White" >Total Days</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="10" Grid.Column="1"  BorderBrush="White" Margin="5,0,0,0"   >
+                            <TextBox x:Name="totalDaysTxtBox" VerticalContentAlignment="Center" Grid.Row="7" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+
+                            </TextBox>
+                        </Border>
+
+                        <!--Amount to Pay-->
+                        <Label Grid.Column="2" Grid.Row="9" FontFamily="Poppins" Foreground="White" >Amount to Pay</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="10" Grid.Column="2"  BorderBrush="White" Margin="5,0,0,0"   >
+                            <TextBox x:Name="amountPayTxtBox" VerticalContentAlignment="Center" Grid.Row="7" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+
+                            </TextBox>
+                        </Border>
+
+                        <!--Payment-->
+                        <Label Grid.Column="3" Grid.Row="9" FontFamily="Poppins" Foreground="White" >Payment</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="10" Grid.Column="3"  BorderBrush="White" Margin="5,0,0,0"   >
+                            <TextBox x:Name="paymentTxtBox" VerticalContentAlignment="Center" Grid.Row="7" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
+
+                            </TextBox>
+                        </Border>
+                        
+                        <!--BOOKING BUttons-->
+                        <StackPanel Orientation="Horizontal" Grid.Row="12" Grid.ColumnSpan="4" Margin="5,0,0,10" >
+                                <!--Book button-->
+                                <Border Cursor="Hand" x:Name="confirmBookBtn" CornerRadius="7" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FF73DEEE" Padding="20,0,20,0" Margin="0,0,5,0">
+                                    <Label Foreground="White" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center">Confirm Book</Label>
+                                </Border>
+
+                                <!--Cancel button-->
+                                <Border MouseDown="viewRoomsBtn_MouseDown" Cursor="Hand" x:Name="cancelBookBtn" CornerRadius="7" HorizontalAlignment="Left" VerticalAlignment="Center" Background="#FFFE8080" Padding="20,0,20,0" Margin="5,0,0,0">
+                                    <Label Foreground="White" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center">Cancel</Label>
+                                </Border>
+
+                        </StackPanel>
+
+                    </Grid>
+
+                </Grid>
 
 
 
