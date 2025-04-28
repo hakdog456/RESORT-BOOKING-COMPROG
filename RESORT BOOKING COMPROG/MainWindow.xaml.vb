@@ -225,7 +225,6 @@ Class MainWindow
                 finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
             End If
 
-            selectedRoom.Bookings.Add(New Booking(finalStartDateTime, finalEndDateTime))
         End If
 
 
@@ -240,6 +239,28 @@ Class MainWindow
 
 
 
+    End Sub
+
+    'CLEAR POS
+    Sub clearPos()
+        customerNameTxtBox.Clear()
+        customerNumberTxtBox.Clear()
+        customerEmailTxtBox.Clear()
+        partySizeTxtBox.Clear()
+        paymentTxtBox.Clear()
+        startDate.SelectedDate = Date.Now
+        startTimeTxtbox.Text = "12:00"
+        endDate.SelectedDate = Nothing
+        endTimeTxtbox.Text = "12:00"
+        roomNameTxtBox.Clear()
+        roomTypeTxtBox.Clear()
+        roomOccupancyTxtBox.Clear()
+        roomPriceTxtBox.Clear()
+        totalDaysTxtBox.Clear()
+        amountPayTxtBox.Clear()
+        paymentTxtBox.Clear()
+
+        selectViewGeneric(PosRoomCheck, posWindows)
     End Sub
 
     'CONFIRM BOOK BUTTON
@@ -267,7 +288,15 @@ Class MainWindow
                 finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
             End If
 
-            selectedRoom.Bookings.Add(New Booking(finalStartDateTime, finalEndDateTime))
+            Dim name = customerNameTxtBox.Text
+            Dim contactNumber = Val(customerNumberTxtBox.Text)
+            Dim email = customerEmailTxtBox.Text
+            Dim partySize = Val(partySizeTxtBox.Text)
+            Dim payment = Val(paymentTxtBox.Text)
+
+            selectedRoom.Bookings.Add(New Booking(name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+            clearPos()
+
         End If
 
 

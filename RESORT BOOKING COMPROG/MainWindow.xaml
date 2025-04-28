@@ -433,19 +433,19 @@
                         <!--Name-->
                         <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" FontFamily="Poppins" Foreground="White" >Name</Label>
                         <Border CornerRadius="5" BorderThickness="1" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="0" BorderBrush="White" Margin="0,0,5,0"   >
-                            <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                            <TextBox x:Name="customerNameTxtBox" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
                         </Border>
 
                         <!--Contact Number-->
                         <Label Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" FontFamily="Poppins" Foreground="White" >Contact Number</Label>
                         <Border CornerRadius="5" BorderThickness="1" Grid.Row="2" Grid.ColumnSpan="2" Grid.Column="2" BorderBrush="White" Margin="5,0,0,0"   >
-                            <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                            <TextBox x:Name="customerNumberTxtBox" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
                         </Border>
 
                         <!--Email-->
                         <Label Grid.ColumnSpan="4" Grid.Column="0" Grid.Row="3" FontFamily="Poppins" Foreground="White" >Email</Label>
                         <Border CornerRadius="5" BorderThickness="1" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" BorderBrush="White"   >
-                            <TextBox VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                            <TextBox x:Name="customerEmailTxtBox" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
                         </Border>
                         
                         <!--Start Date-->
