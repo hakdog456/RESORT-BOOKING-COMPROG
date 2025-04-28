@@ -295,6 +295,7 @@ Class MainWindow
             Dim payment = Val(paymentTxtBox.Text)
 
             selectedRoom.Bookings.Add(New Booking(name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+            selectedRoom.Active = False
             clearPos()
 
         End If
@@ -390,6 +391,7 @@ Class MainWindow
 
         Return TryCast(parent, T)
     End Function
+
 
 
 End Class
