@@ -295,6 +295,7 @@ Class MainWindow
             Dim payment = Val(paymentTxtBox.Text)
 
             selectedRoom.Bookings.Add(New Booking(name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+            selectedRoom.Active = False
             clearPos()
 
         End If
