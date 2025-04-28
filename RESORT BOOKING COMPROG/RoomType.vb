@@ -7,13 +7,15 @@
 
 
     'CONSTRUCTOR
-    Sub New(name As String, color As String)
+    Sub New(name As String, capacity As Integer, price As Double)
         Me.Name = name
-        Me.Color = color
+        Me.Capacity = capacity
+        Me.Price = price
     End Sub
 
-    Public Function AddRoom(room As Room)
-        Me.Rooms.Add(room)
+    Public Function AddRoom(name As String)
+        Me.Rooms.Add(New Room(name, Me.Name, Me.Capacity, Me.Price))
     End Function
+
 
 End Class

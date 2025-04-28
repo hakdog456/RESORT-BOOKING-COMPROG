@@ -102,42 +102,39 @@ Class MainWindow
 
 
         'Adding room types and rooms per room type
-        Dim regular As New RoomType("REGULAR", "#51B961")
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
-        regular.AddRoom(New Room("roror", "regular", 3, 1000))
+        Dim regular As New RoomType("REGULAR", 3, 1200)
+        regular.AddRoom("R101")
+        regular.AddRoom("R102")
+        regular.AddRoom("R103")
+        regular.AddRoom("R104")
+        regular.AddRoom("R105")
+        regular.AddRoom("R106")
+        regular.AddRoom("R107")
 
-        Dim unavailableRoom As New Room("UNavailable", "regular", 3, 1000)
-        unavailableRoom.Active = False
-        unavailableRoom.Features.Add("✓ Apaka Pangit")
-        unavailableRoom.Features.Add("✓ SOBRANG LATINA")
-        unavailableRoom.Bookings.Add(New Booking(Now, Now))
-        regular.AddRoom(unavailableRoom)
+        Dim premium As New RoomType("PREMIUM", 5, 3200)
+        premium.AddRoom("P101")
+        premium.AddRoom("P102")
+        premium.AddRoom("P103")
+        premium.AddRoom("P104")
+        premium.AddRoom("P105")
 
-        Dim premium As New RoomType("PREMIUM", "#51B961")
-        premium.AddRoom(New Room("hahaha", "Premium", 3, 1000))
+        Dim deluxe As New RoomType("DELUXE", 10, 10000)
+        deluxe.AddRoom("D101")
+        deluxe.AddRoom("D102")
+        deluxe.AddRoom("D103")
+        deluxe.AddRoom("D104")
+        deluxe.AddRoom("D105")
+        deluxe.AddRoom("D106")
 
-        roomTypes.Add(regular)
-        roomTypes.Add(regular)
-        roomTypes.Add(regular)
-        roomTypes.Add(regular)
-        roomTypes.Add(regular)
         roomTypes.Add(regular)
         roomTypes.Add(premium)
+        roomTypes.Add(deluxe)
 
         'Assigning Roomtypes as item source for RoomTypeListBox
         RoomTypeListBox.ItemsSource = roomTypes
 
+
+        'Assigning Starting Dates for POS date picker
         startDate.SelectedDate = Date.Now
 
 
@@ -274,12 +271,6 @@ Class MainWindow
         End If
 
 
-        MsgBox(selectedRoom.Bookings(0).ToString())
-
-        'Calculating for the difference of days from starting to end
-        Dim difference As TimeSpan = finalEndDateTime - finalStartDateTime
-        Dim hoursGap As Integer = difference.TotalHours
-        MsgBox(hoursGap)
 
     End Sub
 
