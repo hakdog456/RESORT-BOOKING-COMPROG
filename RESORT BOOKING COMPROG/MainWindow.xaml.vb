@@ -1,9 +1,15 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
+Imports System.Windows.Threading
+
+
+
 
 Class MainWindow
     Implements INotifyPropertyChanged
+
+
 
     'VARIABLES
     'PAGES
@@ -19,20 +25,20 @@ Class MainWindow
     Dim posWindows As New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
 
     'ROOMS
-    Dim rooms As New ObservableCollection(Of Room)
+    Dim rooms As List(Of Room)
 
     'ROOM TYPES
     Dim roomTypes As New ObservableCollection(Of RoomType)
 
 
-
+    'Timers
+    Private bookingTimer As DispatcherTimer
 
     'VARIABLE SELECTIONS
     'Public Property selectedRoom As Room
     Private selectedRoom As Room
 
-
-    'HAYST EWAN KO TOH
+    'INITIALIZATIONS
     Sub New()
 
         ' This call is required by the designer.
@@ -42,15 +48,44 @@ Class MainWindow
         Me.DataContext = Me
         selectedRoom = New Room("ojnanw", "ojbae", 1, 0)
 
+        'Timerz
+        bookingTimer = New DispatcherTimer()
+        bookingTimer.Interval = TimeSpan.FromSeconds(1)
+        AddHandler bookingTimer.Tick, AddressOf bookingTimer_Tick
+        bookingTimer.Start()
+
     End Sub
-
-
 
     'PRORTY CHANGE
     Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
 
 
     'FUNCTIONS
+    'TIMERZ
+    Sub bookingTimer_Tick(sender As Object, e As EventArgs)
+
+        Dim dateToday = New Date().Now
+        getRooms()
+
+        'Check if a Room is booked today
+        For Each room As Room In rooms
+            room.checkStatus(dateToday)
+        Next
+
+
+
+    End Sub
+
+    'GET ALL BOOKINGS
+    Sub getRooms()
+        Dim roomsDup As New List(Of Room) From {}
+        For Each roomType As RoomType In roomTypes
+            roomsDup.AddRange(roomType.Rooms)
+        Next
+        rooms = roomsDup
+
+    End Sub
+
     'SELECTING VIEWS FUNCTION
     Sub selectView(selected As Grid)
         For Each grid As Grid In views
@@ -126,9 +161,22 @@ Class MainWindow
         deluxe.AddRoom("D105")
         deluxe.AddRoom("D106")
 
+        Dim bembang As New RoomType("BEMBANG", 2, 2000)
+        bembang.AddRoom("B101")
+        bembang.AddRoom("B102")
+        bembang.AddRoom("B103")
+        bembang.AddRoom("B104")
+        bembang.AddRoom("B105")
+        bembang.AddRoom("B106")
+        bembang.AddRoom("B107")
+        bembang.AddRoom("B108")
+
+
+
         roomTypes.Add(regular)
         roomTypes.Add(premium)
         roomTypes.Add(deluxe)
+        roomTypes.Add(bembang)
 
         'Assigning Roomtypes as item source for RoomTypeListBox
         RoomTypeListBox.ItemsSource = roomTypes
@@ -295,7 +343,7 @@ Class MainWindow
             Dim payment = Val(paymentTxtBox.Text)
 
             selectedRoom.Bookings.Add(New Booking(name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
-            selectedRoom.Active = False
+            'selectedRoom.Active = False
             clearPos()
 
         End If
