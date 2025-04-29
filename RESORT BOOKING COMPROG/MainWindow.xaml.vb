@@ -2,8 +2,7 @@
 Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
 Imports System.Windows.Threading
-
-
+Imports MS.Internal.Text.TextInterface
 
 
 Class MainWindow
@@ -23,6 +22,9 @@ Class MainWindow
 
     'POS WINDOWS
     Dim posWindows As New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
+
+    'BOOKINGS
+    Dim bookings As New List(Of Booking) From {}
 
     'ROOMS
     Dim rooms As List(Of Room)
@@ -82,6 +84,8 @@ Class MainWindow
                 unavailable += 1
             End If
 
+            'Delete Past Bookings and Store in DB - past Bookings
+            room.removePastBookings(dateToday)
 
         Next
 
@@ -98,6 +102,17 @@ Class MainWindow
             roomsDup.AddRange(roomType.Rooms)
         Next
         rooms = roomsDup
+    End Sub
+
+    'GET ALL BOOKINGS
+    Sub getBookings()
+        getRooms()
+
+        Dim bookingsDup As New List(Of Booking) From {}
+        For Each room As Room In rooms
+            bookingsDup.AddRange(room.Bookings)
+        Next
+        bookings = bookingsDup
 
     End Sub
 
@@ -198,8 +213,31 @@ Class MainWindow
         'Assigning Starting Dates for POS date picker
         startDate.SelectedDate = Date.Now
 
+        'Setting the item source for calendar Bookings
+        'calndarBookings.ItemsSource = 
+
 
     End Sub
+
+
+    'Get Bookings based on Date
+    Public Function getBookingsOnDate(givenDate As Date)
+        Dim bookingsOnDate As New List(Of Booking)
+
+        getRooms()
+        getBookings()
+
+        For Each booking As Booking In bookings
+            If givenDate >= booking.startDate AndAlso givenDate <= booking.endDate Then
+                bookingsOnDate.Add(booking)
+
+            End If
+        Next
+
+        Return bookingsOnDate
+
+    End Function
+
 
     'LOG IN BUTTON
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
@@ -355,7 +393,7 @@ Class MainWindow
             Dim partySize = Val(partySizeTxtBox.Text)
             Dim payment = Val(paymentTxtBox.Text)
 
-            selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+            selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
             'selectedRoom.Active = False
             clearPos()
             bookingTimer_Tick()
@@ -424,14 +462,10 @@ Class MainWindow
                     roomType.Content = "Type: " & selectedRoom.Type
                     roomCapacity.Content = "Capacity: " & selectedRoom.Capacity
                     roomPrice.Content = "Price/Night: " & selectedRoom.Price
-                    If selectedRoom.Active Then
-                        roomStatus.Content = "Available"
-                        roomStatus.Foreground = New SolidColorBrush(Colors.Green)
-                    Else
-                        roomStatus.Content = "Not Available"
-                        roomStatus.Foreground = New SolidColorBrush(Colors.Red)
-                    End If
-
+                    roomStatus.DataContext = selectedRoom
+                    'roomStatus.Content = selectedRoom.statusText
+                    'roomStatus.Foreground = CType(New BrushConverter().ConvertFromString(selectedRoom.getStatusColor), Brush)
+                    'selectedRoom.checkStatus(New Date.Today)
                     roomFeatures.ItemsSource = selectedRoom.Features
                     roomBookings.ItemsSource = selectedRoom.Bookings
 
@@ -456,4 +490,23 @@ Class MainWindow
 
 
 
+    Private Sub Button_Click_1(sender As Object, e As RoutedEventArgs)
+        getRooms()
+        getBookings()
+
+        MsgBox(bookings.Count)
+
+        calndarBookings.ItemsSource = getBookingsOnDate(Date.Now)
+    End Sub
+
+    'When calendar changes
+    Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
+
+        getRooms()
+        getBookings()
+
+        calndarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
+
+
+    End Sub
 End Class
