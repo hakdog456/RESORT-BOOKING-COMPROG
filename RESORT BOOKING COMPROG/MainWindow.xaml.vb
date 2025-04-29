@@ -62,22 +62,37 @@ Class MainWindow
 
     'FUNCTIONS
     'TIMERZ
-    Sub bookingTimer_Tick(sender As Object, e As EventArgs)
+    Sub bookingTimer_Tick()
+
+        Dim available As Integer = 0
+        Dim unavailable As Integer = 0
 
         Dim dateToday = New Date().Now
         getRooms()
 
-        'Check if a Room is booked today
+        'ROOMS ITERATION
         For Each room As Room In rooms
+            'Check if a Room is booked today
             room.checkStatus(dateToday)
+
+            'Update counts of available and unavailabls 
+            If room.Active Then
+                available += 1
+            Else
+                unavailable += 1
+            End If
+
+
         Next
 
-
+        availableRooms.Content = available
+        unavailableRooms.Content = unavailable
 
     End Sub
 
     'GET ALL BOOKINGS
     Sub getRooms()
+
         Dim roomsDup As New List(Of Room) From {}
         For Each roomType As RoomType In roomTypes
             roomsDup.AddRange(roomType.Rooms)
@@ -170,8 +185,6 @@ Class MainWindow
         bembang.AddRoom("B106")
         bembang.AddRoom("B107")
         bembang.AddRoom("B108")
-
-
 
         roomTypes.Add(regular)
         roomTypes.Add(premium)
@@ -342,9 +355,10 @@ Class MainWindow
             Dim partySize = Val(partySizeTxtBox.Text)
             Dim payment = Val(paymentTxtBox.Text)
 
-            selectedRoom.Bookings.Add(New Booking(name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+            selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
             'selectedRoom.Active = False
             clearPos()
+            bookingTimer_Tick()
 
         End If
 

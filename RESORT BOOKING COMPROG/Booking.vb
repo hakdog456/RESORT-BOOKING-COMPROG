@@ -9,8 +9,10 @@ Public Class Booking
     Public Property payment As Double
     Public Property contactNumber As Integer
     Public Property email As String
+    Public Property roomName As String
+    Public Property id As String
 
-    Sub New(name As String, contactNumber As Integer, email As String, partySize As Integer, payment As Double, start As Date, endDate As Date)
+    Sub New(roomName As String, name As String, contactNumber As Integer, email As String, partySize As Integer, payment As Double, start As Date, endDate As Date)
         Me.name = name
         Me.contactNumber = contactNumber
         Me.email = email
@@ -18,6 +20,7 @@ Public Class Booking
         Me.payment = payment
         Me.startDate = start
         Me.endDate = endDate
+        Me.id = Guid.NewGuid().ToString()
     End Sub
 
     Public Overrides Function ToString() As String

@@ -172,16 +172,16 @@
 
                     <!--Available Rooms-->
                     <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Center" >
-                        <Border  CornerRadius="50" Background="#FF55DA72" Width="15" Height="15"></Border>
-                        <Label Name="availableRooms" ></Label>
-                        <Label Foreground="White"  >AVAILABLE ROOMS</Label>
+                        <Border  CornerRadius="50" Background="#FF55DA72" Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                        <Label Name="availableRooms" VerticalAlignment="Center" Foreground="White" FontFamily="Poppins" ></Label>
+                        <Label Foreground="White" VerticalAlignment="Center"  >AVAILABLE ROOMS</Label>
                     </StackPanel>
 
                     <!--UnAvailable Rooms-->
                     <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center" >
-                        <Border  CornerRadius="50" Background="#FFFE8080" Width="15" Height="15"></Border>
-                        <Label Name="unavailableRooms" ></Label>
-                        <Label Foreground="White"  >UNAVAILABLE ROOMS</Label>
+                        <Border  CornerRadius="50" Background="#FFFE8080" Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,5,0"></Border>
+                        <Label Name="unavailableRooms" VerticalAlignment="Center" FontFamily="Poppins" Foreground="White" ></Label>
+                        <Label Foreground="White" VerticalAlignment="Center"  >UNAVAILABLE ROOMS</Label>
                     </StackPanel>
                     
                     <!--ROOM CHECKER BUTTON-->
@@ -470,7 +470,7 @@
                         </Border>
 
                         <!--Time Check Out-->
-                        <Label Grid.Column="3" Grid.Row="5" FontFamily="Poppins" Foreground="White" >Time Check In</Label>
+                        <Label Grid.Column="3" Grid.Row="5" FontFamily="Poppins" Foreground="White" >Time Check Out</Label>
                         <Border CornerRadius="5" BorderThickness="1" Grid.Row="6" Grid.Column="3"  BorderBrush="White" Margin="5,0,0,0"   >
                             <TextBox x:Name="endTimeTxtbox" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="White" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" >
                                 12:00
