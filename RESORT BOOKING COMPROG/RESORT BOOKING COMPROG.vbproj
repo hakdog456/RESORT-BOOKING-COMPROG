@@ -69,6 +69,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Booking.vb" />
+    <Compile Include="receiptWindow.xaml.vb">
+      <DependentUpon>receiptWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Room.vb" />
     <Compile Include="RoomType.vb" />
     <Page Include="MainWindow.xaml">
@@ -83,6 +86,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="receiptWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Import Include="System.Threading.Tasks" />

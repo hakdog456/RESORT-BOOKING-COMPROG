@@ -42,7 +42,7 @@ Public Class Room
 
     End Sub
 
-
+    'FUNCTIONS
     Public Function statusColor()
         Dim color As String
         If (Active) Then
@@ -54,12 +54,31 @@ Public Class Room
         Return color
     End Function
 
+    'Check if Active
+    Public Sub checkStatus(dateToday As Date)
+        For Each booking As Booking In Bookings
+            If dateToday >= booking.startDate AndAlso dateToday <= booking.endDate Then
+                _active = False
+                OnPropertyChanged("getStatusColor")
+            Else
+                If Not _active Then
+                    _active = True
+                    OnPropertyChanged("getStatusColor")
+                    MsgBox("room now avaiable" & dateToday)
+                End If
+            End If
+
+
+        Next
+    End Sub
+
     'Property that calls my function
     Public ReadOnly Property getStatusColor As String
         Get
             Return statusColor()
         End Get
     End Property
+
 
     'Notify function
     Public Event PropertyChanged As PropertyChangedEventHandler Implements INotifyPropertyChanged.PropertyChanged
