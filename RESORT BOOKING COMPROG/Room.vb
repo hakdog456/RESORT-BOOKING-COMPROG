@@ -77,25 +77,35 @@ Public Class Room
 
     'Check if Active
     Public Sub checkStatus(dateToday As Date)
+        Dim bookedToday As Boolean = False
+
         For Each booking As Booking In Bookings
             If dateToday >= booking.startDate AndAlso dateToday <= booking.endDate Then
-                _active = False
-                _statusText = "Unvailable"
+                bookedToday = True
+                Exit For
+
+            End If
+        Next
+
+        If bookedToday Then
+            _active = False
+            _statusText = "Unvailable"
+            OnPropertyChanged("getStatusColor")
+            OnPropertyChanged("statusText")
+
+        Else
+            If _active = False Then
+                _active = True
+                _statusText = "Available"
                 OnPropertyChanged("getStatusColor")
                 OnPropertyChanged("statusText")
+                MsgBox("room now avaiable" & dateToday)
 
-            Else
-                If Not _active Then
-                    _active = True
-                    _statusText = "Available"
-                    OnPropertyChanged("getStatusColor")
-                    OnPropertyChanged("statusText")
-                    MsgBox("room now avaiable" & dateToday)
-                End If
             End If
 
+        End If
 
-        Next
+
     End Sub
 
     Public Sub removePastBookings(dateToday As Date)
