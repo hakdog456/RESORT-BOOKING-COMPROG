@@ -28,7 +28,7 @@
                     <ColumnDefinition Width="5*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
-                <Image Grid.Column="1" Source="C:\Users\MyPc\Downloads\Logo.png" Width="90" Height="90"/>
+                <Image Grid.Column="1" Source="/Logo.png" Width="90" Height="90"/>
             </Grid>
 
             <Grid Grid.Row="1">
