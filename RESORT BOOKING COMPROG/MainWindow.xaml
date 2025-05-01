@@ -592,6 +592,7 @@
                 <!--Buttons and Day Details-->
                 <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="3" >
                     <Button >Reservation Details</Button>
+
                     <Label Foreground="White">- "Date Today"</Label>
                 </StackPanel>
 
