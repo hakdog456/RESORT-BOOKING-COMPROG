@@ -165,5 +165,8 @@
   <ItemGroup>
     <Resource Include="ASSETS\ICONS\security.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Logo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

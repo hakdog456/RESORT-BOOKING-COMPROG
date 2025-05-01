@@ -395,15 +395,20 @@ Class MainWindow
 
     'CONFIRM BOOK BUTTON
     Private Sub confirmBookBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles confirmBookBtn.MouseDown
+
         Dim selectedStartDate As Date? = startDate.SelectedDate
         Dim selectedEndDate As Date? = endDate.SelectedDate
+        Dim startDateOnly As Date
 
         Dim finalStartDateTime As Date
         Dim finalEndDateTime As Date
 
         If selectedStartDate.HasValue And selectedEndDate.HasValue Then
+
             Dim startDateValue = selectedStartDate.Value
             Dim endDateValue = selectedEndDate.Value
+            startDateOnly = startDate.Date
+
 
             Dim startTime = startTimeTxtbox.Text.Trim()
             Dim endTime = endTimeTxtbox.Text.Trim()
@@ -414,8 +419,6 @@ Class MainWindow
             Dim validBooking As Boolean = True
 
             Dim errMsg As String
-
-
 
             If Date.TryParse(startTime, startParsedTime) And Date.TryParse(endTime, endParsedTime) Then
                 finalStartDateTime = New Date(startDateValue.Year, startDateValue.Month, startDateValue.Day, startParsedTime.Hour, startParsedTime.Minute, 0)
@@ -447,6 +450,32 @@ Class MainWindow
                 selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
                 clearPos()
                 bookingTimer_Tick()
+
+
+'pass the values to receiptwindow and show receipt new window
+                Dim showWind As New receiptWindow()
+                showWind.CustomerName = name
+                showWind.CustomerEmail = email
+                showWind.CustomerContact = contactNumber
+                showWind.RoomName = selectedRoom.Name
+                showWind.RoomType = selectedRoom.Type
+                showWind.Start = startDateOnly
+                showWind.Ends = endDate
+                showWind.DayCount = totalDaysTxtBox.Text
+                showWind.RoomOccupancy = selectedRoom.Capacity
+                showWind.PartySize = partySize
+                showWind.RoomCost = roomPriceTxtBox.Text
+                showWind.Nights = totalDaysTxtBox.Text
+                showWind.Subtotal = amountPayTxtBox.Text
+                showWind.Payment = payment
+
+                If CInt(payment) >= CInt(amountPayTxtBox.Text) Then
+                    showWind.displayStat = "Paid"
+                ElseIf CInt(payment) <= CInt(amountPayTxtBox.Text) And payment > 0 Then
+                    showWind.displayStat = "Partially Paid"
+                End If
+
+                showWind.Show()
             Else
                 MsgBox(errMsg)
                 startDate.SelectedDate = Nothing
@@ -456,7 +485,10 @@ Class MainWindow
         End If
 
 
+
+
     End Sub
+
 
 
 
@@ -542,11 +574,11 @@ Class MainWindow
         Return TryCast(parent, T)
     End Function
 
-
     'When calendar changes displays the bookings based on the Date Selected
     Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
 
         calndarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
 
     End Sub
+
 End Class
