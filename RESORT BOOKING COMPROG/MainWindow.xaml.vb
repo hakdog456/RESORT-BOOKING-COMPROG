@@ -4,11 +4,42 @@ Imports System.Runtime.CompilerServices
 Imports System.Windows.Media.Animation
 Imports System.Windows.Threading
 Imports MS.Internal.Text.TextInterface
-
+Imports System.Data.SQLite
 
 Class MainWindow
     Implements INotifyPropertyChanged
 
+    ' Path that points to the database (resort.db)
+    Dim connectionDB As String = "Data Source=C:\Users\Lock\source\repos\RESORT-BOOKING-COMPROG\RESORT BOOKING COMPROG\database\resort.db;Version=3;"
+
+    ' Initial Login Page (Greys Out and adds the placeholder again when nothing is inputted)
+    Private Sub txtUsername_GotFocus(sender As Object, e As RoutedEventArgs)
+        If txtUsername.Text = "Username" Then
+            txtUsername.Text = ""
+            txtUsername.Foreground = New SolidColorBrush(Colors.Black) ' Change text color to black
+        End If
+    End Sub
+
+    Private Sub txtUsername_LostFocus(sender As Object, e As RoutedEventArgs)
+        If String.IsNullOrEmpty(txtUsername.Text) Then
+            txtUsername.Text = "Username"
+            txtUsername.Foreground = New SolidColorBrush(Colors.Gray) ' Change text color back to gray
+        End If
+    End Sub
+
+    Private Sub txtPassword_GotFocus(sender As Object, e As RoutedEventArgs)
+        If txtPassword.Text = "Password" Then
+            txtPassword.Text = ""
+            txtPassword.Foreground = New SolidColorBrush(Colors.Black) ' Change text color to black when typing
+        End If
+    End Sub
+
+    Private Sub txtPassword_LostFocus(sender As Object, e As RoutedEventArgs)
+        If txtPassword.Text = "" Then
+            txtPassword.Text = "Password"
+            txtPassword.Foreground = New SolidColorBrush(Colors.Gray) ' Revert text color to gray when empty
+        End If
+    End Sub
 
     'VARIABLES
     'PAGES
@@ -246,10 +277,57 @@ Class MainWindow
 
     'LOG IN BUTTON
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
-        'MsgBox("Logging in")
-        loginPage.Visibility = Visibility.Collapsed
-        mainPageGrid.Visibility = Visibility.Visible
+
+        Dim username As String = txtUsername.Text
+        Dim password As String = txtPassword.Text
+
+        ' Validate login
+        If ValidateLogin(username, password) Then
+            MessageBox.Show("Login Successful!", "Success", MessageBoxButton.OK, MessageBoxImage.Information)
+            'MsgBox("Logging in")
+            loginPage.Visibility = Visibility.Collapsed
+            mainPageGrid.Visibility = Visibility.Visible
+        Else
+            MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Error)
+        End If
     End Sub
+
+    'VALIDATING LOGIN BY CHECKING DATABASE
+    Private Function ValidateLogin(username As String, password As String) As Boolean
+        ' Connection string to your SQLite database
+
+        Using connection As New SQLiteConnection(connectionDB)
+            connection.Open()
+
+            ' Checking if the user exists in the database
+            Dim query As String = "SELECT Password, Role FROM Accounts WHERE Username = @username"
+
+            Using command As New SQLiteCommand(query, connection)
+                command.Parameters.AddWithValue("@username", username)
+
+                ' Execute and retrieve the stored password and role
+                Using reader As SQLiteDataReader = command.ExecuteReader()
+                    If reader.Read() Then
+                        ' Get the stored password (plaintext) from the database
+                        Dim storedPassword As String = reader.GetString(0)
+
+                        ' Compare the entered password with the stored password in the database
+                        If password = storedPassword Then
+                            ' If the password matches, mapupunta ka dito.
+                            Dim role As String = reader.GetString(1) ' Retrieve user role
+
+                            ' Need pang condition here para pag staff yung role wala silang security tab.
+
+                            Return True ' or you can return the role if needed for further logic
+                        End If
+                    End If
+                End Using
+            End Using
+        End Using
+
+        ' LOGIN FAILED HERE
+        Return False
+    End Function
 
     'POS BUTTON CLICKED
     Private Sub posSide_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles posSide.MouseDown

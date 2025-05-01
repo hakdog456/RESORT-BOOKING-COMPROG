@@ -28,8 +28,8 @@
 
                 <Image x:Name="image"  Grid.Column="0" Source="/ASSETS/loginPic.png" Grid.ColumnSpan="2" Margin="-37,-18,445,-8" />
                 <Label Grid.Column="1" Content="Welcome Back" HorizontalAlignment="Center" Margin="0,185,0,0" VerticalAlignment="Top" Foreground="White" FontSize="33" FontFamily="Poppins Thin" FontWeight="Bold"/>
-                <TextBox VerticalContentAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" Height="43" Margin="0,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="320" SelectionBrush="#FF5A5B5C" FontSize="16" FontFamily="Poppins" BorderBrush="{x:Null}"/>
-                <TextBox VerticalContentAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" Height="45" Margin="0,329,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="320" SelectionBrush="#FF5A5B5C" FontSize="16" FontFamily="Poppins" BorderBrush="{x:Null}"/>
+                <TextBox x:Name="txtUsername" Text="Username" GotFocus="txtUsername_GotFocus" LostFocus="txtUsername_LostFocus" VerticalContentAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" Height="43" Margin="0,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="320" SelectionBrush="#FF5A5B5C" FontSize="16" FontFamily="Poppins" BorderBrush="{x:Null}" Foreground="Gray" > </TextBox>
+                <TextBox x:Name="txtPassword" Text="Password" GotFocus="txtPassword_GotFocus" LostFocus="txtPassword_LostFocus" VerticalContentAlignment="Center" Grid.Column="1" HorizontalAlignment="Center" Height="45" Margin="0,329,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="320" SelectionBrush="#FF5A5B5C" FontSize="16" FontFamily="Poppins" BorderBrush="{x:Null}" Foreground="Gray"/>
                 <Button x:Name="loginBtn" Grid.Column="1" Content="Login" HorizontalAlignment="Center" Margin="0,396,0,0" VerticalAlignment="Top" Width="193" Height="41" Background="#FF66DF8A" Foreground="White" FontFamily="Poppins" FontSize="20" Click="Button_Click" Cursor="Hand">
 
                     <Button.Template>
