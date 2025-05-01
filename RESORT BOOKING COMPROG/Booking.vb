@@ -10,9 +10,12 @@ Public Class Booking
     Public Property contactNumber As Integer
     Public Property email As String
     Public Property roomName As String
+    Public Property roomType As String
     Public Property id As String
 
-    Sub New(roomName As String, name As String, contactNumber As Integer, email As String, partySize As Integer, payment As Double, start As Date, endDate As Date)
+    Sub New(roomName As String, roomType As String, name As String, contactNumber As Integer, email As String, partySize As Integer, payment As Double, start As Date, endDate As Date)
+        Me.roomName = roomName
+        Me.roomType = roomType
         Me.name = name
         Me.contactNumber = contactNumber
         Me.email = email
