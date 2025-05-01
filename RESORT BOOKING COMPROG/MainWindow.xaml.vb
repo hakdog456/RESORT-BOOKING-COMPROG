@@ -1,19 +1,18 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
+Imports System.Windows.Media.Animation
 Imports System.Windows.Threading
-
-
+Imports MS.Internal.Text.TextInterface
 
 
 Class MainWindow
     Implements INotifyPropertyChanged
 
 
-
     'VARIABLES
     'PAGES
-    Dim pages As New List(Of String) From {"login", "main"}
+    Public Property pages As New List(Of String) From {"login", "main"}
 
     'MAIN PAGE VIEWS
     Dim views As New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
@@ -23,6 +22,9 @@ Class MainWindow
 
     'POS WINDOWS
     Dim posWindows As New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
+
+    'BOOKINGS
+    Dim bookings As New List(Of Booking) From {}
 
     'ROOMS
     Dim rooms As List(Of Room)
@@ -82,6 +84,8 @@ Class MainWindow
                 unavailable += 1
             End If
 
+            'Delete Past Bookings and Store in DB - past Bookings
+            room.removePastBookings(dateToday)
 
         Next
 
@@ -98,6 +102,17 @@ Class MainWindow
             roomsDup.AddRange(roomType.Rooms)
         Next
         rooms = roomsDup
+    End Sub
+
+    'GET ALL BOOKINGS
+    Sub getBookings()
+        getRooms()
+
+        Dim bookingsDup As New List(Of Booking) From {}
+        For Each room As Room In rooms
+            bookingsDup.AddRange(room.Bookings)
+        Next
+        bookings = bookingsDup
 
     End Sub
 
@@ -198,8 +213,36 @@ Class MainWindow
         'Assigning Starting Dates for POS date picker
         startDate.SelectedDate = Date.Now
 
+        'Setting the item source for calendar Bookings
+        'calndarBookings.ItemsSource = 
+
+
 
     End Sub
+
+
+    'Get Bookings based on Date
+    Public Function getBookingsOnDate(givenDate As Date)
+        Dim bookingsOnDate As New List(Of Booking)
+
+        getRooms()
+        getBookings()
+
+        For Each booking As Booking In bookings
+
+            Dim startDay As New Date(booking.startDate.Year, booking.startDate.Month, booking.startDate.Day)
+            Dim endDay As New Date(booking.endDate.Year, booking.endDate.Month, booking.endDate.Day)
+
+            If givenDate >= startDay AndAlso givenDate <= endDay Then
+                bookingsOnDate.Add(booking)
+
+            End If
+        Next
+
+        Return bookingsOnDate
+
+    End Function
+
 
     'LOG IN BUTTON
     Private Sub Button_Click(sender As Object, e As RoutedEventArgs)
@@ -257,6 +300,30 @@ Class MainWindow
         roomOccupancyTxtBox.Text = selectedRoom.Capacity
         roomPriceTxtBox.Text = selectedRoom.Price
 
+        startDate.BlackoutDates.Clear()
+        endDate.BlackoutDates.Clear()
+
+        'Blacking out dates the are from selected room bookings
+        For Each booking As Booking In selectedRoom.Bookings
+            Dim startDateDup As New Date(booking.startDate.Year, booking.startDate.Month, booking.startDate.Day)
+            Dim endDateDup As New Date(booking.endDate.Year, booking.endDate.Month, booking.endDate.Day)
+
+            startDate.SelectedDate = Nothing
+            endDate.SelectedDate = Nothing
+
+
+            Dim currentDate As Date = startDateDup
+            Do While currentDate <= endDateDup
+                startDate.BlackoutDates.Add(New CalendarDateRange(New Date(currentDate.Year, currentDate.Month, currentDate.Day)))
+                endDate.BlackoutDates.Add(New CalendarDateRange(New Date(currentDate.Year, currentDate.Month, currentDate.Day)))
+
+                currentDate = currentDate.AddDays(1)
+                'MsgBox(currentDate & endDateDup)
+                'MsgBox("ror")
+            Loop
+
+        Next
+
     End Sub
 
 
@@ -309,7 +376,9 @@ Class MainWindow
         customerEmailTxtBox.Clear()
         partySizeTxtBox.Clear()
         paymentTxtBox.Clear()
-        startDate.SelectedDate = Date.Now
+        If Not startDate.BlackoutDates.Contains(New Date(Date.Now.Year, Date.Now.Month, Date.Now.Day)) Then
+            startDate.SelectedDate = Date.Now
+        End If
         startTimeTxtbox.Text = "12:00"
         endDate.SelectedDate = Nothing
         endTimeTxtbox.Text = "12:00"
@@ -335,9 +404,11 @@ Class MainWindow
         Dim finalEndDateTime As Date
 
         If selectedStartDate.HasValue And selectedEndDate.HasValue Then
-            Dim startDate = selectedStartDate.Value
-            Dim endDate = selectedEndDate.Value
+
+            Dim startDateValue = selectedStartDate.Value
+            Dim endDateValue = selectedEndDate.Value
             startDateOnly = startDate.Date
+
 
             Dim startTime = startTimeTxtbox.Text.Trim()
             Dim endTime = endTimeTxtbox.Text.Trim()
@@ -345,50 +416,73 @@ Class MainWindow
             Dim startParsedTime As Date
             Dim endParsedTime As Date
 
+            Dim validBooking As Boolean = True
+
+            Dim errMsg As String
+
             If Date.TryParse(startTime, startParsedTime) And Date.TryParse(endTime, endParsedTime) Then
-                finalStartDateTime = New Date(startDate.Year, startDate.Month, startDate.Day, startParsedTime.Hour, startParsedTime.Minute, 0)
-                finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
+                finalStartDateTime = New Date(startDateValue.Year, startDateValue.Month, startDateValue.Day, startParsedTime.Hour, startParsedTime.Minute, 0)
+                finalEndDateTime = New Date(endDateValue.Year, endDateValue.Month, endDateValue.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
             End If
 
-            Dim name = customerNameTxtBox.Text
-            Dim contactNumber = Val(customerNumberTxtBox.Text)
-            Dim email = customerEmailTxtBox.Text
-            Dim partySize = Val(partySizeTxtBox.Text)
-            Dim payment = Val(paymentTxtBox.Text)
+            'condition To Check if the booking if overlapping other bookings
+            For Each booking As Booking In selectedRoom.Bookings
+                If finalStartDateTime <= booking.startDate And finalEndDateTime >= booking.endDate Then
+                    validBooking = False
+                    errMsg = "Booking Overlapped!, Select a valid Booking"
+                End If
+            Next
 
-            selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
-            'selectedRoom.Active = False
-            selectedRoom.Active = True
-
-            'pass the values to receiptwindow
-            Dim showWind As New receiptWindow()
-            showWind.CustomerName = name
-            showWind.CustomerEmail = email
-            showWind.CustomerContact = contactNumber
-            showWind.RoomName = selectedRoom.Name
-            showWind.RoomType = selectedRoom.Type
-            showWind.Start = startDateOnly
-            showWind.Ends = endDate
-            showWind.DayCount = totalDaysTxtBox.Text
-            showWind.RoomOccupancy = selectedRoom.Capacity
-            showWind.PartySize = partySize
-            showWind.RoomCost = roomPriceTxtBox.Text
-            showWind.Nights = totalDaysTxtBox.Text
-            showWind.Subtotal = amountPayTxtBox.Text
-            showWind.Payment = payment
-
-            If CInt(payment) >= CInt(amountPayTxtBox.Text) Then
-                showWind.displayStat = "Paid"
-            ElseIf CInt(payment) <= CInt(amountPayTxtBox.Text) And payment > 0 Then
-                showWind.displayStat = "Partially Paid"
+            'condition to check if the booking is not reversed
+            If finalEndDateTime <= finalStartDateTime Then
+                validBooking = False
+                errMsg = "Invalid Booking!, Starting Date is Greater than the End Date"
             End If
 
-            showWind.Show()
+            'If the Booking is valid and passed, then continue booking
+            If validBooking Then
+                Dim name = customerNameTxtBox.Text
+                Dim contactNumber = Val(customerNumberTxtBox.Text)
+                Dim email = customerEmailTxtBox.Text
+                Dim partySize = Val(partySizeTxtBox.Text)
+                Dim payment = Val(paymentTxtBox.Text)
 
-            clearPos()
-            bookingTimer_Tick()
+                selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+                clearPos()
+                bookingTimer_Tick()
+
+
+'pass the values to receiptwindow and show receipt new window
+                Dim showWind As New receiptWindow()
+                showWind.CustomerName = name
+                showWind.CustomerEmail = email
+                showWind.CustomerContact = contactNumber
+                showWind.RoomName = selectedRoom.Name
+                showWind.RoomType = selectedRoom.Type
+                showWind.Start = startDateOnly
+                showWind.Ends = endDate
+                showWind.DayCount = totalDaysTxtBox.Text
+                showWind.RoomOccupancy = selectedRoom.Capacity
+                showWind.PartySize = partySize
+                showWind.RoomCost = roomPriceTxtBox.Text
+                showWind.Nights = totalDaysTxtBox.Text
+                showWind.Subtotal = amountPayTxtBox.Text
+                showWind.Payment = payment
+
+                If CInt(payment) >= CInt(amountPayTxtBox.Text) Then
+                    showWind.displayStat = "Paid"
+                ElseIf CInt(payment) <= CInt(amountPayTxtBox.Text) And payment > 0 Then
+                    showWind.displayStat = "Partially Paid"
+                End If
+
+                showWind.Show()
+            Else
+                MsgBox(errMsg)
+                startDate.SelectedDate = Nothing
+                endDate.SelectedDate = Nothing
+            End If
+
         End If
-
 
 
 
@@ -454,14 +548,10 @@ Class MainWindow
                     roomType.Content = "Type: " & selectedRoom.Type
                     roomCapacity.Content = "Capacity: " & selectedRoom.Capacity
                     roomPrice.Content = "Price/Night: " & selectedRoom.Price
-                    If selectedRoom.Active Then
-                        roomStatus.Content = "Available"
-                        roomStatus.Foreground = New SolidColorBrush(Colors.Green)
-                    Else
-                        roomStatus.Content = "Not Available"
-                        roomStatus.Foreground = New SolidColorBrush(Colors.Red)
-                    End If
-
+                    roomStatus.DataContext = selectedRoom
+                    'roomStatus.Content = selectedRoom.statusText
+                    'roomStatus.Foreground = CType(New BrushConverter().ConvertFromString(selectedRoom.getStatusColor), Brush)
+                    'selectedRoom.checkStatus(New Date.Today)
                     roomFeatures.ItemsSource = selectedRoom.Features
                     roomBookings.ItemsSource = selectedRoom.Bookings
 
@@ -484,11 +574,11 @@ Class MainWindow
         Return TryCast(parent, T)
     End Function
 
-    Private Sub amountPayTxtBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles amountPayTxtBox.TextChanged
+    'When calendar changes displays the bookings based on the Date Selected
+    Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
+
+        calndarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
 
     End Sub
 
-    Private Sub paymentTxtBox_TextChanged(sender As Object, e As TextChangedEventArgs) Handles paymentTxtBox.TextChanged
-
-    End Sub
 End Class

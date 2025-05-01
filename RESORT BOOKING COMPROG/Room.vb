@@ -1,6 +1,7 @@
 ﻿Imports System.Runtime.InteropServices
 Imports System.ComponentModel
 Imports System.Security
+Imports System.Collections.ObjectModel
 
 Public Class Room
     Implements INotifyPropertyChanged
@@ -18,14 +19,34 @@ Public Class Room
         Set(value As Boolean)
             _active = value
             OnPropertyChanged("getStatusColor")
+            OnPropertyChanged("statusText")
         End Set
     End Property
 
-    Public Property Bookings As New List(Of Booking) From {}
+    'Public Property Bookings As New List(Of Booking) From {}
+    Public Property Bookings As New ObservableCollection(Of Booking) From {}
     Public Property Features As New List(Of String) From {}
     Public Property Pictures As New List(Of Object) From {}
     Public Property Color As String
 
+    Private _statusText As String = "Available"
+    Public Property statusText As String
+        Get
+            Return _statusText
+        End Get
+        Set(value As String)
+            _statusText = value
+            OnPropertyChanged("statusText")
+            OnPropertyChanged("getStatusColor")
+        End Set
+    End Property
+
+    'Property that calls my function color
+    Public ReadOnly Property getStatusColor As String
+        Get
+            Return statusColor()
+        End Get
+    End Property
 
     'CONSTRUCTOR
     Sub New(
@@ -56,28 +77,48 @@ Public Class Room
 
     'Check if Active
     Public Sub checkStatus(dateToday As Date)
+        Dim bookedToday As Boolean = False
+
         For Each booking As Booking In Bookings
             If dateToday >= booking.startDate AndAlso dateToday <= booking.endDate Then
-                _active = False
+                bookedToday = True
+                Exit For
+
+            End If
+        Next
+
+        If bookedToday Then
+            _active = False
+            _statusText = "Unvailable"
+            OnPropertyChanged("getStatusColor")
+            OnPropertyChanged("statusText")
+
+        Else
+            If _active = False Then
+                _active = True
+                _statusText = "Available"
                 OnPropertyChanged("getStatusColor")
-            Else
-                If Not _active Then
-                    _active = True
-                    OnPropertyChanged("getStatusColor")
-                    MsgBox("room now avaiable" & dateToday)
-                End If
+                OnPropertyChanged("statusText")
+                MsgBox("room now avaiable" & dateToday)
+
             End If
 
+        End If
 
-        Next
+
     End Sub
 
-    'Property that calls my function
-    Public ReadOnly Property getStatusColor As String
-        Get
-            Return statusColor()
-        End Get
-    End Property
+    Public Sub removePastBookings(dateToday As Date)
+        Dim bookingsDup As New List(Of Booking)(Bookings)
+
+        For Each booking As Booking In bookingsDup
+            If booking.endDate < dateToday Then
+                'code for putting past bookings in db
+
+                Bookings.Remove(booking)
+            End If
+        Next
+    End Sub
 
 
     'Notify function
