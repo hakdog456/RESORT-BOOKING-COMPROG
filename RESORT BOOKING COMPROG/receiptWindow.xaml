@@ -142,7 +142,7 @@
                         </Label>
                         
                         <!-- Second Column/ Display Colon-->
-                        <TextBlock Grid.Column="1" Foreground="Black" Text=":&#xA;:&#xA;:&#xA;:&#xA;:" FontSize="11.2" Margin="0,2,0,0"/>
+                        <TextBlock Grid.Column="1" Foreground="Black" Text=":&#xA;:&#xA;:&#xA;:" FontSize="11.4" Margin="0,2,0,0"/>
 
                         <!--ThirdColumn/ values -->
                         <Label Grid.Column="2" FontSize="11" Margin="0,-1,0,0" FontWeight="Normal">
