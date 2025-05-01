@@ -31,7 +31,7 @@
                 <Image Grid.Column="1" Source="C:\Users\MyPc\Downloads\Logo.png" Width="90" Height="90"/>
             </Grid>
 
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" DragEnter="Grid_DragEnter">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="5*"/>
