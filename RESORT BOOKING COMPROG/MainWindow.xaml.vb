@@ -229,7 +229,11 @@ Class MainWindow
         getBookings()
 
         For Each booking As Booking In bookings
-            If givenDate >= booking.startDate AndAlso givenDate <= booking.endDate Then
+
+            Dim startDay As New Date(booking.startDate.Year, booking.startDate.Month, booking.startDate.Day)
+            Dim endDay As New Date(booking.endDate.Year, booking.endDate.Month, booking.endDate.Day)
+
+            If givenDate >= startDay AndAlso givenDate <= endDay Then
                 bookingsOnDate.Add(booking)
 
             End If
@@ -398,8 +402,8 @@ Class MainWindow
         Dim finalEndDateTime As Date
 
         If selectedStartDate.HasValue And selectedEndDate.HasValue Then
-            Dim startDate = selectedStartDate.Value
-            Dim endDate = selectedEndDate.Value
+            Dim startDateValue = selectedStartDate.Value
+            Dim endDateValue = selectedEndDate.Value
 
             Dim startTime = startTimeTxtbox.Text.Trim()
             Dim endTime = endTimeTxtbox.Text.Trim()
@@ -407,26 +411,47 @@ Class MainWindow
             Dim startParsedTime As Date
             Dim endParsedTime As Date
 
+            Dim validBooking As Boolean = True
+
+            Dim errMsg As String
+
 
 
             If Date.TryParse(startTime, startParsedTime) And Date.TryParse(endTime, endParsedTime) Then
-                finalStartDateTime = New Date(startDate.Year, startDate.Month, startDate.Day, startParsedTime.Hour, startParsedTime.Minute, 0)
-                finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
+                finalStartDateTime = New Date(startDateValue.Year, startDateValue.Month, startDateValue.Day, startParsedTime.Hour, startParsedTime.Minute, 0)
+                finalEndDateTime = New Date(endDateValue.Year, endDateValue.Month, endDateValue.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
             End If
 
-            Dim name = customerNameTxtBox.Text
-            Dim contactNumber = Val(customerNumberTxtBox.Text)
-            Dim email = customerEmailTxtBox.Text
-            Dim partySize = Val(partySizeTxtBox.Text)
-            Dim payment = Val(paymentTxtBox.Text)
+            'condition To Check if the booking if overlapping other bookings
+            For Each booking As Booking In selectedRoom.Bookings
+                If finalStartDateTime <= booking.startDate And finalEndDateTime >= booking.endDate Then
+                    validBooking = False
+                    errMsg = "Booking Overlapped!, Select a valid Booking"
+                End If
+            Next
 
-            'condition TO Check if the booking if overlapping other bookings
+            'condition to check if the booking is not reversed
+            If finalEndDateTime <= finalStartDateTime Then
+                validBooking = False
+                errMsg = "Invalid Booking!, Starting Date is Greater than the End Date"
+            End If
 
+            'If the Booking is valid and passed, then continue booking
+            If validBooking Then
+                Dim name = customerNameTxtBox.Text
+                Dim contactNumber = Val(customerNumberTxtBox.Text)
+                Dim email = customerEmailTxtBox.Text
+                Dim partySize = Val(partySizeTxtBox.Text)
+                Dim payment = Val(paymentTxtBox.Text)
 
-            selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
-            'selectedRoom.Active = False
-            clearPos()
-            bookingTimer_Tick()
+                selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+                clearPos()
+                bookingTimer_Tick()
+            Else
+                MsgBox(errMsg)
+                startDate.SelectedDate = Nothing
+                endDate.SelectedDate = Nothing
+            End If
 
         End If
 
@@ -520,9 +545,6 @@ Class MainWindow
 
     'When calendar changes displays the bookings based on the Date Selected
     Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
-
-        getRooms()
-        getBookings()
 
         calndarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
 
