@@ -9,9 +9,10 @@ Imports System.Data.SQLite
 Class MainWindow
     Implements INotifyPropertyChanged
 
+    ' DATABASE RELATED
+
     ' Path that points to the database (resort.db)
     Dim connectionDB As String = "Data Source=C:\Users\Lock\source\repos\RESORT-BOOKING-COMPROG\RESORT BOOKING COMPROG\database\resort.db;Version=3;"
-
     ' Initial Login Page (Greys Out and adds the placeholder again when nothing is inputted)
     Private Sub txtUsername_GotFocus(sender As Object, e As RoutedEventArgs)
         If txtUsername.Text = "Username" Then
@@ -19,21 +20,18 @@ Class MainWindow
             txtUsername.Foreground = New SolidColorBrush(Colors.Black) ' Change text color to black
         End If
     End Sub
-
     Private Sub txtUsername_LostFocus(sender As Object, e As RoutedEventArgs)
         If String.IsNullOrEmpty(txtUsername.Text) Then
             txtUsername.Text = "Username"
             txtUsername.Foreground = New SolidColorBrush(Colors.Gray) ' Change text color back to gray
         End If
     End Sub
-
     Private Sub txtPassword_GotFocus(sender As Object, e As RoutedEventArgs)
         If txtPassword.Text = "Password" Then
             txtPassword.Text = ""
             txtPassword.Foreground = New SolidColorBrush(Colors.Black) ' Change text color to black when typing
         End If
     End Sub
-
     Private Sub txtPassword_LostFocus(sender As Object, e As RoutedEventArgs)
         If txtPassword.Text = "" Then
             txtPassword.Text = "Password"
@@ -316,7 +314,13 @@ Class MainWindow
                             ' If the password matches, mapupunta ka dito.
                             Dim role As String = reader.GetString(1) ' Retrieve user role
 
-                            ' Need pang condition here para pag staff yung role wala silang security tab.
+                            If role = "ADMIN" Then
+                                ' Show the security tab
+                                secSide.Visibility = Visibility.Visible
+                            Else
+                                ' Hide the security tab
+                                secSide.Visibility = Visibility.Collapsed
+                            End If
 
                             Return True ' or you can return the role if needed for further logic
                         End If
