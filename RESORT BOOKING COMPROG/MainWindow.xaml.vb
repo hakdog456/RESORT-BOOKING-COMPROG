@@ -1,6 +1,7 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.ComponentModel
 Imports System.Runtime.CompilerServices
+Imports System.Windows.Media.Animation
 Imports System.Windows.Threading
 Imports MS.Internal.Text.TextInterface
 
@@ -9,10 +10,9 @@ Class MainWindow
     Implements INotifyPropertyChanged
 
 
-
     'VARIABLES
     'PAGES
-    Dim pages As New List(Of String) From {"login", "main"}
+    Public Property pages As New List(Of String) From {"login", "main"}
 
     'MAIN PAGE VIEWS
     Dim views As New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
@@ -217,6 +217,7 @@ Class MainWindow
         'calndarBookings.ItemsSource = 
 
 
+
     End Sub
 
 
@@ -295,6 +296,30 @@ Class MainWindow
         roomOccupancyTxtBox.Text = selectedRoom.Capacity
         roomPriceTxtBox.Text = selectedRoom.Price
 
+        startDate.BlackoutDates.Clear()
+        endDate.BlackoutDates.Clear()
+
+        'Blacking out dates the are from selected room bookings
+        For Each booking As Booking In selectedRoom.Bookings
+            Dim startDateDup As New Date(booking.startDate.Year, booking.startDate.Month, booking.startDate.Day)
+            Dim endDateDup As New Date(booking.endDate.Year, booking.endDate.Month, booking.endDate.Day)
+
+            startDate.SelectedDate = Nothing
+            endDate.SelectedDate = Nothing
+
+
+            Dim currentDate As Date = startDateDup
+            Do While currentDate <= endDateDup
+                startDate.BlackoutDates.Add(New CalendarDateRange(New Date(currentDate.Year, currentDate.Month, currentDate.Day)))
+                endDate.BlackoutDates.Add(New CalendarDateRange(New Date(currentDate.Year, currentDate.Month, currentDate.Day)))
+
+                currentDate = currentDate.AddDays(1)
+                'MsgBox(currentDate & endDateDup)
+                'MsgBox("ror")
+            Loop
+
+        Next
+
     End Sub
 
 
@@ -347,7 +372,9 @@ Class MainWindow
         customerEmailTxtBox.Clear()
         partySizeTxtBox.Clear()
         paymentTxtBox.Clear()
-        startDate.SelectedDate = Date.Now
+        If Not startDate.BlackoutDates.Contains(New Date(Date.Now.Year, Date.Now.Month, Date.Now.Day)) Then
+            startDate.SelectedDate = Date.Now
+        End If
         startTimeTxtbox.Text = "12:00"
         endDate.SelectedDate = Nothing
         endTimeTxtbox.Text = "12:00"
@@ -393,13 +420,15 @@ Class MainWindow
             Dim partySize = Val(partySizeTxtBox.Text)
             Dim payment = Val(paymentTxtBox.Text)
 
+            'condition TO Check if the booking if overlapping other bookings
+
+
             selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
             'selectedRoom.Active = False
             clearPos()
             bookingTimer_Tick()
 
         End If
-
 
 
     End Sub
@@ -489,24 +518,13 @@ Class MainWindow
     End Function
 
 
-
-    Private Sub Button_Click_1(sender As Object, e As RoutedEventArgs)
-        getRooms()
-        getBookings()
-
-        MsgBox(bookings.Count)
-
-        calndarBookings.ItemsSource = getBookingsOnDate(Date.Now)
-    End Sub
-
-    'When calendar changes
+    'When calendar changes displays the bookings based on the Date Selected
     Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
 
         getRooms()
         getBookings()
 
         calndarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
-
 
     End Sub
 End Class
