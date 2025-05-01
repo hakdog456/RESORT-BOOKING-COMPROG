@@ -407,7 +407,7 @@ Class MainWindow
 
             Dim startDateValue = selectedStartDate.Value
             Dim endDateValue = selectedEndDate.Value
-            startDateOnly = startDate.Date
+            startDateOnly = startDateValue.Date
 
 
             Dim startTime = startTimeTxtbox.Text.Trim()
@@ -452,7 +452,7 @@ Class MainWindow
                 bookingTimer_Tick()
 
 
-'pass the values to receiptwindow and show receipt new window
+                'pass the values to receiptwindow and show receipt new window
                 Dim showWind As New receiptWindow()
                 showWind.CustomerName = name
                 showWind.CustomerEmail = email
@@ -460,18 +460,18 @@ Class MainWindow
                 showWind.RoomName = selectedRoom.Name
                 showWind.RoomType = selectedRoom.Type
                 showWind.Start = startDateOnly
-                showWind.Ends = endDate
+                showWind.Ends = endDateValue
                 showWind.DayCount = totalDaysTxtBox.Text
                 showWind.RoomOccupancy = selectedRoom.Capacity
                 showWind.PartySize = partySize
-                showWind.RoomCost = roomPriceTxtBox.Text
-                showWind.Nights = totalDaysTxtBox.Text
-                showWind.Subtotal = amountPayTxtBox.Text
+                showWind.RoomCost = Val(roomPriceTxtBox.Text)
+                showWind.Nights = Val(totalDaysTxtBox.Text)
+                showWind.Subtotal = Val(amountPayTxtBox.Text)
                 showWind.Payment = payment
 
-                If CInt(payment) >= CInt(amountPayTxtBox.Text) Then
+                If CInt(payment) >= CInt(showWind.Subtotal) Then
                     showWind.displayStat = "Paid"
-                ElseIf CInt(payment) <= CInt(amountPayTxtBox.Text) And payment > 0 Then
+                ElseIf CInt(payment) <= CInt(showWind.Subtotal) And payment > 0 Then
                     showWind.displayStat = "Partially Paid"
                 End If
 
