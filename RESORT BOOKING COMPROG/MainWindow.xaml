@@ -590,10 +590,11 @@
                 </Calendar>
 
                 <!--Buttons and Day Details-->
-                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="3" >
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Left" >
+                    <Button HorizontalAlignment="Right">Select Today</Button>
                     <Button >Reservation Details</Button>
-
-                    <Label Foreground="White">- "Date Today"</Label>
+                    <Label Foreground="White">- "Date Selected"</Label>
+                    
                 </StackPanel>
 
                 <!--Title of Bookings on selected Day-->
