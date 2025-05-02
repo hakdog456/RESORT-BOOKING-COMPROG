@@ -103,6 +103,7 @@ Class MainWindow
                 For Each room As Room In roomType.Rooms
                     If room Is booking.room Then
                         room.removeBooking(booking)
+                        bookingTimer_Tick()
                     End If
 
                 Next
@@ -236,9 +237,6 @@ Class MainWindow
         'Setting the default selected date for calendar to today
         calendarBox.SelectedDate = Date.Now
 
-        'testing launching of booking details window
-        Dim bookingDetails As New bookingDetails(Me)
-        bookingDetails.Show()
 
 
 
@@ -469,8 +467,9 @@ Class MainWindow
                 Dim email = customerEmailTxtBox.Text
                 Dim partySize = Val(partySizeTxtBox.Text)
                 Dim payment = Val(paymentTxtBox.Text)
+                Dim days As Integer = Val(totalDaysTxtBox.Text)
 
-                selectedRoom.Bookings.Add(New Booking(selectedRoom, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+                selectedRoom.Bookings.Add(New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
                 clearPos()
                 bookingTimer_Tick()
 
@@ -610,7 +609,7 @@ Class MainWindow
         Dim bookingToView = CType(calendarBookings.SelectedItem, Booking)
         currentBookingViewed = bookingToView
 
-        Dim bookingDetails As New bookingDetails(Me)
+        Dim bookingDetails As New bookingDetails(Me, bookingToView)
         AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
 
         bookingDetails.Show()

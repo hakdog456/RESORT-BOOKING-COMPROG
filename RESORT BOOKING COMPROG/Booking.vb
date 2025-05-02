@@ -13,9 +13,14 @@ Public Class Booking
     Public Property roomType As String
     Public Property room As Room
     Public Property id As String
+    Public Property humanType As String = "Adult"
+    Public Property days As Integer
 
-    Sub New(room As Room, roomName As String, roomType As String, name As String, contactNumber As Integer, email As String, partySize As Integer, payment As Double, start As Date, endDate As Date)
+
+
+    Sub New(room As Room, days As Integer, roomName As String, roomType As String, name As String, contactNumber As Integer, email As String, partySize As Integer, payment As Double, start As Date, endDate As Date)
         Me.room = room
+        Me.days = days
         Me.roomName = roomName
         Me.roomType = roomType
         Me.name = name
