@@ -14,7 +14,11 @@
     End Sub
 
     Public Function AddRoom(name As String)
-        Me.Rooms.Add(New Room(name, Me.Name, Me.Capacity, Me.Price))
+        Me.Rooms.Add(New Room(name, Me.Name, Me.Capacity, Me.Price, Me))
+    End Function
+
+    Public Function removeRoom(room As Room)
+        Rooms.Remove(room)
     End Function
 
 

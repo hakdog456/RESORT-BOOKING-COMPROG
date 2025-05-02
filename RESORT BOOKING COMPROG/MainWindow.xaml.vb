@@ -39,6 +39,7 @@ Class MainWindow
     'VARIABLE SELECTIONS
     'Public Property selectedRoom As Room
     Private selectedRoom As Room
+    Private currentBookingViewed As Booking
 
     'INITIALIZATIONS
     Sub New()
@@ -48,7 +49,8 @@ Class MainWindow
 
         ' Add any initialization after the InitializeComponent() call.
         Me.DataContext = Me
-        selectedRoom = New Room("ojnanw", "ojbae", 1, 0)
+        selectedRoom = New Room("initial", "sampleType", 0, 0, New RoomType("sample", 0, 0))
+
 
         'Timerz
         bookingTimer = New DispatcherTimer()
@@ -93,6 +95,24 @@ Class MainWindow
         unavailableRooms.Content = unavailable
 
     End Sub
+
+    'Remove a Booking from a room and transfer to database trash
+    Public Sub removeBooking(booking As Booking)
+        For Each roomType As RoomType In roomTypes
+            If roomType Is booking.room.roomType Then
+                For Each room As Room In roomType.Rooms
+                    If room Is booking.room Then
+                        room.removeBooking(booking)
+                    End If
+
+                Next
+
+            End If
+
+        Next
+
+    End Sub
+
 
     'GET ALL BOOKINGS
     Sub getRooms()
@@ -213,8 +233,12 @@ Class MainWindow
         'Assigning Starting Dates for POS date picker
         startDate.SelectedDate = Date.Now
 
-        'Setting the item source for calendar Bookings
-        'calndarBookings.ItemsSource = 
+        'Setting the default selected date for calendar to today
+        calendarBox.SelectedDate = Date.Now
+
+        'testing launching of booking details window
+        Dim bookingDetails As New bookingDetails(Me)
+        bookingDetails.Show()
 
 
 
@@ -258,7 +282,6 @@ Class MainWindow
     End Sub
 
     'CALENDAR BUTTON CLICKED
-
     Private Sub calSide_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles calSide.MouseDown
         selectView(Calendar)
         setBtnBg(calSide)
@@ -447,7 +470,7 @@ Class MainWindow
                 Dim partySize = Val(partySizeTxtBox.Text)
                 Dim payment = Val(paymentTxtBox.Text)
 
-                selectedRoom.Bookings.Add(New Booking(selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+                selectedRoom.Bookings.Add(New Booking(selectedRoom, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
                 clearPos()
                 bookingTimer_Tick()
 
@@ -577,8 +600,28 @@ Class MainWindow
     'When calendar changes displays the bookings based on the Date Selected
     Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
 
-        calndarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
+        calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
 
     End Sub
 
+    'View Booking Button on calendar, shows Booking details window launches booking details window
+    Private Sub viewBookingBtn_Click(sender As Object, e As RoutedEventArgs) Handles viewBookingBtn.Click
+
+        Dim bookingToView = CType(calendarBookings.SelectedItem, Booking)
+        currentBookingViewed = bookingToView
+
+        Dim bookingDetails As New bookingDetails(Me)
+        AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
+
+        bookingDetails.Show()
+
+    End Sub
+
+    'handles when the booking details window initiated a remove Booking
+    Sub handleRemoveBooking(sender As Object, e As EventArgs)
+        removeBooking(currentBookingViewed)
+    End Sub
+
+
+    'End of main class
 End Class

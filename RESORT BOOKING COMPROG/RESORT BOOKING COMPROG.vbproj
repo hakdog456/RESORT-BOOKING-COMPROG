@@ -69,11 +69,18 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Booking.vb" />
+    <Compile Include="bookingDetails.xaml.vb">
+      <DependentUpon>bookingDetails.xaml</DependentUpon>
+    </Compile>
     <Compile Include="receiptWindow.xaml.vb">
       <DependentUpon>receiptWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Room.vb" />
     <Compile Include="RoomType.vb" />
+    <Page Include="bookingDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -167,6 +174,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Logo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\contact Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\email Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\person Icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

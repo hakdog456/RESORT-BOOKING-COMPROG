@@ -8,6 +8,7 @@ Public Class Room
 
     Public Property Name As String
     Public Property Type As String
+    Public Property roomType As RoomType
     Public Property Capacity As Integer
     Public Property Price As Double
 
@@ -53,11 +54,13 @@ Public Class Room
            Name As String,
            Type As String,
            Capacity As Integer,
-           Price As Double
+           Price As Double,
+           roomType As RoomType
            )
 
         Me.Name = Name
         Me.Type = Type
+        Me.roomType = roomType
         Me.Capacity = Capacity
         Me.Price = Price
 
@@ -108,6 +111,7 @@ Public Class Room
 
     End Sub
 
+    'remove Past Booking 
     Public Sub removePastBookings(dateToday As Date)
         Dim bookingsDup As New List(Of Booking)(Bookings)
 
@@ -118,6 +122,11 @@ Public Class Room
                 Bookings.Remove(booking)
             End If
         Next
+    End Sub
+
+    'remove a booking
+    Public Sub removeBooking(bookingToRemove As Booking)
+        Bookings.Remove(bookingToRemove)
     End Sub
 
 

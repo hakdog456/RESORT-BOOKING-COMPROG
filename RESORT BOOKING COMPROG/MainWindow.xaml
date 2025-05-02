@@ -592,7 +592,7 @@
                 <!--Buttons and Day Details-->
                 <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Left" >
                     <Button HorizontalAlignment="Right">Select Today</Button>
-                    <Button >Reservation Details</Button>
+                    <Button x:Name="viewBookingBtn" >View Booking</Button>
                     <Label Foreground="White">- "Date Selected"</Label>
                     
                 </StackPanel>
@@ -613,7 +613,7 @@
                 </Grid>
 
                 <!--List of Bookings on selected Day-->
-                <ListBox x:Name="calndarBookings" HorizontalContentAlignment="Stretch" Grid.Row="6" Grid.ColumnSpan="3" Background="{x:Null}" BorderBrush="White" Foreground="White" >
+                <ListBox x:Name="calendarBookings" HorizontalContentAlignment="Stretch" Grid.Row="6" Grid.ColumnSpan="3" Background="{x:Null}" BorderBrush="White" Foreground="White" >
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Height="30">
@@ -669,9 +669,9 @@
 
                 </ListBox>
 
-                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Calendar</Label>
-
             </Grid>
+
+
 
             <!--Dashboard-->
             <Grid x:Name="Dashboard" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
