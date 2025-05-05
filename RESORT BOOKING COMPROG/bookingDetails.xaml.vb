@@ -15,6 +15,7 @@
     Public Property booking As Booking
     'Public Property promos As Promo
     Public Event removeBookingFromMain As EventHandler
+    Public Event showReceipt As EventHandler
 
     Public Sub New(mainWindow As MainWindow, bookingFromMain As Booking)
 
@@ -93,5 +94,9 @@
     Private Sub forceCheckOutBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles forceCheckOutBtn.MouseDown
         RaiseEvent removeBookingFromMain(Me, EventArgs.Empty)
         Me.Hide()
+    End Sub
+
+    Private Sub viewReceiptBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles viewReceiptBtn.MouseDown
+        RaiseEvent showReceipt(Me, EventArgs.Empty)
     End Sub
 End Class

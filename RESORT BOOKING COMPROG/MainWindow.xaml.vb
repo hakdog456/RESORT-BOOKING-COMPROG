@@ -104,6 +104,7 @@ Class MainWindow
                     If room Is booking.room Then
                         room.removeBooking(booking)
                         bookingTimer_Tick()
+                        calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
                     End If
 
                 Next
@@ -115,7 +116,7 @@ Class MainWindow
     End Sub
 
 
-    'GET ALL BOOKINGS
+    'GET ALL ROOMS
     Sub getRooms()
 
         Dim roomsDup As New List(Of Room) From {}
@@ -469,35 +470,17 @@ Class MainWindow
                 Dim payment = Val(paymentTxtBox.Text)
                 Dim days As Integer = Val(totalDaysTxtBox.Text)
 
-                selectedRoom.Bookings.Add(New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+                'Adding the new Booking 
+                Dim newBooking As New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime)
+                selectedRoom.Bookings.Add(newBooking)
                 clearPos()
                 bookingTimer_Tick()
 
+                newBooking.showReceipt()
 
-                'pass the values to receiptwindow and show receipt new window
-                Dim showWind As New receiptWindow()
-                showWind.CustomerName = name
-                showWind.CustomerEmail = email
-                showWind.CustomerContact = contactNumber
-                showWind.RoomName = selectedRoom.Name
-                showWind.RoomType = selectedRoom.Type
-                showWind.Start = startDateOnly
-                showWind.Ends = endDateValue
-                showWind.DayCount = totalDaysTxtBox.Text
-                showWind.RoomOccupancy = selectedRoom.Capacity
-                showWind.PartySize = partySize
-                showWind.RoomCost = Val(roomPriceTxtBox.Text)
-                showWind.Nights = Val(totalDaysTxtBox.Text)
-                showWind.Subtotal = Val(amountPayTxtBox.Text)
-                showWind.Payment = payment
+                'refresh calendar box list box
+                calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
 
-                If CInt(payment) >= CInt(showWind.Subtotal) Then
-                    showWind.displayStat = "Paid"
-                ElseIf CInt(payment) <= CInt(showWind.Subtotal) And payment > 0 Then
-                    showWind.displayStat = "Partially Paid"
-                End If
-
-                showWind.Show()
             Else
                 MsgBox(errMsg)
                 startDate.SelectedDate = Nothing
@@ -506,12 +489,7 @@ Class MainWindow
 
         End If
 
-
-
-
     End Sub
-
-
 
 
     'Generic horizontal scroll wheel function for ListBoxes
@@ -585,6 +563,21 @@ Class MainWindow
 
     End Sub
 
+    'when a booking in room details is double clicked 
+    Private Sub Label_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs)
+        Dim bookingToView = CType(roomBookings.SelectedItem, Booking)
+        currentBookingViewed = bookingToView
+
+        Dim bookingDetails As New bookingDetails(Me, bookingToView)
+        AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
+        AddHandler bookingDetails.showReceipt, AddressOf handleShowReceipt
+
+        bookingDetails.Show()
+
+    End Sub
+
+
+
     'Helper Function for finding ancestor in visual tree listbox
     Private Function TryFindAncestor(Of T As DependencyObject)(depObj As DependencyObject) As T
         Dim parent As DependencyObject = VisualTreeHelper.GetParent(depObj)
@@ -599,27 +592,50 @@ Class MainWindow
     'When calendar changes displays the bookings based on the Date Selected
     Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
 
-        calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
+        If calendarBox.SelectedDate IsNot Nothing Then
+            calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
+
+            Dim selectedDate As Date = calendarBox.SelectedDates(0)
+            dateSelectedLbl.Content = "- " & selectedDate.ToString("MMMM d, yyyy")
+
+        End If
+
+
+    End Sub
+
+    'select today button in calendar
+    Private Sub Label_MouseDown(sender As Object, e As MouseButtonEventArgs)
+        calendarBox.SelectedDate = Date.Now
+        Keyboard.ClearFocus()
+
 
     End Sub
 
     'View Booking Button on calendar, shows Booking details window launches booking details window
-    Private Sub viewBookingBtn_Click(sender As Object, e As RoutedEventArgs) Handles viewBookingBtn.Click
-
+    Private Sub viewBookingBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles viewBookingBtn.MouseDown
         Dim bookingToView = CType(calendarBookings.SelectedItem, Booking)
         currentBookingViewed = bookingToView
 
         Dim bookingDetails As New bookingDetails(Me, bookingToView)
         AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
+        AddHandler bookingDetails.showReceipt, AddressOf handleShowReceipt
 
         bookingDetails.Show()
-
     End Sub
 
     'handles when the booking details window initiated a remove Booking
     Sub handleRemoveBooking(sender As Object, e As EventArgs)
         removeBooking(currentBookingViewed)
     End Sub
+
+    Sub handleShowReceipt(sender As Object, e As EventArgs)
+        currentBookingViewed.showReceipt()
+    End Sub
+
+
+
+
+
 
 
     'End of main class
