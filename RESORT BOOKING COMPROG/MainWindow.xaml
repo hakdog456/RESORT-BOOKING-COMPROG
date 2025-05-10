@@ -18,7 +18,7 @@
     <!--MAIN GRID-->
     <Grid>
         <!--LOGIN PAGE-->
-        <Border x:Name="loginPage" ClipToBounds="True" Background="#FF141414" VerticalAlignment="Center" HorizontalAlignment="Center" >
+        <Border x:Name="loginPage" ClipToBounds="True" Background="#FF141414" VerticalAlignment="Center" HorizontalAlignment="Center" d:IsHidden="True" >
 
             <Grid ShowGridLines="True" Height="617" Width="915" >
                 <Grid.ColumnDefinitions>
@@ -159,7 +159,7 @@
                 </Grid.RowDefinitions>
 
                 <!--ROOM CHECKER BOX-->
-                <Grid Grid.Row="0" Grid.Column="0" x:Name="roomCheckerBox" Margin="10,10,15,0" >
+                <Grid Grid.Row="0" Grid.Column="0" x:Name="roomCheckerBox" Margin="10,10,15,0" d:IsHidden="True" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*"></RowDefinition>
                         <RowDefinition Height="1*" ></RowDefinition>
@@ -737,8 +737,241 @@
 
 
             <!--Security-->
-            <Grid x:Name="Security" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
-                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Security</Label>
+            <Grid ShowGridLines="True" x:Name="Security" Grid.Column="1 " Background="#FF313030" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" ></ColumnDefinition>
+                    <ColumnDefinition Width="8*" ></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <!--Security Menu /Add and Manage-->
+                <Grid Grid.Column="0" x:Name="SecurityMenu_left">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*" ></RowDefinition>
+                        <RowDefinition Height="8*" ></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Border BorderThickness="0,0,0,1" BorderBrush="Black">
+                        <Grid Grid.Row="0" Background="White">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="3*" ></RowDefinition>
+                            <RowDefinition Height="8*" ></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                            <Grid Background="#5BAFBC" Grid.Row="0" x:Name="HeaderMenu">
+                            <Label Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="19" Foreground="White">Account Manager</Label>
+                        </Grid>
+                        <Grid Grid.Row="1" x:Name="BodyMenu">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <!--custom button for radius-->
+                            <Button x:Name="btnAdd" Grid.Row="0" Width="130" Height="40" BorderBrush="Black" BorderThickness="1" Background="White" Content="Add an Account" HorizontalAlignment="Right" Margin="0,0,30,0" FontWeight="DemiBold" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+                            <Button x:Name="btnManage" Grid.Row="1" Width="130" Height="40" BorderBrush="Black" BorderThickness="1" Background="White" Content="Manage Account" HorizontalAlignment="Right" Margin="0,0,30,0" FontWeight="DemiBold" Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+
+
+
+                        </Grid>
+                        
+                    </Grid>
+                    </Border>
+                </Grid>
+                <!--End Left Security Menu-->
+                
+             
+
+                <!--Add Account View-->
+                <Grid Grid.Column="1" x:Name="AddAcount"  Margin="10,0,0,0" d:IsHidden="True">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="10*" ></RowDefinition>
+                        <RowDefinition Height="7*" ></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Background="#5BAFBC" x:Name="HeaderAddAccount">
+                        <Label Foreground="White" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center">Add an Account</Label>
+                    </Grid>
+                    <Grid Grid.Row="1" Background="White" x:Name="content"  >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.6*" ></RowDefinition>  <!--login Details-->
+                            <RowDefinition Height="0.5*" ></RowDefinition>  <!--Label-->
+                            <RowDefinition Height="0.5*" ></RowDefinition>  <!--Input Box-->
+                            <RowDefinition Height="0.6*" ></RowDefinition>  <!--Account Information-->
+                            <RowDefinition Height="0.5*" ></RowDefinition>  <!--Label-->
+                            <RowDefinition Height="0.5*" ></RowDefinition>  <!--Input Box-->
+                            <RowDefinition Height="0.7*" ></RowDefinition>  <!--Buttons-->
+                            <RowDefinition Height="0.6*" ></RowDefinition>
+                            <!--Buttons-->
+                        </Grid.RowDefinitions>
+                        <Border x:Name="label" Grid.Row="0" BorderThickness="0,0,0,2" BorderBrush="LightGray" Margin="20,0">
+                            <Label FontSize="20" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Bottom">Login Details</Label>
+                        </Border>
+                        <Grid x:Name="labelUser" Grid.Row="1" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" FontSize="15" Margin="20,0,0,0" VerticalAlignment="Bottom">Username</Label>
+                            <Label Grid.Column="1" FontSize="15"  VerticalAlignment="Bottom">Password</Label>
+                            <Label Grid.Column="2" FontSize="15"  VerticalAlignment="Bottom">Confirm Password</Label>
+                        </Grid>
+                        <!--user Input-->
+                        <Grid x:Name="UserInput" Grid.Row="2" Margin="4,0,0,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox Grid.Column="0" FontSize="16" Height="35" Width="145" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
+                            <TextBox Grid.Column="1" FontSize="16" Height="35" Width="165"  HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
+                            <TextBox Grid.Column="2" FontSize="16" Height="35" Width="165"  HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
+                        </Grid>
+                        <!--End user Input-->
+                        <Border x:Name="AccountInfo" Grid.Row="3" BorderThickness="0,0,0,2" BorderBrush="LightGray" Margin="20,0">
+                            <Label FontSize="20" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Bottom">Account Information</Label>
+                        </Border>
+                        <Grid x:Name="AcountLabel" Grid.Row="4" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" FontSize="15" Margin="20,0,0,0" VerticalAlignment="Bottom">Account Type</Label>
+                            <Label Grid.Column="1" FontSize="15"  VerticalAlignment="Bottom">Account Owner</Label>
+                            <Label Grid.Column="2" FontSize="15"  VerticalAlignment="Bottom">Email</Label>
+                            <Label Grid.Column="3" FontSize="15"  VerticalAlignment="Bottom">Contact # (Optional)</Label>
+                                                       
+                        </Grid>
+                        <!--Account Info input-->
+                        <Grid x:Name="UserInputAccount" Grid.Row="5" Margin="4,0,0,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                                <ColumnDefinition Width="1*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            
+                            <ComboBox FontSize="16" Background="White" Grid.Column="0" Height="35" Width="145" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                <ComboBoxItem Content="Admin" />
+                                <ComboBoxItem Content="Staff" />
+                               
+                            </ComboBox>
+                            <TextBox Grid.Column="1" FontSize="16" Height="35" Width="165"  HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
+                            <TextBox Grid.Column="2" FontSize="16" Height="35" Width="165"  HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
+                            <TextBox Grid.Column="3" FontSize="16" Height="35" Width="165"  HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
+                        </Grid>
+
+                        <Border x:Name="buttons" Grid.Row="7" BorderThickness="0,2,0,0" BorderBrush="LightGray" Margin="20,-5,20,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0.9*"></ColumnDefinition>
+                                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Column="0" Width="100" Height="35" Background="White" Content="Add Account" FontWeight="Regular" Foreground="White" HorizontalAlignment="Left">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#73DEEE" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <Button Grid.Column="1" Width="100" Height="35"   Background="White" Content="Cancel" Margin="0,0,30,0" FontWeight="Regular" Foreground="White" HorizontalAlignment="Left">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="#FE8080" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="12">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+                            
+                        </Border>
+
+
+
+                    </Grid>
+
+                </Grid>
+
+
+                <!--Manage Account View-->
+                <Grid Grid.Column="1" x:Name="ManageAccount" Margin="10,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="10*" ></RowDefinition>
+                        <RowDefinition Height="7*" ></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid x:Name="header" Grid.Row="0"  Background="#5BAFBC">
+                        <Label Foreground="White" FontSize="30" HorizontalAlignment="Center" VerticalAlignment="Center">Manage Accounts</Label>
+                    </Grid>
+                    <Grid x:Name="content1" Grid.Row="1" Background="White" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2.5*" ></RowDefinition>
+                            <RowDefinition Height="1.5*" ></RowDefinition>
+                            <RowDefinition Height="9*" ></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label x:Name="AccountList" Grid.Row="0" Margin="20,0" FontSize="20" FontWeight="DemiBold" HorizontalAlignment="Left" VerticalAlignment="Bottom">Account List</Label>
+                        <Border x:Name="AccountListLabel" Grid.Row="1" BorderThickness="0,2,0,2" BorderBrush="LightGray" Margin="20,0">
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" FontSize="12" VerticalAlignment="Center">Account Type</Label>
+                                <Label Grid.Column="1" FontSize="12" VerticalAlignment="Center">Account Owner</Label>
+                                <Label Grid.Column="2" FontSize="12" VerticalAlignment="Center">Username</Label>
+                                <Label Grid.Column="3" FontSize="12" VerticalAlignment="Center">Password</Label>
+                                <Label Grid.Column="4" FontSize="12" VerticalAlignment="Center">Email</Label>
+                                <Label Grid.Column="5" FontSize="12" VerticalAlignment="Center">Contact No.</Label>
+                            </Grid>
+                        </Border>
+                        <Grid Grid.Row="2" x:Name="DisplayContent">
+                            <!--Scroll Viewer-->
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="25,10">
+                                <StackPanel>
+                                    <!-- Add content that overflows the view here -->
+                                    <TextBlock Text="User1"/>
+                                    <TextBlock Text="User2"/>
+                                    <!-- Repeat as needed -->
+                                </StackPanel>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
+                    
+                   
+                </Grid>
+
             </Grid>
 
 

@@ -478,6 +478,35 @@ Class MainWindow
                 Dim payment = Val(paymentTxtBox.Text)
                 Dim days As Integer = Val(totalDaysTxtBox.Text)
 
+
+                selectedRoom.Bookings.Add(New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
+
+                'pass the values to receiptwindow and show receipt new window
+                Dim showWind As New receiptWindow()
+                showWind.CustomerName = name
+                showWind.CustomerEmail = email
+                showWind.CustomerContact = contactNumber
+                showWind.RoomName = selectedRoom.Name
+                showWind.RoomType = selectedRoom.Type
+                showWind.Start = startDateOnly
+                showWind.Ends = endDateValue
+                showWind.DayCount = days
+                showWind.RoomOccupancy = selectedRoom.Capacity
+                showWind.PartySize = partySize
+                showWind.RoomCost = Val(roomPriceTxtBox.Text)
+                showWind.Nights = Val(totalDaysTxtBox.Text)
+                showWind.Subtotal = Val(amountPayTxtBox.Text)
+                showWind.Payment = payment
+
+                If CInt(payment) >= CInt(showWind.Subtotal) Then
+                    showWind.displayStat = "Paid"
+                ElseIf CInt(payment) <= CInt(showWind.Subtotal) And payment > 0 Then
+                    showWind.displayStat = "Partially Paid"
+                End If
+                clearPos()
+                bookingTimer_Tick()
+                showWind.Show()
+
                 'Adding the new Booking 
                 Dim newBooking As New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime)
                 selectedRoom.Bookings.Add(newBooking)
@@ -489,6 +518,7 @@ Class MainWindow
                 'refresh calendar box list box
                 calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
 
+
             Else
                 MsgBox(errMsg)
                 startDate.SelectedDate = Nothing
@@ -498,7 +528,6 @@ Class MainWindow
         End If
 
     End Sub
-
 
     'Generic horizontal scroll wheel function for ListBoxes
     Private Sub HorizontalListBox_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
@@ -640,6 +669,18 @@ Class MainWindow
         currentBookingViewed.showReceipt()
     End Sub
 
+  'addAddAccount View
+    Private Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
+
+        AddAcount.Visibility = Visibility.Visible
+        ManageAccount.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnManage_Click(sender As Object, e As RoutedEventArgs) Handles btnManage.Click
+        ManageAccount.Visibility = Visibility.Visible
+        AddAcount.Visibility = Visibility.Collapsed
+
+    End Sub
 
 
 
