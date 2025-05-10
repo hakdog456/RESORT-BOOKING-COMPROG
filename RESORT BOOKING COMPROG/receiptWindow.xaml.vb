@@ -37,11 +37,18 @@ Public Class receiptWindow
         'Random number generator for payment id
         Dim rnd As New Random()
         Dim iDnum As Integer = rnd.Next(10000, 100000)
-        'Assigning values to payment details
+
+        'calculate balance
+        Dim ToPay = Subtotal - Payment
+
+
+        'Assigning values to payment details display
         IDnumber.Content = iDnum.ToString()
         StartDate.Content = Start
         displayStats.Content = displayStat
-        If Payment >= Subtotal Then
+        Remaining.Content = "₱" & ToPay.ToString
+
+        If ToPay < 0 Then
             AmountPaid.Content = "₱" & Subtotal
             TotalPaid.Content = "₱" & Subtotal
         Else

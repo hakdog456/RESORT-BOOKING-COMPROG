@@ -470,9 +470,6 @@ Class MainWindow
                 Dim days As Integer = Val(totalDaysTxtBox.Text)
 
                 selectedRoom.Bookings.Add(New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
-                clearPos()
-                bookingTimer_Tick()
-
 
                 'pass the values to receiptwindow and show receipt new window
                 Dim showWind As New receiptWindow()
@@ -483,7 +480,7 @@ Class MainWindow
                 showWind.RoomType = selectedRoom.Type
                 showWind.Start = startDateOnly
                 showWind.Ends = endDateValue
-                showWind.DayCount = totalDaysTxtBox.Text
+                showWind.DayCount = days
                 showWind.RoomOccupancy = selectedRoom.Capacity
                 showWind.PartySize = partySize
                 showWind.RoomCost = Val(roomPriceTxtBox.Text)
@@ -496,7 +493,8 @@ Class MainWindow
                 ElseIf CInt(payment) <= CInt(showWind.Subtotal) And payment > 0 Then
                     showWind.displayStat = "Partially Paid"
                 End If
-
+                clearPos()
+                bookingTimer_Tick()
                 showWind.Show()
             Else
                 MsgBox(errMsg)
@@ -510,9 +508,6 @@ Class MainWindow
 
 
     End Sub
-
-
-
 
     'Generic horizontal scroll wheel function for ListBoxes
     Private Sub HorizontalListBox_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
@@ -620,6 +615,21 @@ Class MainWindow
     Sub handleRemoveBooking(sender As Object, e As EventArgs)
         removeBooking(currentBookingViewed)
     End Sub
+
+    Private Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
+
+        AddAcount.Visibility = Visibility.Visible
+        ManageAccount.Visibility = Visibility.Collapsed
+    End Sub
+
+    Private Sub btnManage_Click(sender As Object, e As RoutedEventArgs) Handles btnManage.Click
+        ManageAccount.Visibility = Visibility.Visible
+        AddAcount.Visibility = Visibility.Collapsed
+
+    End Sub
+
+
+
 
 
     'End of main class
