@@ -184,5 +184,8 @@
   <ItemGroup>
     <Resource Include="ASSETS\ICONS\person Icon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\reservation Icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

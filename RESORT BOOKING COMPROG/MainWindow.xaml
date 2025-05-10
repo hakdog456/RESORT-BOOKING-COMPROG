@@ -340,7 +340,7 @@
                             <ListBox Name="roomBookings" Grid.Row="1" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding}" Foreground="White" FontFamily="Poppins"></Label>
+                                        <Label  Content="{Binding}" Foreground="White" FontFamily="Poppins" MouseDoubleClick="Label_MouseDoubleClick"></Label>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
 
@@ -582,7 +582,7 @@
 
 
                 <!--Calendar-->
-                <Calendar  x:Name="calendarBox" Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center"  >
+                <Calendar  x:Name="calendarBox" Grid.Column="1" Grid.RowSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="{x:Null}"  >
                     <Calendar.LayoutTransform>
                         <ScaleTransform ScaleX="2.1" ScaleY="2.15"/>
                     </Calendar.LayoutTransform>
@@ -590,12 +590,34 @@
                 </Calendar>
 
                 <!--Buttons and Day Details-->
-                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Left" >
-                    <Button HorizontalAlignment="Right">Select Today</Button>
-                    <Button x:Name="viewBookingBtn" >View Booking</Button>
-                    <Label Foreground="White">- "Date Selected"</Label>
+                <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="0,0,10,0" >
+                    <Border Cursor="Hand" CornerRadius="15" BorderThickness="1" BorderBrush="White" Padding="10,0,10,0" Background="#FF313030" Margin="0,0,5,0">
+                        <Label  HorizontalAlignment="Center" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Poppins" MouseDown="Label_MouseDown" VerticalAlignment="Center">Select Today</Label>
+                    </Border>
+
+                    <Border x:Name="viewBookingBtn" Cursor="Hand" CornerRadius="15" BorderThickness="1" BorderBrush="White" Padding="10,0,10,0" Background="#FF313030" Margin="5,0,0,0">
+                        <Label HorizontalAlignment="Center" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Poppins" VerticalAlignment="Center">View Booking Details</Label>
+                    </Border>
+
+                    <Label x:Name="dateSelectedLbl" Foreground="White" FontFamily="Poppins" Margin="5,0,0,0">- "Date Selected"</Label>
                     
                 </StackPanel>
+
+                <!--Reservation Status-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="6*" ></ColumnDefinition>
+                        <ColumnDefinition Width="10*" ></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Grid.Column="0" Source="/ASSETS/ICONS/reservation Icon.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="54" ></Image>
+
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" >
+                        <Label FontFamily="Poppins" FontSize="14" Background="{x:Null}" Foreground="White">RESERVED ROOMS</Label>
+                        <Label x:Name="reservedRooms" FontFamily="Poppins" FontSize="14" Background="{x:Null}" Foreground="White">0</Label>
+                    </StackPanel>
+
+                </Grid>
 
                 <!--Title of Bookings on selected Day-->
                 <Grid ShowGridLines="True" Grid.Row="4" Grid.ColumnSpan="3" >
@@ -605,12 +627,24 @@
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="1*" ></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="2*" ></ColumnDefinition>
                     </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="14" Foreground="White">Name</Label>
+                    <Label Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="14" Foreground="White">Email</Label>
+                    <Label Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="14" Foreground="White">Contact No.</Label>
+                    <Label Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="14" Foreground="White">Room No.</Label>
+                    <Label Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="14" Foreground="White">Room Type</Label>
+                    <Label Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="14" Foreground="White">No. of Guest</Label>
+                    <Label Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="14" Foreground="White">Check-In</Label>
+                    <Label Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="14" Foreground="White">Check-Out</Label>
+                    <Label Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="14" Foreground="White">ID Number</Label>
+
                 </Grid>
+
 
                 <!--List of Bookings on selected Day-->
                 <ListBox x:Name="calendarBookings" HorizontalContentAlignment="Stretch" Grid.Row="6" Grid.ColumnSpan="3" Background="{x:Null}" BorderBrush="White" Foreground="White" >
@@ -678,10 +712,29 @@
                 <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Dashboard</Label>
             </Grid>
 
+
             <!--Room Management-->
-            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
-                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Room Management</Label>
+            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" >
+                <Grid ShowGridLines="True" x:Name="InnerGridRoom" Margin="30,0,30,0" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="15*" ></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label x:Name="selectedRoomTypeLbl" Foreground="White" FontFamily="Poppins" FontSize="22" VerticalAlignment="Bottom" >All Rooms</Label>
+
+                    
+
+                </Grid>
+
             </Grid>
+
+
+
 
             <!--Security-->
             <Grid ShowGridLines="True" x:Name="Security" Grid.Column="1 " Background="#FF313030" >

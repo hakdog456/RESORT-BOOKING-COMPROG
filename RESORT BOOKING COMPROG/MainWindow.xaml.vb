@@ -104,6 +104,7 @@ Class MainWindow
                     If room Is booking.room Then
                         room.removeBooking(booking)
                         bookingTimer_Tick()
+                        calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
                     End If
 
                 Next
@@ -115,7 +116,7 @@ Class MainWindow
     End Sub
 
 
-    'GET ALL BOOKINGS
+    'GET ALL ROOMS
     Sub getRooms()
 
         Dim roomsDup As New List(Of Room) From {}
@@ -222,10 +223,18 @@ Class MainWindow
         bembang.AddRoom("B107")
         bembang.AddRoom("B108")
 
+        Dim kyran As New RoomType("kyran", 2, 5000)
+        kyran.AddRoom("K101")
+        kyran.AddRoom("K102")
+        kyran.AddRoom("K103")
+        kyran.AddRoom("K104")
+
+
         roomTypes.Add(regular)
         roomTypes.Add(premium)
         roomTypes.Add(deluxe)
         roomTypes.Add(bembang)
+        roomTypes.Add(kyran)
 
         'Assigning Roomtypes as item source for RoomTypeListBox
         RoomTypeListBox.ItemsSource = roomTypes
@@ -469,6 +478,7 @@ Class MainWindow
                 Dim payment = Val(paymentTxtBox.Text)
                 Dim days As Integer = Val(totalDaysTxtBox.Text)
 
+
                 selectedRoom.Bookings.Add(New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
 
                 'pass the values to receiptwindow and show receipt new window
@@ -496,6 +506,19 @@ Class MainWindow
                 clearPos()
                 bookingTimer_Tick()
                 showWind.Show()
+
+                'Adding the new Booking 
+                Dim newBooking As New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime)
+                selectedRoom.Bookings.Add(newBooking)
+                clearPos()
+                bookingTimer_Tick()
+
+                newBooking.showReceipt()
+
+                'refresh calendar box list box
+                calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
+
+
             Else
                 MsgBox(errMsg)
                 startDate.SelectedDate = Nothing
@@ -503,9 +526,6 @@ Class MainWindow
             End If
 
         End If
-
-
-
 
     End Sub
 
@@ -580,6 +600,21 @@ Class MainWindow
 
     End Sub
 
+    'when a booking in room details is double clicked 
+    Private Sub Label_MouseDoubleClick(sender As Object, e As MouseButtonEventArgs)
+        Dim bookingToView = CType(roomBookings.SelectedItem, Booking)
+        currentBookingViewed = bookingToView
+
+        Dim bookingDetails As New bookingDetails(Me, bookingToView)
+        AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
+        AddHandler bookingDetails.showReceipt, AddressOf handleShowReceipt
+
+        bookingDetails.Show()
+
+    End Sub
+
+
+
     'Helper Function for finding ancestor in visual tree listbox
     Private Function TryFindAncestor(Of T As DependencyObject)(depObj As DependencyObject) As T
         Dim parent As DependencyObject = VisualTreeHelper.GetParent(depObj)
@@ -594,21 +629,35 @@ Class MainWindow
     'When calendar changes displays the bookings based on the Date Selected
     Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
 
-        calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
+        If calendarBox.SelectedDate IsNot Nothing Then
+            calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
+
+            Dim selectedDate As Date = calendarBox.SelectedDates(0)
+            dateSelectedLbl.Content = "- " & selectedDate.ToString("MMMM d, yyyy")
+
+        End If
+
+
+    End Sub
+
+    'select today button in calendar
+    Private Sub Label_MouseDown(sender As Object, e As MouseButtonEventArgs)
+        calendarBox.SelectedDate = Date.Now
+        Keyboard.ClearFocus()
+
 
     End Sub
 
     'View Booking Button on calendar, shows Booking details window launches booking details window
-    Private Sub viewBookingBtn_Click(sender As Object, e As RoutedEventArgs) Handles viewBookingBtn.Click
-
+    Private Sub viewBookingBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles viewBookingBtn.MouseDown
         Dim bookingToView = CType(calendarBookings.SelectedItem, Booking)
         currentBookingViewed = bookingToView
 
         Dim bookingDetails As New bookingDetails(Me, bookingToView)
         AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
+        AddHandler bookingDetails.showReceipt, AddressOf handleShowReceipt
 
         bookingDetails.Show()
-
     End Sub
 
     'handles when the booking details window initiated a remove Booking
@@ -616,6 +665,11 @@ Class MainWindow
         removeBooking(currentBookingViewed)
     End Sub
 
+    Sub handleShowReceipt(sender As Object, e As EventArgs)
+        currentBookingViewed.showReceipt()
+    End Sub
+
+  'addAddAccount View
     Private Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
 
         AddAcount.Visibility = Visibility.Visible
@@ -627,6 +681,7 @@ Class MainWindow
         AddAcount.Visibility = Visibility.Collapsed
 
     End Sub
+
 
 
 
