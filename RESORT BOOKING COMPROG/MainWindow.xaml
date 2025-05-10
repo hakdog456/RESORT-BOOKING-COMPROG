@@ -564,7 +564,7 @@
             </Grid>
 
             <!--Calendar-->
-            <Grid ShowGridLines="True" x:Name="Calendar" Grid.Column="1 " Background="#FF313030" >
+            <Grid ShowGridLines="True" x:Name="Calendar" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" ></ColumnDefinition>
                     <ColumnDefinition Width="3*" ></ColumnDefinition>
@@ -592,11 +592,11 @@
                 <!--Buttons and Day Details-->
                 <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Left" Margin="0,0,10,0" >
                     <Border Cursor="Hand" CornerRadius="15" BorderThickness="1" BorderBrush="White" Padding="10,0,10,0" Background="#FF313030" Margin="0,0,5,0">
-                        <Label  HorizontalAlignment="Right" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Poppins" MouseDown="Label_MouseDown">Select Today</Label>
+                        <Label  HorizontalAlignment="Center" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Poppins" MouseDown="Label_MouseDown" VerticalAlignment="Center">Select Today</Label>
                     </Border>
 
                     <Border x:Name="viewBookingBtn" Cursor="Hand" CornerRadius="15" BorderThickness="1" BorderBrush="White" Padding="10,0,10,0" Background="#FF313030" Margin="5,0,0,0">
-                        <Label HorizontalAlignment="Right" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Poppins">View Booking Details</Label>
+                        <Label HorizontalAlignment="Center" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}" FontFamily="Poppins" VerticalAlignment="Center">View Booking Details</Label>
                     </Border>
 
                     <Label x:Name="dateSelectedLbl" Foreground="White" FontFamily="Poppins" Margin="5,0,0,0">- "Date Selected"</Label>
@@ -712,10 +712,29 @@
                 <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Dashboard</Label>
             </Grid>
 
+
             <!--Room Management-->
-            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
-                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Room Management</Label>
+            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" >
+                <Grid ShowGridLines="True" x:Name="InnerGridRoom" Margin="30,0,30,0" >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="15*" ></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Label x:Name="selectedRoomTypeLbl" Foreground="White" FontFamily="Poppins" FontSize="22" VerticalAlignment="Bottom" >All Rooms</Label>
+
+                    
+
+                </Grid>
+
             </Grid>
+
+
+
 
             <!--Security-->
             <Grid x:Name="Security" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >

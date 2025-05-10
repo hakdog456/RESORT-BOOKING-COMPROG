@@ -223,10 +223,18 @@ Class MainWindow
         bembang.AddRoom("B107")
         bembang.AddRoom("B108")
 
+        Dim kyran As New RoomType("kyran", 2, 5000)
+        kyran.AddRoom("K101")
+        kyran.AddRoom("K102")
+        kyran.AddRoom("K103")
+        kyran.AddRoom("K104")
+
+
         roomTypes.Add(regular)
         roomTypes.Add(premium)
         roomTypes.Add(deluxe)
         roomTypes.Add(bembang)
+        roomTypes.Add(kyran)
 
         'Assigning Roomtypes as item source for RoomTypeListBox
         RoomTypeListBox.ItemsSource = roomTypes
