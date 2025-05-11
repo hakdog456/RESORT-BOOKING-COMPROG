@@ -737,7 +737,7 @@
 
 
             <!--Security-->
-            <Grid ShowGridLines="True" x:Name="Security" Grid.Column="1 " Background="#FF313030" >
+            <Grid ShowGridLines="True" x:Name="Security" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" ></ColumnDefinition>
                     <ColumnDefinition Width="8*" ></ColumnDefinition>

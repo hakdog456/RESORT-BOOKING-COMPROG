@@ -188,6 +188,11 @@ Class MainWindow
         posWindows = New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
 
 
+        'selecting the first pages to show
+        selectView(POS)
+        setBtnBg(posSide)
+
+
         'Adding room types and rooms per room type
         Dim regular As New RoomType("REGULAR", 3, 1200)
         regular.AddRoom("R101")
@@ -477,35 +482,6 @@ Class MainWindow
                 Dim partySize = Val(partySizeTxtBox.Text)
                 Dim payment = Val(paymentTxtBox.Text)
                 Dim days As Integer = Val(totalDaysTxtBox.Text)
-
-
-                selectedRoom.Bookings.Add(New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime))
-
-                'pass the values to receiptwindow and show receipt new window
-                Dim showWind As New receiptWindow()
-                showWind.CustomerName = name
-                showWind.CustomerEmail = email
-                showWind.CustomerContact = contactNumber
-                showWind.RoomName = selectedRoom.Name
-                showWind.RoomType = selectedRoom.Type
-                showWind.Start = startDateOnly
-                showWind.Ends = endDateValue
-                showWind.DayCount = days
-                showWind.RoomOccupancy = selectedRoom.Capacity
-                showWind.PartySize = partySize
-                showWind.RoomCost = Val(roomPriceTxtBox.Text)
-                showWind.Nights = Val(totalDaysTxtBox.Text)
-                showWind.Subtotal = Val(amountPayTxtBox.Text)
-                showWind.Payment = payment
-
-                If CInt(payment) >= CInt(showWind.Subtotal) Then
-                    showWind.displayStat = "Paid"
-                ElseIf CInt(payment) <= CInt(showWind.Subtotal) And payment > 0 Then
-                    showWind.displayStat = "Partially Paid"
-                End If
-                clearPos()
-                bookingTimer_Tick()
-                showWind.Show()
 
                 'Adding the new Booking 
                 Dim newBooking As New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime)
