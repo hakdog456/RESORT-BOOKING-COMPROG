@@ -10,6 +10,7 @@ Imports System.IO
 Imports System.Data.SQLite
 Imports System.Data
 Imports System.Data.Entity.ModelConfiguration.Configuration
+Imports System.Globalization
 
 
 
@@ -130,6 +131,7 @@ Class MainWindow
                 For Each room As Room In roomType.Rooms
                     If room Is booking.room Then
                         room.removeBooking(booking)
+                        removeBookingFromDb(booking)
                         bookingTimer_Tick()
                         calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
                     End If
@@ -228,6 +230,7 @@ Class MainWindow
         Return result
     End Function
 
+    'bytearray to image 
     Private Function ByteArrayToImage(data As Byte()) As BitmapImage
         Using ms As New MemoryStream(data)
             Dim img As New BitmapImage()
@@ -241,7 +244,78 @@ Class MainWindow
     End Function
 
 
+    'Add RoomType to DateBase
+    Sub addRoomTypeToDb(roomType As RoomType)
+        command.Connection = connection
 
+        Dim addRoomType As String = "INSERT INTO RoomType (Name, Id, Color, Price, Capacity, Features) VALUES (@Name, @Id, @Color, @Price, @Capacity, @Features)"
+        Using cmd As New SQLiteCommand(addRoomType, connection)
+            cmd.Parameters.AddWithValue("@Name", roomType.Name)
+            cmd.Parameters.AddWithValue("@Id", roomType.id)
+            cmd.Parameters.AddWithValue("@Color", "none")
+            cmd.Parameters.AddWithValue("@Price", roomType.Price)
+            cmd.Parameters.AddWithValue("@Capacity", roomType.Capacity)
+            cmd.Parameters.AddWithValue("@Features", String.Join("|", roomType.features))
+            cmd.ExecuteNonQuery()
+        End Using
+
+    End Sub
+
+
+    'Add ROOM to DateBase
+    Sub addRoomToDb(room As Room)
+        command.Connection = connection
+
+        Dim addRoom As String = "INSERT INTO Room (Name, Type, Id, RoomTypeId, Capacity, Active, Features, StatusText, Price) VALUES (@Name, @Type, @Id, @RoomTypeId, @Capacity, @Active, @Features, @StatusText, @Price)"
+        Using cmd As New SQLiteCommand(addRoom, connection)
+            cmd.Parameters.AddWithValue("@Name", room.Name)
+            cmd.Parameters.AddWithValue("@Type", room.Name)
+            cmd.Parameters.AddWithValue("@Id", room.id)
+            cmd.Parameters.AddWithValue("@RoomTypeId", room.roomTypeId)
+            cmd.Parameters.AddWithValue("@Capacity", room.Capacity)
+            cmd.Parameters.AddWithValue("@Active", Convert.ToInt32(room.Active))
+            cmd.Parameters.AddWithValue("@Features", String.Join("|", room.Features))
+            cmd.Parameters.AddWithValue("@StatusText", room.statusText)
+            cmd.Parameters.AddWithValue("@Price", room.Price)
+            cmd.ExecuteNonQuery()
+        End Using
+
+    End Sub
+
+
+    'Add Booking to database
+    Sub addBookingToDb(booking As Booking)
+        Dim addBooking As String = "INSERT INTO Booking (StartDate, EndDate, Name, PartySize, Payment, ContactNumber, Email, RoomName, RoomType, Id, RoomId, Days, RoomTypeId) VALUES (@StartDate, @EndDate, @Name, @PartySize, @Payment, @ContactNumber, @Email, @RoomName, @RoomType, @Id, @RoomId, @Days, @RoomTypeId)"
+        Using cmd As New SQLiteCommand(addBooking, connection)
+            cmd.Parameters.AddWithValue("@StartDate", booking.startDate)
+            cmd.Parameters.AddWithValue("@EndDate", booking.endDate)
+            cmd.Parameters.AddWithValue("@Name", booking.name)
+            cmd.Parameters.AddWithValue("@PartySize", booking.partySize)
+            cmd.Parameters.AddWithValue("@Payment", booking.payment)
+            cmd.Parameters.AddWithValue("@ContactNumber", booking.contactNumber)
+            cmd.Parameters.AddWithValue("@Email", booking.email)
+            cmd.Parameters.AddWithValue("@RoomName", booking.roomName)
+            cmd.Parameters.AddWithValue("@RoomType", booking.roomType)
+            cmd.Parameters.AddWithValue("@Id", booking.id)
+            cmd.Parameters.AddWithValue("@RoomId", selectedRoom.id)
+            cmd.Parameters.AddWithValue("@Days", booking.days)
+            cmd.Parameters.AddWithValue("@RoomTypeId", selectedRoom.roomTypeId)
+
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+
+    'remove a booking to DataBase
+    Sub removeBookingFromDb(booking As Booking)
+        Dim deleteQuery As String = "DELETE FROM Booking WHERE Id = @Id"
+
+        Using cmd As New SQLiteCommand(deleteQuery, connection)
+            cmd.Parameters.AddWithValue("@Id", booking.id)
+            cmd.ExecuteNonQuery()
+        End Using
+
+    End Sub
 
     'WHEN WINDOW IS LOADED 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
@@ -756,6 +830,7 @@ Class MainWindow
                 'Adding the new Booking 
                 Dim newBooking As New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime)
                 selectedRoom.addBooking(newBooking)
+                addBookingToDb(newBooking)
                 clearPos()
                 bookingTimer_Tick()
 
@@ -880,7 +955,9 @@ Class MainWindow
                     roomFeatures.ItemsSource = selectedRoom.Features
                     roomBookings.ItemsSource = selectedRoom.Bookings
 
-                    ImageViewer.Source = selectedRoom.Pictures(0).imageSource
+                    If selectedRoom.Pictures.Count > 0 Then
+                        ImageViewer.Source = selectedRoom.Pictures(0).imageSource
+                    End If
 
                 End If
 
@@ -1062,6 +1139,7 @@ Class MainWindow
 
 
         selectedRoomType.AddRoom(room)
+        addRoomToDb(room)
 
         addRoomNameInput.Clear()
         addRoomTypeInput.SelectedItem = selectedRoomType
@@ -1135,6 +1213,7 @@ Class MainWindow
         roomType.features = roomTypeFeatures.ToList()
 
         roomTypes.Add(roomType)
+        addRoomTypeToDb(roomType)
 
         addRoomTypeNameInput.Clear()
         addRoomTypeCapacityInput.Clear()
