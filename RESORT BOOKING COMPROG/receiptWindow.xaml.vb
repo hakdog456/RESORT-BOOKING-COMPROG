@@ -4,7 +4,7 @@ Public Class receiptWindow
 
     Public Property CustomerName As String
     Public Property CustomerEmail As String
-    Public Property CustomerContact As Integer
+    Public Property CustomerContact As String
     Public Property RoomName As String
     Public Property RoomType As String
     Public Property Start As String
@@ -17,6 +17,7 @@ Public Class receiptWindow
     Public Property Subtotal As Integer
     Public Property Payment As Integer
     Public Property displayStat As String
+    Public Property bookingId As String
 
 
 

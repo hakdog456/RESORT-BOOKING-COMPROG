@@ -147,7 +147,7 @@
             </Grid>
 
             <!--POS-->
-            <Grid ShowGridLines="True" x:Name="POS" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
+            <Grid ShowGridLines="True" x:Name="POS" Grid.Column="1 " Background="#FF313030" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" ></ColumnDefinition>
                     <ColumnDefinition Width="8*" ></ColumnDefinition>
@@ -159,7 +159,7 @@
                 </Grid.RowDefinitions>
 
                 <!--ROOM CHECKER BOX-->
-                <Grid Grid.Row="0" Grid.Column="0" x:Name="roomCheckerBox" Margin="10,10,15,0" d:IsHidden="True" >
+                <Grid Grid.Row="0" Grid.Column="0" x:Name="roomCheckerBox" Margin="10,10,15,0" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*"></RowDefinition>
                         <RowDefinition Height="1*" ></RowDefinition>
@@ -252,7 +252,7 @@
                 </Grid>
 
                 <!--POS - ROOM DETAILS-->
-                <Grid x:Name="PosRoomDetailsGrid" ShowGridLines="True" Grid.Column="1" Grid.RowSpan="2" Margin="5,10,10,10" d:IsHidden="True" >
+                <Grid x:Name="PosRoomDetailsGrid" ShowGridLines="True" Grid.Column="1" Grid.RowSpan="2" Margin="5,10,10,10" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" ></RowDefinition>
                         <RowDefinition Height="10*" ></RowDefinition>
@@ -325,9 +325,30 @@
                             </ListBox>
                         </Grid>
 
+                        <!--image viewer-->
+                        <Grid Grid.Column="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" ></ColumnDefinition>
+                                <ColumnDefinition Width="10*" ></ColumnDefinition>
+                                <ColumnDefinition Width="1*" ></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <Image Grid.Column="1" x:Name="ImageViewer" Stretch="Uniform" Margin="10"/>
+
+                            <Button Grid.Column="0" x:Name="PrevButton" Margin="5" VerticalAlignment="Center">
+                                <Label Content="&lt;" FontFamily="Poppins" FontSize="16" ></Label>
+                            </Button>
+                            <Button Grid.Column="2" x:Name="NextButton"  Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Label Content=">" FontFamily="Poppins" FontSize="16" ></Label>
+                            </Button>
+                        </Grid>
+
 
 
                     </Grid>
+                    
+                    
+
 
                     <!--Room details buttons-->
                     <StackPanel Orientation="Horizontal" Grid.Row="2" >
@@ -670,7 +691,7 @@
 
 
             <!--Room Management-->
-            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" >
+            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
 
                 <!--Room management list of rooms view-->
                 <Grid ShowGridLines="True" x:Name="roomManagementRoomList" Margin="30,0,30,0" d:IsHidden="True" >
@@ -1567,7 +1588,6 @@
 
 
         </Grid>
-
 
 
 
