@@ -4,6 +4,12 @@ Imports System.Runtime.CompilerServices
 Imports System.Windows.Media.Animation
 Imports System.Windows.Threading
 Imports MS.Internal.Text.TextInterface
+Imports Microsoft.Win32
+Imports System.Windows.Media.Imaging
+Imports System.IO
+Imports System.Data.SQLite
+Imports System.Data
+
 
 
 Class MainWindow
@@ -23,6 +29,9 @@ Class MainWindow
     'POS WINDOWS
     Dim posWindows As New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
 
+    'ROOM MANAGEMENT WINDOWS
+    Dim roomWinndows As New List(Of Grid) From {roomManagementAddRoom, roomManagementRoomList, roomManagementAddRoomType}
+
     'BOOKINGS
     Dim bookings As New List(Of Booking) From {}
 
@@ -32,6 +41,16 @@ Class MainWindow
     'ROOM TYPES
     Dim roomTypes As New ObservableCollection(Of RoomType)
 
+    'ADD ROOM IMAGES
+    Dim images As New ObservableCollection(Of ImageSource)
+
+    'ADD ROOM FEATURES
+    Dim features As New ObservableCollection(Of String)
+
+    'ADD ROOM TYPE FEATURES
+    Dim roomTypeFeatures As New ObservableCollection(Of String)
+
+
 
     'Timers
     Private bookingTimer As DispatcherTimer
@@ -40,6 +59,7 @@ Class MainWindow
     'Public Property selectedRoom As Room
     Private selectedRoom As Room
     Private currentBookingViewed As Booking
+    Private selectedRoomType As RoomType
 
     'INITIALIZATIONS
     Sub New()
@@ -186,11 +206,13 @@ Class MainWindow
         views = New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
         navBtns = New List(Of Border) From {posSide, calSide, dashSide, roomSide, secSide}
         posWindows = New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
+        roomWinndows = New List(Of Grid) From {roomManagementAddRoom, roomManagementRoomList, roomManagementAddRoomType}
 
 
         'selecting the first pages to show
         selectView(POS)
         setBtnBg(posSide)
+        selectViewGeneric(roomManagementRoomList, roomWinndows)
 
 
         'Adding room types and rooms per room type
@@ -244,12 +266,31 @@ Class MainWindow
         'Assigning Roomtypes as item source for RoomTypeListBox
         RoomTypeListBox.ItemsSource = roomTypes
 
+        'Assigning Roomtypes as item source for roomTypePickerListBox
+        roomTypePickerListBox.ItemsSource = roomTypes
+
+        'assigning the first item in rooms for the item of data grid in room management
+        roomTypePickerListBox.SelectedItem = roomTypePickerListBox.Items(0)
+        selectedRoomType = roomTypePickerListBox.Items(0)
+        roomsDataGrid.ItemsSource = roomTypePickerListBox.SelectedItem.Rooms
 
         'Assigning Starting Dates for POS date picker
         startDate.SelectedDate = Date.Now
 
         'Setting the default selected date for calendar to today
         calendarBox.SelectedDate = Date.Now
+
+        'Assigning item source for combo box in add room
+        addRoomTypeInput.ItemsSource = roomTypes
+
+        'Assigning item source of AddRoom Add Images 
+        addRoomPicturesCon.ItemsSource = images
+
+        'Assigning item source of AddRoom Features
+        addRoomFeatures.ItemsSource = features
+
+        'Assigning item source of AddRoomType Features
+        addRoomTypeFeatures.ItemsSource = roomTypeFeatures
 
 
 
@@ -523,6 +564,28 @@ Class MainWindow
         End If
     End Sub
 
+    'horizontal scrolling for scrollviwers
+    Private Sub HorizontalScrollViewer_PreviewMouseWheel(sender As Object, e As MouseWheelEventArgs)
+        ' Try to cast sender as ScrollViewer directly
+        Dim scrollViewer As ScrollViewer = TryCast(sender, ScrollViewer)
+
+        ' If sender isn't a ScrollViewer, try to find one inside it
+        If scrollViewer Is Nothing Then
+            scrollViewer = FindVisualChild(Of ScrollViewer)(TryCast(sender, DependencyObject))
+        End If
+
+        ' If we found a scroll viewer, scroll it horizontally
+        If scrollViewer IsNot Nothing Then
+            If e.Delta < 0 Then
+                scrollViewer.LineRight()
+            Else
+                scrollViewer.LineLeft()
+            End If
+            e.Handled = True
+        End If
+    End Sub
+
+
 
     ' Helper to find ScrollViewer inside the ListBox / Function helper for horizontal scrolling
     Private Function FindVisualChild(Of T As DependencyObject)(obj As DependencyObject) As T
@@ -645,19 +708,181 @@ Class MainWindow
         currentBookingViewed.showReceipt()
     End Sub
 
-  'addAddAccount View
+    'addAddAccount View
     Private Sub btnAdd_Click(sender As Object, e As RoutedEventArgs) Handles btnAdd.Click
 
         AddAcount.Visibility = Visibility.Visible
         ManageAccount.Visibility = Visibility.Collapsed
     End Sub
 
+    'Joshua function
     Private Sub btnManage_Click(sender As Object, e As RoutedEventArgs) Handles btnManage.Click
         ManageAccount.Visibility = Visibility.Visible
         AddAcount.Visibility = Visibility.Collapsed
 
     End Sub
 
+    'room management when a room type is selected
+    Private Sub roomTypePickerListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles roomTypePickerListBox.SelectionChanged
+        roomsDataGrid.ItemsSource = roomTypePickerListBox.SelectedItem.Rooms
+        selectedRoomType = roomTypePickerListBox.SelectedItem
+    End Sub
+
+    'Add Room Button when clicked
+    Private Sub addNewRoomBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles addNewRoomBtn.MouseDown
+        selectViewGeneric(roomManagementAddRoom, roomWinndows)
+        addRoomTypeInput.SelectedItem = selectedRoomType
+        addRoomCapacityInput.Text = selectedRoomType.Capacity
+        addRoomPriceInput.Text = selectedRoomType.Price
+        features.Clear()
+        For Each item In selectedRoomType.features
+            features.Add(item)
+        Next
+
+    End Sub
+
+    'add picture button Function
+    Private Sub addRoomAddPictureBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles addRoomAddPictureBtn.MouseDown
+        Dim dialog As New OpenFileDialog()
+        dialog.Filter = "Image files (*.jpg, *.png, *.bmp)|*.jpg;*.png;*.bmp"
+
+        If dialog.ShowDialog = True Then
+            Dim imagePath As String = dialog.FileName
+            Dim bitmap As New BitmapImage()
+            bitmap.BeginInit()
+            bitmap.UriSource = New Uri(imagePath, UriKind.Absolute)
+            bitmap.CacheOption = BitmapCacheOption.OnLoad
+            bitmap.EndInit()
+
+            images.Add(bitmap)
+        End If
+    End Sub
+
+    'add features button
+    Private Sub addFeaturesBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles addFeaturesBtn.MouseDown
+        If addFeatureInput.Text IsNot "" Then
+            Dim feature As String = "✔" & addFeatureInput.Text
+            features.Add(feature)
+            addFeatureInput.Clear()
+
+        End If
+    End Sub
+
+    'remove feature button
+    Sub removeFeature(sender As Object, e As RoutedEventArgs)
+        'features.Remove(addRoomFeatures.SelectedItem)
+
+        Dim btn As Border = CType(sender, Border)
+        Dim itemToDelete = btn.DataContext
+
+        features.Remove(itemToDelete.ToString())
+    End Sub
+
+
+    'remove picture button
+    Sub removePicture(sender As Object, e As RoutedEventArgs)
+        'features.Remove(addRoomFeatures.SelectedItem)
+
+        Dim btn As Border = CType(sender, Border)
+        Dim itemToDelete = btn.DataContext
+
+        images.Remove(itemToDelete)
+    End Sub
+
+    'button click to add a room 
+    Private Sub AddRoomBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles AddRoomBtn.MouseDown
+        Dim name As String = addRoomNameInput.Text
+        Dim Type As String = addRoomTypeInput.Text
+        Dim capacity As Integer = Val(addRoomCapacityInput.Text)
+        Dim Price As Double = Val(addRoomPriceInput.Text)
+
+        Dim room As New Room(name, Type, capacity, Price, selectedRoomType)
+        room.Features = features.ToList()
+        room.Pictures = images.ToList()
+
+        selectedRoomType.AddRoom(room)
+
+        addRoomNameInput.Clear()
+        addRoomTypeInput.SelectedItem = selectedRoomType
+        addRoomCapacityInput.Text = selectedRoomType.Capacity
+        addRoomPriceInput.Text = selectedRoomType.Price
+        features.Clear()
+        images.Clear()
+
+        selectViewGeneric(roomManagementRoomList, roomWinndows)
+
+
+    End Sub
+
+    'cancel add room button
+    Private Sub cancelAddRoomBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles cancelAddRoomBtn.MouseDown
+        addRoomNameInput.Clear()
+        addRoomTypeInput.SelectedItem = selectedRoomType
+        addRoomCapacityInput.Text = selectedRoomType.Capacity
+        addRoomPriceInput.Text = selectedRoomType.Price
+        features.Clear()
+        images.Clear()
+
+        selectViewGeneric(roomManagementRoomList, roomWinndows)
+
+    End Sub
+
+    'when combo box selection of add room changes
+    Private Sub addRoomTypeInput_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles addRoomTypeInput.SelectionChanged
+        'selectedRoomType = addRoomTypeInput.SelectedItem
+        roomTypePickerListBox.SelectedItem = addRoomTypeInput.SelectedItem
+    End Sub
+
+
+    'add new Room type Button
+    Private Sub addRoomType_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles addRoomType.MouseDown
+        selectViewGeneric(roomManagementAddRoomType, roomWinndows)
+    End Sub
+
+    'cancel addRoomType button
+    Private Sub cancelAddRoomTypeBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles cancelAddRoomTypeBtn.MouseDown
+        selectViewGeneric(roomManagementRoomList, roomWinndows)
+
+    End Sub
+
+    'add Room Type features button
+    Private Sub addRoomTypeFeaturesBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles addRoomTypeFeaturesBtn.MouseDown
+        If addRoomTypeFeatureInput.Text IsNot "" Then
+            Dim feature As String = "✔" & addRoomTypeFeatureInput.Text
+            roomTypeFeatures.Add(feature)
+            addRoomTypeFeatureInput.Clear()
+
+        End If
+    End Sub
+
+    'remove room Type feature button
+    Sub removeRoomTypeFeature(sender As Object, e As RoutedEventArgs)
+
+        Dim btn As Border = CType(sender, Border)
+        Dim itemToDelete = btn.DataContext
+
+        roomTypeFeatures.Remove(itemToDelete.ToString())
+    End Sub
+
+    'add room Type Button
+    Private Sub AddRoomTypeBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles AddRoomTypeBtn.MouseDown
+        Dim name As String = addRoomTypeNameInput.Text
+        Dim price As Integer = Val(addRoomTypePriceInput.Text)
+        Dim capacity As Integer = Val(addRoomTypeCapacityInput.Text)
+
+        Dim roomType As New RoomType(name, capacity, price)
+        roomType.features = roomTypeFeatures.ToList()
+
+        roomTypes.Add(roomType)
+
+        addRoomTypeNameInput.Clear()
+        addRoomTypeCapacityInput.Clear()
+        addRoomTypePriceInput.Clear()
+        roomTypeFeatures.Clear()
+
+        selectViewGeneric(roomManagementRoomList, roomWinndows)
+
+    End Sub
 
 
 
