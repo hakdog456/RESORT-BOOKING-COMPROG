@@ -247,50 +247,6 @@
 
                             </DataTemplate>
                         </ListBox.ItemTemplate>
-
-                        <!--Sample item of Room Types-->
-                        <!--<Grid ShowGridLines="True" x:Name="RoomType" Height="150" >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*" ></RowDefinition>
-                                <RowDefinition Height="2*" ></RowDefinition>
-                            </Grid.RowDefinitions>
-
-                            <Label Grid.Row="0" x:Name="regRooms" VerticalAlignment="Center" FontFamily="Poppins" Foreground="White" >REGULAR ROOMS</Label>
-
-                            <ListBox
-                                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                        PreviewMouseWheel="lstTest_PreviewMouseWheel"
-                                        Grid.Row="1" x:Name="RegularRoomsListBox" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Height="110" >
-
-                                -->
-                        <!--Change Orientation-->
-                        <!--
-                                <ListBox.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" ></StackPanel>
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-
-                                -->
-                        <!--Rooms Items List Template-->
-                        <!--
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border ClipToBounds="True" CornerRadius="15" HorizontalAlignment="Left" VerticalAlignment="Center" Width="90" Height="80" Background="White">
-                                            <Label Content="{Binding Name}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Background="{Binding getStatusColor}" Height="25" VerticalAlignment="Top" Width="92" HorizontalAlignment="Center"></Label>
-                                        </Border>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-
-                                -->
-                        <!--Sample Items-->
-                        <!--
-
-                            </ListBox>
-
-                        </Grid>-->
-
-
                     </ListBox>
 
                 </Grid>
@@ -600,7 +556,7 @@
                     </Border>
 
                     <Label x:Name="dateSelectedLbl" Foreground="White" FontFamily="Poppins" Margin="5,0,0,0">- "Date Selected"</Label>
-                    
+
                 </StackPanel>
 
                 <!--Reservation Status-->
@@ -715,23 +671,651 @@
 
             <!--Room Management-->
             <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" >
-                <Grid ShowGridLines="True" x:Name="InnerGridRoom" Margin="30,0,30,0" >
+
+                <!--Room management list of rooms view-->
+                <Grid ShowGridLines="True" x:Name="roomManagementRoomList" Margin="30,0,30,0" d:IsHidden="True" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" ></RowDefinition>
                         <RowDefinition Height="1.5*" ></RowDefinition>
                         <RowDefinition Height="1.5*" ></RowDefinition>
-                        <RowDefinition Height="1.5*" ></RowDefinition>
+                        <RowDefinition Height="1*" ></RowDefinition>
                         <RowDefinition Height="1.5*" ></RowDefinition>
                         <RowDefinition Height="15*" ></RowDefinition>
                     </Grid.RowDefinitions>
 
+                    <!--Title -->
                     <Label x:Name="selectedRoomTypeLbl" Foreground="White" FontFamily="Poppins" FontSize="22" VerticalAlignment="Bottom" >All Rooms</Label>
 
-                    
+                    <!--Room types at Top-->
+                    <ScrollViewer Grid.Row="1"
+                                  PreviewMouseWheel="HorizontalScrollViewer_PreviewMouseWheel"
+                                  VerticalScrollBarVisibility="Disabled"
+                                  HorizontalScrollBarVisibility="Hidden"
+                                  >
+                        <StackPanel Orientation="Horizontal"
+                                    >
+                            <ListBox x:Name="roomTypePickerListBox" 
+                            Grid.Row="1" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+
+                                <!--Change Orientation to horizontal-->
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" ></StackPanel>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+
+                                <!--removes selection making bottom border appear when selected-->
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem" >
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <Border x:Name="roomTypeBtn" Cursor="Hand" BorderThickness="0,0,0,0" Background="#00000000" BorderBrush="White" Padding="5,0,5,0">
+                                                        <StackPanel Orientation="Horizontal" >
+                                                            <Label Content="{Binding Name}" FontFamily="Poppins" FontSize="16" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                                                            <Border CornerRadius="10" Background="#FF979595" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5,0,5,0" >
+                                                                <Label Content="{Binding RoomsCount}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="10"></Label>
+                                                            </Border>
+                                                        </StackPanel>
+
+                                                    </Border>
+
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsSelected" Value="True" >
+                                                            <Setter TargetName="roomTypeBtn" Property="BorderThickness" Value="0,0,0,4" ></Setter>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+
+                                <!--Rooms Items List Template-->
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Cursor="Hand" BorderThickness="0,0,0,0" Background="#00000000" BorderBrush="White" Padding="5,0,5,0">
+                                            <StackPanel Orientation="Horizontal" >
+                                                <Label Content="{Binding Name}" FontFamily="Poppins" FontSize="16" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                                                <Border CornerRadius="10" Background="#FF979595" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5,0,5,0" >
+                                                    <Label Content="{Binding RoomsCount}" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="10"></Label>
+                                                </Border>
+                                            </StackPanel>
+
+                                        </Border>
+
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                                <!--sample items
+                                <border borderthickness="0,0,0,4" background="#00000000" borderbrush="white" padding="5,0,5,0">
+                                    <stackpanel orientation="horizontal" >
+                                        <label fontfamily="poppins" fontsize="16" foreground="white" verticalalignment="center" horizontalalignment="center">regular</label>
+                                        <border cornerradius="10" background="#ff979595" horizontalalignment="center" verticalalignment="center" padding="5,0,5,0" >
+                                            <label horizontalalignment="center" verticalalignment="center" fontfamily="poppins" fontsize="10">40</label>
+                                        </border>
+                                    </stackpanel>
+
+                                </border>-->
+                            </ListBox>
+
+                            <!--Add Room type Button --> 
+                            <Label x:Name="addRoomType" Cursor="Hand" Background="{x:Null}" Foreground="White" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center">+ Add new</Label>
+
+                        </StackPanel>
+
+                    </ScrollViewer>
+
+                    <!--lining for room types-->
+                    <Border CornerRadius="1" Panel.ZIndex="-1" BorderThickness="1" Grid.Row="1" VerticalAlignment="Bottom" BorderBrush="#FFD7D7D7" Margin="0,0,0,3" ></Border>
+
+                    <!--Search bar-->
+                    <Border CornerRadius="13" Grid.Row="2" HorizontalAlignment="Right" x:Name="searchBar" Height="30" Background="#FF444444" Padding="10,0,20,0" >
+                        <StackPanel   Orientation="Horizontal" >
+                            <Image Source="/ASSETS/ICONS/magnifyingglass.png" Height="17" VerticalAlignment="Center" />
+                            <TextBox VerticalContentAlignment="Center" Width="200" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Foreground="White" FontFamily="Poppins" FontSize="14" VerticalAlignment="Center"></TextBox>
+
+                        </StackPanel>
+
+                    </Border>
+
+                    <!--Add new room button-->
+                    <Border CornerRadius="7" Grid.Row="3" Name="addNewRoomBtn" VerticalAlignment="Center" HorizontalAlignment="Right" Background="#FF0097B2" Padding="10,0,10,0" >
+                        <Label Foreground="White" FontFamily="Poppins" FontSize="14">+ Add New Room</Label>
+                    </Border>
+
+                    <!--Data Grid-->
+                    <Grid Grid.Row="4" Grid.RowSpan="2" >
+                        <DataGrid HorizontalAlignment="Stretch" IsHitTestVisible="False" GridLinesVisibility="None" x:Name="roomsDataGrid" AutoGenerateColumns="False" HeadersVisibility="Column" IsReadOnly="True" CanUserAddRows="False" Background="{x:Null}" Foreground="#FF030303" BorderBrush="White" FontFamily="Poppins" FontSize="14" >
+
+                            <!--rows design-->
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="Height" Value="35" ></Setter>
+                                    <Setter Property="Background" Value="{x:Null}" ></Setter>
+                                    <Setter Property="Foreground" Value="White" ></Setter>
+                                    <Setter Property="BorderBrush" Value="White" ></Setter>
+                                    <Setter Property="BorderThickness" Value="0,0.5,0,0.5" ></Setter>
+
+                                </Style>
+                            </DataGrid.RowStyle>
+
+
+                            <!--cell style-->
+                            <DataGrid.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <Setter Property="VerticalAlignment" Value="Center" ></Setter>
+                                    <Setter Property="HorizontalAlignment" Value="Center" ></Setter>
+                                    <Setter Property="Padding" Value="5" ></Setter>
+                                    <Setter Property="Height" Value="auto" ></Setter>
+                                </Style>
+                            </DataGrid.CellStyle>
+
+                            <!--header design-->
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="DataGridColumnHeader" >
+                                    <Setter Property="Background" Value="#FF767676" ></Setter>
+                                    <Setter Property="Foreground" Value="White" ></Setter>
+                                    <Setter Property="Padding" Value="0,5,0,5" ></Setter>
+                                    <Setter Property="HorizontalContentAlignment" Value="Center" ></Setter>
+                                </Style>
+                            </DataGrid.ColumnHeaderStyle>
+
+                            <!--data columns-->
+                            <DataGrid.Columns >
+                                <DataGridTextColumn Width="1*" Header="Room Name" Binding="{Binding Name}" ></DataGridTextColumn>
+                                <DataGridTextColumn Width="1*" Header="Room Type" Binding="{Binding Type}" ></DataGridTextColumn>
+                                <DataGridTextColumn Width="1*" Header="Capacity" Binding="{Binding Capacity}" ></DataGridTextColumn>
+                                <DataGridTextColumn Width="1*" Header="Availability" Binding="{Binding statusText}" ></DataGridTextColumn>
+                                <DataGridTextColumn Width="4*" Header="Features" Binding="{Binding FeaturesString}" ></DataGridTextColumn>
+                                <!--adding a button at the end-->
+                                <DataGridTemplateColumn Width="1*" Header="Edit" >
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Padding="5,0,5,0" CornerRadius="5" Background="White" Height="25">
+                                                <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Foreground="#FF313030" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center">Edit</Label>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+
+                            </DataGrid.Columns>
+
+
+
+                        </DataGrid>
+                    </Grid>
+
 
                 </Grid>
 
+                <!--Add Room View-->
+                <Grid x:Name="roomManagementAddRoom" Background="White" d:IsHidden="True" >
+                    <!--border box shadow-->
+                    <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Background="White" Padding="0,0,0,15"  >
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FFC3C3C3" BlurRadius="10" ShadowDepth="2" Opacity="1" RenderingBias="Quality" Direction="300"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <!--main border-->
+                    <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Padding="40,0,40,15" >
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFFFFBFF" Offset="0.892"/>
+                                <GradientStop Color="#FFE0FBFF" Offset="1"/>
+                                <GradientStop Color="White" Offset="0"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Grid ShowGridLines="True" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1.5*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="5*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*" ></ColumnDefinition>
+                                <ColumnDefinition Width="1.2*" ></ColumnDefinition>
+                                <ColumnDefinition Width="1*" ></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <!--Title-->
+                            <Label VerticalAlignment="Bottom" FontFamily="Poppins" FontSize="24" FontWeight="Bold" Margin="10,0,0,0">Add New Room</Label>
+
+                            <!--Name-->
+                            <Label Grid.Row="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Name</Label>
+                            <Border CornerRadius="5" Grid.Row="2" Background="White" Margin="0,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox x:Name="addRoomNameInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="0,0,10,0" />
+
+                            <!--Type-->
+                            <Label Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Type</Label>
+                            <Border Grid.Column="1" CornerRadius="5" Grid.Row="2" Background="White" Margin="10,0,0,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <!--<TextBox Grid.Column="1" x:Name="addRoomTypeInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="10,0,0,0" />-->
+                            <ComboBox DisplayMemberPath="Name" Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center" x:Name="addRoomTypeInput" BorderBrush="{x:Null}" Background="White" FontFamily="Poppins" FontSize="14" Margin="10,0,0,0" >
+
+                            </ComboBox>
+
+                            <!--Capacity-->
+                            <Label Grid.Row="3" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Capacity</Label>
+                            <Border CornerRadius="5" Grid.Row="4" Background="White" Margin="0,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox Grid.Row="4" x:Name="addRoomCapacityInput" VerticalContentAlignment="Center" Panel.ZIndex="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="0,0,10,0" />
+
+                            <!--Price-->
+                            <Label Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Price</Label>
+                            <Border Grid.Column="1" CornerRadius="5" Grid.Row="4" Background="White" Margin="11,0,0,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox Grid.Column="1" Grid.Row="4" x:Name="addRoomPriceInput" VerticalContentAlignment="Center" Panel.ZIndex="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="10,0,0,0" />
+
+                            <!--Add Feature-->
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Add Feature</Label>
+
+                            <Grid Grid.Row="6" Grid.ColumnSpan="2" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2.5*" ></ColumnDefinition>
+                                    <ColumnDefinition Width="1*" ></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Border CornerRadius="5"  Background="White" Margin="0,0,10,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                </Border>
+                                <TextBox x:Name="addFeatureInput" VerticalContentAlignment="Center" Panel.ZIndex="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Width="NaN" Margin="0,0,10,0" />
+
+                                <Border x:Name="addFeaturesBtn" CornerRadius="5" Grid.Column="1" Margin="10,0,0,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <LinearGradientBrush.Transform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="-3"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.Transform>
+                                            <LinearGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                    <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.RelativeTransform>
+                                            <GradientStop Color="#FFFFCFCF"/>
+                                            <GradientStop Color="#FFCFFFED" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Add</Label>
+                                </Border>
+                            </Grid>
+                            
+                            <!--Features Container-->
+                            <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Features</Label>
+                            <Border Grid.Column="2" CornerRadius="5" Grid.RowSpan="7" Grid.Row="2" Background="White" Margin="11,0,0,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <ListBox HorizontalContentAlignment="Stretch" x:Name="addRoomFeatures" Grid.Column="2" Grid.RowSpan="7" Grid.Row="2" Background="{x:Null}" Margin="10,0,0,0" BorderBrush="{x:Null}" FontFamily="Poppins" FontSize="14" >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Label Content="{Binding}" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                                            <Border x:Name="removeFeature" MouseDown="removeFeature" CornerRadius="7" Height="25" Padding="5,0,5,0" Background="#FFFE8080" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <Label FontFamily="Poppins" FontSize="10" Foreground="White">X</Label>                                                
+                                            </Border>
+
+                                        </Grid>
+
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                            </ListBox>
+                            
+
+
+
+
+                            <!--Pictures-->
+                            <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Pictures</Label>
+
+                            <Border x:Name="addRoomAddPictureBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Margin="0,0,100,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+
+                                <Border.Background>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <LinearGradientBrush.Transform>
+                                            <TransformGroup>
+                                                <ScaleTransform/>
+                                                <SkewTransform/>
+                                                <RotateTransform Angle="-3"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.Transform>
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="#CFD5FF"/>
+                                        <GradientStop Color="#F9CFFF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Add Picture</Label>
+                            </Border>
+
+                            <!--pictures container-->
+                            <ScrollViewer Grid.Row="9" Grid.ColumnSpan="3"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" >
+                                <ItemsControl x:Name="addRoomPicturesCon" >
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="5*" ></RowDefinition>
+                                                    <RowDefinition Height="1*" ></RowDefinition>
+                                                </Grid.RowDefinitions>
+
+                                                <Image Grid.Row="0" Source="{Binding}" />
+                                                <Border MouseDown="removePicture" Cursor="Hand" Grid.Row="1" CornerRadius="0" Background="#FFFE8080">
+                                                    <Label Foreground="White" FontFamily="Poppins" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center">Remove</Label>
+                                                </Border>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+                                    
+
+                                </ItemsControl>
+
+                            </ScrollViewer>
+
+                            <!--buttons-->
+                            <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.ColumnSpan="3" HorizontalAlignment="Right" >
+                                <!--Cancel Btn-->
+                                <Border x:Name="cancelAddRoomBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="20,0,20,0" Margin="0,0,10,0" Background="#FFF6F6F6" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Cancel</Label>
+                                </Border>
+
+                                <!--Add Room Button-->
+                                <Border x:Name="AddRoomBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="30,0,30,0" Margin="10,0,0,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <LinearGradientBrush.Transform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="-3"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.Transform>
+                                            <LinearGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                    <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.RelativeTransform>
+                                            <GradientStop Color="#FFCFFFF8"/>
+                                            <GradientStop Color="#FFCFF8FF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Add Room</Label>
+                                </Border>
+
+
+                            </StackPanel>
+
+
+                        </Grid>
+
+                    </Border>
+                </Grid>
+
+                <!--Add RoomType View-->
+                <Grid x:Name="roomManagementAddRoomType" Background="White" >
+                    <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Background="White" Padding="0,0,0,15"  >
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FFC3C3C3" BlurRadius="10" ShadowDepth="2" Opacity="1" RenderingBias="Quality" Direction="300"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <!--main border-->
+                    <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Padding="40,0,40,15" >
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFFFFBFF" Offset="0.892"/>
+                                <GradientStop Color="#FFE0FBFF" Offset="1"/>
+                                <GradientStop Color="White" Offset="0"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Grid ShowGridLines="True" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1.5*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="5*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*" ></ColumnDefinition>
+                                <ColumnDefinition Width="1.2*" ></ColumnDefinition>
+                                <ColumnDefinition Width="1*" ></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <!--Title-->
+                            <Label VerticalAlignment="Bottom" FontFamily="Poppins" FontSize="24" FontWeight="Bold" Margin="10,0,0,0">Add New Room Type</Label>
+
+                            <!--Name-->
+                            <Label Grid.Row="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Name</Label>
+                            <Border CornerRadius="5" Grid.Row="2" Background="White" Margin="0,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox x:Name="addRoomTypeNameInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="0,0,10,0" />
+
+                            <!--Price-->
+                            <Label Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Price</Label>
+                            <Border CornerRadius="5" Grid.Column="1" Grid.Row="2" Background="White" Margin="10,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox x:Name="addRoomTypePriceInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="2" Grid.Column="1" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="10,0,10,0" />
+
+                            <!--Capacity-->
+                            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Capacity</Label>
+                            <Border CornerRadius="5" Grid.Column="0" Grid.Row="4" Background="White" Margin="0,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox x:Name="addRoomTypeCapacityInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="4" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="0,0,10,0" />
+
+                            <!--Add Feature-->
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Add Feature</Label>
+
+                            <Grid Grid.Row="6" Grid.ColumnSpan="2" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2.5*" ></ColumnDefinition>
+                                    <ColumnDefinition Width="1*" ></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Border CornerRadius="5"  Background="White" Margin="0,0,10,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                </Border>
+                                <TextBox x:Name="addRoomTypeFeatureInput" VerticalContentAlignment="Center" Panel.ZIndex="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Width="NaN" Margin="0,0,10,0" />
+
+                                <Border x:Name="addRoomTypeFeaturesBtn" CornerRadius="5" Grid.Column="1" Margin="10,0,0,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <LinearGradientBrush.Transform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="-3"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.Transform>
+                                            <LinearGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                    <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.RelativeTransform>
+                                            <GradientStop Color="#FFFFCFCF"/>
+                                            <GradientStop Color="#FFCFFFED" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Add</Label>
+                                </Border>
+                            </Grid>
+
+                            <!--Features Container-->
+                            <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Features</Label>
+                            <Border Grid.Column="2" CornerRadius="5" Grid.RowSpan="7" Grid.Row="2" Background="White" Margin="11,0,0,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <ListBox HorizontalContentAlignment="Stretch" x:Name="addRoomTypeFeatures" Grid.Column="2" Grid.RowSpan="7" Grid.Row="2" Background="{x:Null}" Margin="10,0,0,0" BorderBrush="{x:Null}" FontFamily="Poppins" FontSize="14" >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Label Content="{Binding}" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                                            <Border x:Name="removeFeature" MouseDown="removeRoomTypeFeature" CornerRadius="7" Height="25" Padding="5,0,5,0" Background="#FFFE8080" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <Label FontFamily="Poppins" FontSize="10" Foreground="White">X</Label>
+                                            </Border>
+
+                                        </Grid>
+
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                            </ListBox>
+
+                            <!--buttons-->
+                            <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.ColumnSpan="3" HorizontalAlignment="Right" >
+                                <!--Cancel Btn-->
+                                <Border x:Name="cancelAddRoomTypeBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="20,0,20,0" Margin="0,0,10,0" Background="#FFF6F6F6" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Cancel</Label>
+                                </Border>
+
+                                <!--Add Room Button-->
+                                <Border x:Name="AddRoomTypeBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="30,0,30,0" Margin="10,0,0,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <LinearGradientBrush.Transform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="-3"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.Transform>
+                                            <LinearGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                    <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.RelativeTransform>
+                                            <GradientStop Color="#FFCFFFF8"/>
+                                            <GradientStop Color="#FFCFF8FF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Add Room Type</Label>
+                                </Border>
+
+
+                            </StackPanel>
+
+
+                            
+                        </Grid>
+
+                    </Border>
+                </Grid>
+
+
+                <!--end of Room management window-->
             </Grid>
+
+
+
+
+
 
 
 
@@ -742,7 +1326,7 @@
                     <ColumnDefinition Width="3*" ></ColumnDefinition>
                     <ColumnDefinition Width="8*" ></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                
+
                 <!--Security Menu /Add and Manage-->
                 <Grid Grid.Column="0" x:Name="SecurityMenu_left">
                     <Grid.RowDefinitions>
@@ -752,51 +1336,51 @@
 
                     <Border BorderThickness="0,0,0,1" BorderBrush="Black">
                         <Grid Grid.Row="0" Background="White">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="3*" ></RowDefinition>
-                            <RowDefinition Height="8*" ></RowDefinition>
-                        </Grid.RowDefinitions>
-
-                            <Grid Background="#5BAFBC" Grid.Row="0" x:Name="HeaderMenu">
-                            <Label Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="19" Foreground="White">Account Manager</Label>
-                        </Grid>
-                        <Grid Grid.Row="1" x:Name="BodyMenu">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="1*" ></RowDefinition>
-                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="3*" ></RowDefinition>
+                                <RowDefinition Height="8*" ></RowDefinition>
                             </Grid.RowDefinitions>
 
-                            <!--custom button for radius-->
-                            <Button x:Name="btnAdd" Grid.Row="0" Width="130" Height="40" BorderBrush="Black" BorderThickness="1" Background="White" Content="Add an Account" HorizontalAlignment="Right" Margin="0,0,30,0" FontWeight="DemiBold" Cursor="Hand">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
+                            <Grid Background="#5BAFBC" Grid.Row="0" x:Name="HeaderMenu">
+                                <Label Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="19" Foreground="White">Account Manager</Label>
+                            </Grid>
+                            <Grid Grid.Row="1" x:Name="BodyMenu">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="1*" ></RowDefinition>
+                                    <RowDefinition Height="1*" ></RowDefinition>
+                                </Grid.RowDefinitions>
 
-                            <Button x:Name="btnManage" Grid.Row="1" Width="130" Height="40" BorderBrush="Black" BorderThickness="1" Background="White" Content="Manage Account" HorizontalAlignment="Right" Margin="0,0,30,0" FontWeight="DemiBold" Cursor="Hand">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
+                                <!--custom button for radius-->
+                                <Button x:Name="btnAdd" Grid.Row="0" Width="130" Height="40" BorderBrush="Black" BorderThickness="1" Background="White" Content="Add an Account" HorizontalAlignment="Right" Margin="0,0,30,0" FontWeight="DemiBold" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <Button x:Name="btnManage" Grid.Row="1" Width="130" Height="40" BorderBrush="Black" BorderThickness="1" Background="White" Content="Manage Account" HorizontalAlignment="Right" Margin="0,0,30,0" FontWeight="DemiBold" Cursor="Hand">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
 
 
+
+                            </Grid>
 
                         </Grid>
-                        
-                    </Grid>
                     </Border>
                 </Grid>
                 <!--End Left Security Menu-->
-                
-             
+
+
 
                 <!--Add Account View-->
                 <Grid Grid.Column="1" x:Name="AddAcount"  Margin="10,0,0,0" d:IsHidden="True">
@@ -810,13 +1394,20 @@
                     </Grid>
                     <Grid Grid.Row="1" Background="White" x:Name="content"  >
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="0.6*" ></RowDefinition>  <!--login Details-->
-                            <RowDefinition Height="0.5*" ></RowDefinition>  <!--Label-->
-                            <RowDefinition Height="0.5*" ></RowDefinition>  <!--Input Box-->
-                            <RowDefinition Height="0.6*" ></RowDefinition>  <!--Account Information-->
-                            <RowDefinition Height="0.5*" ></RowDefinition>  <!--Label-->
-                            <RowDefinition Height="0.5*" ></RowDefinition>  <!--Input Box-->
-                            <RowDefinition Height="0.7*" ></RowDefinition>  <!--Buttons-->
+                            <RowDefinition Height="0.6*" ></RowDefinition>
+                            <!--login Details-->
+                            <RowDefinition Height="0.5*" ></RowDefinition>
+                            <!--Label-->
+                            <RowDefinition Height="0.5*" ></RowDefinition>
+                            <!--Input Box-->
+                            <RowDefinition Height="0.6*" ></RowDefinition>
+                            <!--Account Information-->
+                            <RowDefinition Height="0.5*" ></RowDefinition>
+                            <!--Label-->
+                            <RowDefinition Height="0.5*" ></RowDefinition>
+                            <!--Input Box-->
+                            <RowDefinition Height="0.7*" ></RowDefinition>
+                            <!--Buttons-->
                             <RowDefinition Height="0.6*" ></RowDefinition>
                             <!--Buttons-->
                         </Grid.RowDefinitions>
@@ -862,7 +1453,7 @@
                             <Label Grid.Column="1" FontSize="15"  VerticalAlignment="Bottom">Account Owner</Label>
                             <Label Grid.Column="2" FontSize="15"  VerticalAlignment="Bottom">Email</Label>
                             <Label Grid.Column="3" FontSize="15"  VerticalAlignment="Bottom">Contact # (Optional)</Label>
-                                                       
+
                         </Grid>
                         <!--Account Info input-->
                         <Grid x:Name="UserInputAccount" Grid.Row="5" Margin="4,0,0,0" >
@@ -872,11 +1463,11 @@
                                 <ColumnDefinition Width="1*"></ColumnDefinition>
                                 <ColumnDefinition Width="1*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
-                            
+
                             <ComboBox FontSize="16" Background="White" Grid.Column="0" Height="35" Width="145" Margin="20,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
                                 <ComboBoxItem Content="Admin" />
                                 <ComboBoxItem Content="Staff" />
-                               
+
                             </ComboBox>
                             <TextBox Grid.Column="1" FontSize="16" Height="35" Width="165"  HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
                             <TextBox Grid.Column="2" FontSize="16" Height="35" Width="165"  HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
@@ -911,7 +1502,7 @@
                                     </Button.Template>
                                 </Button>
                             </Grid>
-                            
+
                         </Border>
 
 
@@ -968,8 +1559,8 @@
                             </ScrollViewer>
                         </Grid>
                     </Grid>
-                    
-                   
+
+
                 </Grid>
 
             </Grid>

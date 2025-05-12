@@ -27,7 +27,18 @@ Public Class Room
     'Public Property Bookings As New List(Of Booking) From {}
     Public Property Bookings As New ObservableCollection(Of Booking) From {}
     Public Property Features As New List(Of String) From {}
-    Public Property Pictures As New List(Of Object) From {}
+
+    Public Property FeaturesString As String
+        Get
+            Dim featuresToString As String = String.Join(", ", Features)
+            Return featuresToString
+        End Get
+        Set(value As String)
+            FeaturesString = value
+        End Set
+    End Property
+
+    Public Property Pictures As New List(Of ImageSource) From {}
     Public Property Color As String
 
     Private _statusText As String = "Available"
