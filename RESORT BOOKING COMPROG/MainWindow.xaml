@@ -147,7 +147,7 @@
             </Grid>
 
             <!--POS-->
-            <Grid ShowGridLines="True" x:Name="POS" Grid.Column="1 " Background="#FF313030" >
+            <Grid ShowGridLines="True" x:Name="POS" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" ></ColumnDefinition>
                     <ColumnDefinition Width="8*" ></ColumnDefinition>
@@ -691,10 +691,10 @@
 
 
             <!--Room Management-->
-            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" >
+            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" >
 
                 <!--Room management list of rooms view-->
-                <Grid ShowGridLines="True" x:Name="roomManagementRoomList" Margin="30,0,30,0" d:IsHidden="True" >
+                <Grid ShowGridLines="True" x:Name="roomManagementRoomList" Margin="30,0,30,0" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" ></RowDefinition>
                         <RowDefinition Height="1.5*" ></RowDefinition>
@@ -731,7 +731,7 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ListBoxItem">
-                                                    <Border x:Name="roomTypeBtn" Cursor="Hand" BorderThickness="0,0,0,0" Background="#00000000" BorderBrush="White" Padding="5,0,5,0">
+                                                    <Border MouseRightButtonDown="roomTypeBtn_MouseLeftButtonDown"  x:Name="roomTypeBtn" Cursor="Hand" BorderThickness="0,0,0,0" Background="#00000000" BorderBrush="White" Padding="5,0,5,0">
                                                         <StackPanel Orientation="Horizontal" >
                                                             <Label Content="{Binding Name}" FontFamily="Poppins" FontSize="16" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
                                                             <Border CornerRadius="10" Background="#FF979595" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="5,0,5,0" >
@@ -807,7 +807,7 @@
 
                     <!--Data Grid-->
                     <Grid Grid.Row="4" Grid.RowSpan="2" >
-                        <DataGrid HorizontalAlignment="Stretch" IsHitTestVisible="False" GridLinesVisibility="None" x:Name="roomsDataGrid" AutoGenerateColumns="False" HeadersVisibility="Column" IsReadOnly="True" CanUserAddRows="False" Background="{x:Null}" Foreground="#FF030303" BorderBrush="White" FontFamily="Poppins" FontSize="14" >
+                        <DataGrid HorizontalAlignment="Stretch" GridLinesVisibility="None" x:Name="roomsDataGrid" AutoGenerateColumns="False" HeadersVisibility="Column" IsReadOnly="True" CanUserAddRows="False" Background="{x:Null}" Foreground="#FF030303" BorderBrush="White" FontFamily="Poppins" FontSize="14" >
 
                             <!--rows design-->
                             <DataGrid.RowStyle>
@@ -853,13 +853,10 @@
                                 <DataGridTemplateColumn Width="1*" Header="Edit" >
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Border Padding="5,0,5,0" CornerRadius="5" Background="White" Height="25">
-                                                <Label HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontFamily="Poppins" Foreground="#FF313030" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center">Edit</Label>
-                                            </Border>
+                                            <Button Cursor="Hand" Click="editRoomBtn_Click" x:Name="editRoomBtn" Content="Edit" Foreground="White" FontFamily="Poppins" Background="{x:Null}" BorderBrush="{x:Null}" />
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
-
 
                             </DataGrid.Columns>
 
@@ -1141,7 +1138,7 @@
                 </Grid>
 
                 <!--Add RoomType View-->
-                <Grid x:Name="roomManagementAddRoomType" Background="White" >
+                <Grid x:Name="roomManagementAddRoomType" Background="White" d:IsHidden="True" >
                     <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Background="White" Padding="0,0,0,15"  >
                         <Border.Effect>
                             <DropShadowEffect Color="#FFC3C3C3" BlurRadius="10" ShadowDepth="2" Opacity="1" RenderingBias="Quality" Direction="300"/>
@@ -1324,6 +1321,480 @@
 
 
                             
+                        </Grid>
+
+                    </Border>
+                </Grid>
+
+                <!--Edit Room View-->
+                <Grid x:Name="roomManagementEditRoom" Background="White" d:IsHidden="True" >
+                    <!--border box shadow-->
+                    <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Background="White" Padding="0,0,0,15"  >
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FFC3C3C3" BlurRadius="10" ShadowDepth="2" Opacity="1" RenderingBias="Quality" Direction="300"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <!--main border-->
+                    <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Padding="40,0,40,15" >
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFFFFBFF" Offset="0.892"/>
+                                <GradientStop Color="#FFE0FBFF" Offset="1"/>
+                                <GradientStop Color="White" Offset="0"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Grid ShowGridLines="True" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1.5*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="5*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*" ></ColumnDefinition>
+                                <ColumnDefinition Width="1.2*" ></ColumnDefinition>
+                                <ColumnDefinition Width="1*" ></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <!--Title-->
+                            <Label x:Name="editRoomTitle" VerticalAlignment="Bottom" FontFamily="Poppins" FontSize="24" FontWeight="Bold" Margin="10,0,0,0">Edit Room</Label>
+
+                            <!--Name-->
+                            <Label Grid.Row="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Name</Label>
+                            <Border CornerRadius="5" Grid.Row="2" Background="White" Margin="0,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox x:Name="editRoomNameInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="0,0,10,0" />
+
+                            <!--Type-->
+                            <Label Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Type</Label>
+                            <Border Grid.Column="1" CornerRadius="5" Grid.Row="2" Background="White" Margin="10,0,0,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <!--<TextBox Grid.Column="1" x:Name="addRoomTypeInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="10,0,0,0" />-->
+                            <ComboBox DisplayMemberPath="Name" Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center" x:Name="editRoomTypeInput" BorderBrush="{x:Null}" Background="White" FontFamily="Poppins" FontSize="14" Margin="10,0,0,0" >
+
+                            </ComboBox>
+
+                            <!--Capacity-->
+                            <Label Grid.Row="3" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Capacity</Label>
+                            <Border CornerRadius="5" Grid.Row="4" Background="White" Margin="0,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox Grid.Row="4" x:Name="editRoomCapacityInput" VerticalContentAlignment="Center" Panel.ZIndex="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="0,0,10,0" />
+
+                            <!--Price-->
+                            <Label Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Price</Label>
+                            <Border Grid.Column="1" CornerRadius="5" Grid.Row="4" Background="White" Margin="11,0,0,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox Grid.Column="1" Grid.Row="4" x:Name="editRoomPriceInput" VerticalContentAlignment="Center" Panel.ZIndex="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="10,0,0,0" />
+
+                            <!--Add Feature-->
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Add Feature</Label>
+
+                            <Grid Grid.Row="6" Grid.ColumnSpan="2" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2.5*" ></ColumnDefinition>
+                                    <ColumnDefinition Width="1*" ></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Border CornerRadius="5"  Background="White" Margin="0,0,10,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                </Border>
+                                <TextBox x:Name="editFeatureInput" VerticalContentAlignment="Center" Panel.ZIndex="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Width="NaN" Margin="0,0,10,0" />
+
+                                <Border x:Name="editFeaturesBtn" CornerRadius="5" Grid.Column="1" Margin="10,0,0,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <LinearGradientBrush.Transform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="-3"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.Transform>
+                                            <LinearGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                    <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.RelativeTransform>
+                                            <GradientStop Color="#FFFFCFCF"/>
+                                            <GradientStop Color="#FFCFFFED" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Add</Label>
+                                </Border>
+                            </Grid>
+
+                            <!--Features Container-->
+                            <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Features</Label>
+                            <Border Grid.Column="2" CornerRadius="5" Grid.RowSpan="7" Grid.Row="2" Background="White" Margin="11,0,0,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <ListBox HorizontalContentAlignment="Stretch" x:Name="editRoomFeatures" Grid.Column="2" Grid.RowSpan="7" Grid.Row="2" Background="{x:Null}" Margin="10,0,0,0" BorderBrush="{x:Null}" FontFamily="Poppins" FontSize="14" >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Label Content="{Binding}" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                                            <Border Cursor="Hand" x:Name="editRoomRemoveFeature" MouseDown="editRoomRemoveFeature_MouseDown" CornerRadius="7" Height="25" Padding="5,0,5,0" Background="#FFFE8080" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <Label  FontFamily="Poppins" FontSize="10" Foreground="White">X</Label>
+                                            </Border>
+
+                                        </Grid>
+
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                            </ListBox>
+
+
+
+
+
+                            <!--Pictures-->
+                            <Label Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Pictures</Label>
+
+                            <Border x:Name="editRoomAddPictureBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Margin="0,0,100,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+
+                                <Border.Background>
+                                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                        <LinearGradientBrush.Transform>
+                                            <TransformGroup>
+                                                <ScaleTransform/>
+                                                <SkewTransform/>
+                                                <RotateTransform Angle="-3"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.Transform>
+                                        <LinearGradientBrush.RelativeTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                <TranslateTransform/>
+                                            </TransformGroup>
+                                        </LinearGradientBrush.RelativeTransform>
+                                        <GradientStop Color="#CFD5FF"/>
+                                        <GradientStop Color="#F9CFFF" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Add Picture</Label>
+                            </Border>
+
+                            <!--pictures container-->
+                            <ScrollViewer Grid.Row="9" Grid.ColumnSpan="3"  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" >
+                                <ItemsControl x:Name="editRoomPicturesCon" >
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="5*" ></RowDefinition>
+                                                    <RowDefinition Height="1*" ></RowDefinition>
+                                                </Grid.RowDefinitions>
+
+                                                <Image Grid.Row="0" Source="{Binding}" />
+                                                <Border MouseDown="removePicturesEdit_MouseDown"  x:Name="removePicturesEdit" Cursor="Hand" Grid.Row="1" CornerRadius="0" Background="#FFFE8080">
+                                                    <Label Foreground="White" FontFamily="Poppins" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center">Remove</Label>
+                                                </Border>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+
+
+
+                                </ItemsControl>
+
+                            </ScrollViewer>
+
+                            <!--buttons-->
+                            <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.ColumnSpan="3" HorizontalAlignment="Right" >
+                                <!--Cancel Btn-->
+                                <Border x:Name="cancelEditRoomBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="20,0,20,0" Margin="0,0,10,0" Background="#FFF6F6F6" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Cancel</Label>
+                                </Border>
+
+                                <!--Remove Room Btn-->
+                                <Border x:Name="removeRoomBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="20,0,20,0" Margin="10,0,10,0" Background="#FFFE8080" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" Foreground="White" >Remove Room</Label>
+                                </Border>
+
+                                <!--Save Changes Room Button-->
+                                <Border x:Name="saveChangesRoomBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="30,0,30,0" Margin="10,0,0,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <LinearGradientBrush.Transform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="-3"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.Transform>
+                                            <LinearGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                    <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.RelativeTransform>
+                                            <GradientStop Color="#FFCFFFF8"/>
+                                            <GradientStop Color="#FFCFF8FF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Save Changes</Label>
+                                </Border>
+
+
+                            </StackPanel>
+
+
+                        </Grid>
+
+                    </Border>
+                </Grid>
+
+                <!--Edit RoomType View-->
+                <Grid x:Name="roomManagementEditRoomType" Background="White" >
+                    <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Background="White" Padding="0,0,0,15"  >
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FFC3C3C3" BlurRadius="10" ShadowDepth="2" Opacity="1" RenderingBias="Quality" Direction="300"/>
+                        </Border.Effect>
+                    </Border>
+
+                    <!--main border-->
+                    <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Padding="40,0,40,15" >
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFFFFBFF" Offset="0.892"/>
+                                <GradientStop Color="#FFE0FBFF" Offset="1"/>
+                                <GradientStop Color="White" Offset="0"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Grid ShowGridLines="True" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1.5*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                                <RowDefinition Height="5*" ></RowDefinition>
+                                <RowDefinition Height="1*" ></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.2*" ></ColumnDefinition>
+                                <ColumnDefinition Width="1.2*" ></ColumnDefinition>
+                                <ColumnDefinition Width="1*" ></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <!--Title-->
+                            <Label x:Name="editRoomTypeTitle" VerticalAlignment="Bottom" FontFamily="Poppins" FontSize="24" FontWeight="Bold">Edit Room Type </Label>
+
+                            <!--Name-->
+                            <Label Grid.Row="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Name</Label>
+                            <Border CornerRadius="5" Grid.Row="2" Background="White" Margin="0,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox x:Name="editTypeNameInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="0,0,10,0" />
+
+                            <!--Price-->
+                            <Label Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Price</Label>
+                            <Border CornerRadius="5" Grid.Column="1" Grid.Row="2" Background="White" Margin="10,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox x:Name="editRoomTypePriceInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="2" Grid.Column="1" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="10,0,10,0" />
+
+                            <!--Capacity-->
+                            <Label Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Capacity</Label>
+                            <Border CornerRadius="5" Grid.Column="0" Grid.Row="4" Background="White" Margin="0,0,10,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <TextBox x:Name="editRoomTypeCapacityInput" VerticalContentAlignment="Center" Panel.ZIndex="2" Grid.Row="4" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Margin="0,0,10,0" />
+
+                            <!--Add Feature-->
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" >Add Feature</Label>
+
+                            <Grid Grid.Row="6" Grid.ColumnSpan="2" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2.5*" ></ColumnDefinition>
+                                    <ColumnDefinition Width="1*" ></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Border CornerRadius="5"  Background="White" Margin="0,0,10,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                </Border>
+                                <TextBox x:Name="editRoomTypeFeatureInput" VerticalContentAlignment="Center" Panel.ZIndex="2" FontFamily="Poppins" FontSize="14" BorderBrush="{x:Null}" SelectionBrush="{x:Null}" Width="NaN" Margin="0,0,10,0" />
+
+                                <Border x:Name="editRoomTypeFeaturesBtn" CornerRadius="5" Grid.Column="1" Margin="10,0,0,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <LinearGradientBrush.Transform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="-3"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.Transform>
+                                            <LinearGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                    <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.RelativeTransform>
+                                            <GradientStop Color="#FFFFCFCF"/>
+                                            <GradientStop Color="#FFCFFFED" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Add</Label>
+                                </Border>
+                            </Grid>
+
+                            <!--Features Container-->
+                            <Label Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" Margin="10,0,0,0" >Features</Label>
+                            <Border Grid.Column="2" CornerRadius="5" Grid.RowSpan="7" Grid.Row="2" Background="White" Margin="11,0,0,0" >
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                </Border.Effect>
+                            </Border>
+                            <ListBox HorizontalContentAlignment="Stretch" x:Name="editRoomTypeFeatures" Grid.Column="2" Grid.RowSpan="7" Grid.Row="2" Background="{x:Null}" Margin="10,0,0,0" BorderBrush="{x:Null}" FontFamily="Poppins" FontSize="14" >
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Label Content="{Binding}" VerticalAlignment="Bottom" HorizontalAlignment="Left" />
+                                            <Border MouseDown="removeRoomTypeFeatureBtn_MouseDown" x:Name="removeRoomTypeFeatureBtn" CornerRadius="7" Height="25" Padding="5,0,5,0" Background="#FFFE8080" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <Label FontFamily="Poppins" FontSize="10" Foreground="White">X</Label>
+                                            </Border>
+
+                                        </Grid>
+
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+
+                            </ListBox>
+
+                            <!--buttons-->
+                            <StackPanel Orientation="Horizontal" Grid.Row="10" Grid.ColumnSpan="3" HorizontalAlignment="Right" >
+                                <!--Cancel Btn-->
+                                <Border x:Name="cancelEditRoomTypeBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="20,0,20,0" Margin="0,0,10,0" Background="#FFF6F6F6" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Cancel</Label>
+                                </Border>
+
+                                <!--Remove RoomType Button-->
+                                <Border x:Name="removeRoomTypeBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="20,0,20,0" Margin="10,0,10,0" Background="#FFFE8080" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" Foreground="White" >Remove RoomType</Label>
+                                </Border>
+
+                                <!--Save Changes Room Type Button-->
+                                <Border x:Name="saveChangesRoomTypeBtn" Grid.Row="8" CornerRadius="5" Grid.Column="0" Padding="30,0,30,0" Margin="10,0,0,0" >
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#FFB2B2B2" ShadowDepth="1" BlurRadius="10" Direction="300" RenderingBias="Quality"/>
+                                    </Border.Effect>
+
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <LinearGradientBrush.Transform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform Angle="-3"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.Transform>
+                                            <LinearGradientBrush.RelativeTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                                    <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                                                    <RotateTransform Angle="56.768" CenterX="0.5" CenterY="0.5"/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </LinearGradientBrush.RelativeTransform>
+                                            <GradientStop Color="#FFCFFFF8"/>
+                                            <GradientStop Color="#FFCFF8FF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" >Confirm Changes</Label>
+                                </Border>
+
+
+                            </StackPanel>
+
+
+
                         </Grid>
 
                     </Border>

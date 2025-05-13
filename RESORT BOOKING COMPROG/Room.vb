@@ -11,7 +11,16 @@ Public Class Room
     Public Property roomType As RoomType
     Public Property id As String = New Guid().NewGuid.ToString()
     Public Property roomTypeId As String
+
+    Private _capacity As Integer
     Public Property Capacity As Integer
+        Get
+            Return _capacity
+        End Get
+        Set(value As Integer)
+            _capacity = value
+        End Set
+    End Property
     Public Property Price As Double
 
     Private _active As Boolean = True
