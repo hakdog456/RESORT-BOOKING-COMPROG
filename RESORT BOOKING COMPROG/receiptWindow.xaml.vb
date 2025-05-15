@@ -14,7 +14,7 @@ Public Class receiptWindow
     Public Property PartySize As Integer
     Public Property RoomCost As Integer
     Public Property Nights As Integer
-    Public Property Subtotal As Integer
+    Public Property Subtotal As Double
     Public Property Payment As Integer
     Public Property displayStat As String
     Public Property bookingId As String
@@ -35,6 +35,33 @@ Public Class receiptWindow
 
 
     Private Sub receiptWindow_Loaded(sender As Object, e As RoutedEventArgs) Handles Me.Loaded
+
+        'CheckBox if party size exceeded the room capacity
+        Dim exceedCapacityCharge = 0
+        If PartySize > Val(RoomOccupancy) Then
+            exceedCapacityCharge = (PartySize - Val(RoomOccupancy)) * 500
+        End If
+
+        Subtotal += exceedCapacityCharge
+
+
+        'calculate balance
+        Dim ToPay As Double = Subtotal - Payment
+
+
+        'discounts
+        Dim discounts As New List(Of Discount) From {}
+        Dim totalDiscount As Double = 0
+
+        For Each promo As Promo In Promos
+            discounts.Add(New Discount(promo.name, promo.less(Subtotal)))
+            totalDiscount += promo.less(Subtotal)
+        Next
+
+        DiscountsList.ItemsSource = discounts
+        ToPay += totalDiscount
+
+
         Dim details As String = CustomerName & Environment.NewLine &
                         CustomerEmail & Environment.NewLine &
                          CustomerContact
@@ -44,15 +71,15 @@ Public Class receiptWindow
             Start & Environment.NewLine & Ends & Environment.NewLine & DayCount & Environment.NewLine & RoomOccupancy & Environment.NewLine & PartySize
         BookingDetailss.Text = Bookings
 
-        Dim Summary As String = CustomerName & Environment.NewLine & RoomCost & Environment.NewLine & Nights & Environment.NewLine & Subtotal & Environment.NewLine
+        Dim Summary As String = CustomerName & Environment.NewLine & RoomCost & Environment.NewLine & Nights & Environment.NewLine & exceedCapacityCharge & Environment.NewLine & Subtotal & Environment.NewLine
         SummarContent.Text = Summary
 
         'Random number generator for payment id
         Dim rnd As New Random()
         Dim iDnum As Integer = rnd.Next(10000, 100000)
 
-        'calculate balance
-        Dim ToPay = Subtotal - Payment
+
+
 
 
         'Assigning values to payment details display
@@ -68,9 +95,6 @@ Public Class receiptWindow
             AmountPaid.Content = "₱" & Payment
             TotalPaid.Content = "₱" & Payment
         End If
-
-
-
 
     End Sub
 

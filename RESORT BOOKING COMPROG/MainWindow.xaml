@@ -20,7 +20,7 @@
         <!--LOGIN PAGE-->
         <Border x:Name="loginPage" ClipToBounds="True" Background="#FF141414" VerticalAlignment="Center" HorizontalAlignment="Center" d:IsHidden="True" d:IsLocked="True" >
 
-            <Grid ShowGridLines="True" Height="617" Width="915" >
+            <Grid ShowGridLines="False" Height="617" Width="915" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition></ColumnDefinition>
                     <ColumnDefinition></ColumnDefinition>
@@ -52,7 +52,7 @@
         </Border>
 
         <!--MAIN PAGE-->
-        <Grid ShowGridLines="True" x:Name="mainPageGrid" >
+        <Grid ShowGridLines="False" x:Name="mainPageGrid" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" ></ColumnDefinition>
                 <ColumnDefinition Width="8*" ></ColumnDefinition>
@@ -60,11 +60,11 @@
 
             <!--<Grid.RowDefinitions>
                 <RowDefinition Height="1*" ></RowDefinition>
-                <RowDefinition Height="9*" ></RowDefinition>
+                <RowDefinition Height="9*" ></RowDefinition>    
             </Grid.RowDefinitions>-->
 
             <!--SIDE BAR-->
-            <Grid ShowGridLines="True" x:Name="sideBarGrid" Background="#FF242222" d:IsLocked="True" >
+            <Grid ShowGridLines="False" x:Name="sideBarGrid" Background="#FF242222" d:IsLocked="True" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" ></RowDefinition>
                     <RowDefinition Height="5*" ></RowDefinition>
@@ -73,7 +73,7 @@
 
                 <!--Title Side Bar-->
                 <StackPanel x:Name="titlePanel" Orientation="Horizontal" Margin="0,12,0,0" >
-                    <Image Source="/ASSETS/practice logo.png" VerticalAlignment="Top" Width="68" Margin="13,0,0,0" HorizontalAlignment="Left" />
+                    <Image Source="/ASSETS/ICONS/officialLogo.png" VerticalAlignment="Top" Width="68" Margin="13,0,0,0" HorizontalAlignment="Left" />
                     <Label>
                         <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Poppins" FontSize="20" Foreground="White" Margin="6,0,0,0">
                             SAN ANTONIO
@@ -167,7 +167,7 @@
                 </Grid.RowDefinitions>
 
                 <!--ROOM CHECKER BOX-->
-                <Grid Grid.Row="0" Grid.Column="0" x:Name="roomCheckerBox" Margin="10,10,15,0" d:IsLocked="True" >
+                <Grid Grid.Row="0" Grid.Column="0" x:Name="roomCheckerBox" Margin="10,10,15,0" d:IsHidden="True" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*"></RowDefinition>
                         <RowDefinition Height="1*" ></RowDefinition>
@@ -204,7 +204,7 @@
 
 
                 <!--POS - ROOM CHECK-->
-                <Grid ShowGridLines="False" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" x:Name="PosRoomCheck" Margin="5,10,10,10" d:IsLocked="True" d:IsHidden="True" >
+                <Grid ShowGridLines="False" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" x:Name="PosRoomCheck" Margin="5,10,10,10" d:IsHidden="True" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" ></RowDefinition>
                         <RowDefinition Height="17*" ></RowDefinition>
@@ -266,7 +266,7 @@
                 </Grid>
 
                 <!--POS - ROOM DETAILS-->
-                <Grid x:Name="PosRoomDetailsGrid" ShowGridLines="True" Grid.Column="1" Grid.RowSpan="2" Margin="5,10,10,10" d:IsLocked="True" d:IsHidden="True" >
+                <Grid x:Name="PosRoomDetailsGrid" ShowGridLines="False" Grid.Column="1" Grid.RowSpan="2" Margin="5,10,10,10" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" ></RowDefinition>
                         <RowDefinition Height="10*" ></RowDefinition>
@@ -383,7 +383,7 @@
 
 
                 <!--POS - ROOM BOOKING-->
-                <Grid x:Name="PosRoomBookingGrid" ShowGridLines="False" Grid.Column="1" Grid.RowSpan="2" Margin="5,10,10,10" >
+                <Grid x:Name="PosRoomBookingGrid" ShowGridLines="False" Grid.Column="1" Grid.RowSpan="2" Margin="5,10,10,10" d:IsHidden="True" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" ></RowDefinition>
                         <RowDefinition Height="17*" ></RowDefinition>
@@ -393,7 +393,7 @@
                     <Label Grid.Row="0" Foreground="#FF242222" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="24" >BOOKING</Label>
 
                     <!--Room Booking Main Grid-->
-                    <Grid ShowGridLines="True" Grid.Row="1">
+                    <Grid ShowGridLines="False" Grid.Row="1">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1.5*" ></RowDefinition>
                             <RowDefinition Height="1*" ></RowDefinition>
@@ -829,15 +829,15 @@
 
             <!--Dashboard-->
             <Grid x:Name="Dashboard" Grid.Column="1 " Background="#FF313030" d:IsLocked="True" d:IsHidden="True" >
-                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center">Dashboard</Label>
+                <Label Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="24">Dashboard View Under Development</Label>
             </Grid>
 
 
             <!--Room Management-->
-            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" d:IsLocked="True" >
+            <Grid x:Name="Room" Grid.Column="1 " Background="#FF313030" d:IsLocked="True" d:IsHidden="True" >
 
                 <!--Room management list of rooms view-->
-                <Grid ShowGridLines="True" x:Name="roomManagementRoomList" Margin="30,0,30,0" >
+                <Grid ShowGridLines="False" x:Name="roomManagementRoomList" Margin="30,0,30,0" >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*" ></RowDefinition>
                         <RowDefinition Height="1.5*" ></RowDefinition>
@@ -1029,7 +1029,7 @@
                                 <GradientStop Color="White" Offset="0"/>
                             </LinearGradientBrush>
                         </Border.Background>
-                        <Grid ShowGridLines="True" >
+                        <Grid ShowGridLines="False" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="1.5*" ></RowDefinition>
                                 <RowDefinition Height="1*" ></RowDefinition>
@@ -1297,7 +1297,7 @@
                                 <GradientStop Color="White" Offset="0"/>
                             </LinearGradientBrush>
                         </Border.Background>
-                        <Grid ShowGridLines="True" >
+                        <Grid ShowGridLines="False" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="1.5*" ></RowDefinition>
                                 <RowDefinition Height="1*" ></RowDefinition>
@@ -1487,7 +1487,7 @@
                                 <GradientStop Color="White" Offset="0"/>
                             </LinearGradientBrush>
                         </Border.Background>
-                        <Grid ShowGridLines="True" >
+                        <Grid ShowGridLines="False" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="1.5*" ></RowDefinition>
                                 <RowDefinition Height="1*" ></RowDefinition>
@@ -1747,7 +1747,7 @@
                 </Grid>
 
                 <!--Edit RoomType View-->
-                <Grid x:Name="roomManagementEditRoomType" Background="White" >
+                <Grid x:Name="roomManagementEditRoomType" Background="White" d:IsHidden="True" >
                     <Border BorderThickness="2" CornerRadius="20" Margin="30,30,30,30" Background="White" Padding="0,0,0,15"  >
                         <Border.Effect>
                             <DropShadowEffect Color="#FFC3C3C3" BlurRadius="10" ShadowDepth="2" Opacity="1" RenderingBias="Quality" Direction="300"/>
@@ -1763,7 +1763,7 @@
                                 <GradientStop Color="White" Offset="0"/>
                             </LinearGradientBrush>
                         </Border.Background>
-                        <Grid ShowGridLines="True" >
+                        <Grid ShowGridLines="False" >
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="1.5*" ></RowDefinition>
                                 <RowDefinition Height="1*" ></RowDefinition>
@@ -1956,18 +1956,29 @@
 
 
             <!--Security-->
-            <Grid ShowGridLines="True" x:Name="Security" Grid.Column="1 " Background="#FF313030" d:IsHidden="True" d:IsLocked="True" >
+            <Grid ShowGridLines="True" x:Name="Security" Grid.Column="1 " Background="White" d:IsLocked="True" d:IsHidden="True" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" ></ColumnDefinition>
                     <ColumnDefinition Width="8*" ></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
+                    <Grid Panel.ZIndex="10" Grid.Column="0" Grid.ColumnSpan="2" x:Name="blurCover" Background="#7FFFFFFF" >
+                        <Label FontFamily="Poppins" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center">Account Management Under Construction</Label>
+                    </Grid>
                 <!--Security Menu /Add and Manage-->
                 <Grid Grid.Column="0" x:Name="SecurityMenu_left">
+
+                    <Grid.Effect>
+                        <BlurEffect/>
+                    </Grid.Effect>
+
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="3*" ></RowDefinition>
                         <RowDefinition Height="8*" ></RowDefinition>
                     </Grid.RowDefinitions>
+
+                        
 
                     <Border BorderThickness="0,0,0,1" BorderBrush="Black">
                         <Grid Grid.Row="0" Background="White">
@@ -2149,6 +2160,11 @@
 
                 <!--Manage Account View-->
                 <Grid Grid.Column="1" x:Name="ManageAccount" Margin="10,0,0,0">
+
+                    <Grid.Effect>
+                        <BlurEffect/>
+                    </Grid.Effect>
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1.5*" ></RowDefinition>
                         <RowDefinition Height="10*" ></RowDefinition>
@@ -2185,7 +2201,7 @@
                         <Grid Grid.Row="2" x:Name="DisplayContent">
                             <!--Scroll Viewer-->
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Margin="25,10">
-                                <StackPanel>
+                                <StackPanel Orientation="Horizontal" >
                                     <!-- Add content that overflows the view here -->
                                     <TextBlock Text="User1"/>
                                     <TextBlock Text="User2"/>
@@ -2200,83 +2216,263 @@
 
             </Grid>
 
+            
             <!--PROMOS VIEW-->
-            <Grid ShowGridLines="False" x:Name="Promos" Grid.Column="1 " Background="White" d:IsHidden="True" d:IsLocked="True" >
-
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="2*" ></RowDefinition>
-                    <RowDefinition Height="10*" ></RowDefinition>
-                    <RowDefinition Height="1.5*" ></RowDefinition>
-                </Grid.RowDefinitions>
-
-                <!--Title-->
-                <Border BorderThickness="0,0,0,1" Grid.Row="0" BorderBrush="#FF8A8A8A" >
-                    <Border.Effect>
-                        <DropShadowEffect Color="#FF7B7B7B" ShadowDepth="2" BlurRadius="2" Opacity="0.8"/>
-                    </Border.Effect>
-
-                </Border>
-                <Label Grid.Row="0" FontFamily="Poppins" FontSize="36" FontWeight="Bold" VerticalAlignment="Bottom" Margin="40,0,0,0" >Vouchers</Label>                
+            <Grid Grid.Column="1" x:Name="Promos" d:IsLocked="True" d:IsHidden="True" >
                 
-                <!--Items-->
-                <ScrollViewer Grid.Row="1" Margin="40,0,40,0" >
-                    <ItemsControl x:Name="promosCon" Margin="0,20,0,0">
+                <!--LIST OF PROMOS-->
+                <Grid x:Name="promoListView" ShowGridLines="False" Grid.Column="1 " Background="White" d:IsHidden="True" d:IsLocked="True" >
 
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel></WrapPanel>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" ></RowDefinition>
+                        <RowDefinition Height="10*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                    </Grid.RowDefinitions>
 
-                        <!--Items Template-->                        
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                    <!--Title-->
+                    <Border BorderThickness="0,0,0,1" Grid.Row="0" BorderBrush="#FF8A8A8A" >
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FF7B7B7B" ShadowDepth="2" BlurRadius="2" Opacity="0.8"/>
+                        </Border.Effect>
 
-                                <Border Cursor="Hand" ClipToBounds="True" CornerRadius="5" BorderThickness="2" BorderBrush="#FF777575" MouseDown="Border_MouseDown" Margin="5,5,5,5">
-                                    <Grid ShowGridLines="False"   >
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="1*" ></RowDefinition>
-                                            <RowDefinition Height="2*" ></RowDefinition>
-                                            <RowDefinition Height="1*" ></RowDefinition>
-                                        </Grid.RowDefinitions>
+                    </Border>
+                    <Label Grid.Row="0" FontFamily="Poppins" FontSize="36" FontWeight="Bold" VerticalAlignment="Bottom" Margin="40,0,0,0" >Vouchers</Label>                
+                
+                    <!--Items-->
+                    <ScrollViewer Grid.Row="1" Margin="40,0,40,0" >
+                        <ItemsControl x:Name="promosCon" Margin="0,20,0,0">
 
-                                        <!--Promo Name-->
-                                        <Border CornerRadius="3,3,0,0" Panel.ZIndex="0" Grid.Row="0" Background="#FF55DA72" Padding="50,0,50,0" >
-                                            <Label Content="{Binding name}" Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="14" ></Label>
-                                        </Border>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel></WrapPanel>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
 
-                                        <!--Promo Available per Room-->
-                                        <StackPanel Grid.Row="1">
-                                            <Label Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF777575" Margin="0,2,0,0" FontSize="10" >AVAILABLE PROMO PER ROOM</Label>
-                                            <Label Content="{Binding amountText}" Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF777575" Margin="0,-13,0,0" FontSize="10" FontWeight="Bold" ></Label>
-                                        </StackPanel>
+                            <!--Items Template-->                        
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+
+                                    <Border x:Name="promoItem" Cursor="Hand" ClipToBounds="True" CornerRadius="5" BorderThickness="2" BorderBrush="#FF777575" MouseDown="promoItemClick" Margin="5,5,5,5">
+                                        <Grid ShowGridLines="False"   >
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="1*" ></RowDefinition>
+                                                <RowDefinition Height="2*" ></RowDefinition>
+                                                <RowDefinition Height="1*" ></RowDefinition>
+                                            </Grid.RowDefinitions>
+
+                                            <!--Promo Name-->
+                                            <Border CornerRadius="3,3,0,0" Panel.ZIndex="0" Grid.Row="0" Background="#FF55DA72" Padding="50,0,50,0" >
+                                                <Label Content="{Binding name}" Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" FontSize="14" ></Label>
+                                            </Border>
+
+                                            <!--Promo Available per Room-->
+                                            <StackPanel Grid.Row="1">
+                                                <Label Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF777575" Margin="0,2,0,0" FontSize="10" >AVAILABLE PROMO PER ROOM</Label>
+                                                <Label Content="{Binding amountText}" Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF777575" Margin="0,-13,0,0" FontSize="10" FontWeight="Bold" ></Label>
+                                            </StackPanel>
                                         
-                                        <!--lining-->
-                                        <Border BorderThickness="0,0,0,1" Grid.Row="1" BorderBrush="#FF8A8A8A" >
-                                        </Border>
+                                            <!--lining-->
+                                            <Border BorderThickness="0,0,0,1" Grid.Row="1" BorderBrush="#FF8A8A8A" >
+                                            </Border>
 
-                                        <!--Discount-->
-                                        <StackPanel Grid.Row="2">
-                                            <Label Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF777575" Margin="0,2,0,0" FontSize="10" >DISCOUNT</Label>
-                                            <Label Content="{Binding discountText}" Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF777575" Margin="0,-13,0,0" FontSize="10" FontWeight="Bold" ></Label>
-                                        </StackPanel>
+                                            <!--Discount-->
+                                            <StackPanel Grid.Row="2">
+                                                <Label Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF777575" Margin="0,2,0,0" FontSize="10" >DISCOUNT</Label>
+                                                <Label Content="{Binding discountText}" Grid.Row="0" FontFamily="Poppins" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF777575" Margin="0,-13,0,0" FontSize="10" FontWeight="Bold" ></Label>
+                                            </StackPanel>
 
 
-                                    </Grid>
-                                </Border>
+                                        </Grid>
+                                    </Border>
 
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
 
-                        <!--sample item-->
+                            <!--sample item-->
                         
+                        </ItemsControl>
+                    </ScrollViewer>
 
-
-
-                    </ItemsControl>
-                </ScrollViewer>
+                    <!--Buttons-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,20,0" >
+                        <!--Remove RoomType Button-->
+                        <Border x:Name="addPromo" Grid.Row="8" CornerRadius="10" Grid.Column="0" Padding="30,0,30,0" Margin="10,15,10,15" Background="#FFCFFFF8" >
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" Foreground="#FF3D3D3D" >Add Voucher</Label>
+                        </Border>
+                    </StackPanel>
                 
+                </Grid>
+            
+                <!--ADD PROMO-->
+                <Grid x:Name="promoAddView" ShowGridLines="False" Grid.Column="1 " Background="White" d:IsHidden="True" d:IsLocked="True" >
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" ></RowDefinition>
+                        <RowDefinition Height="10*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <!--Title-->
+                    <Border BorderThickness="0,0,0,1" Grid.Row="0" BorderBrush="#FF8A8A8A" >
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FF7B7B7B" ShadowDepth="2" BlurRadius="2" Opacity="0.8"/>
+                        </Border.Effect>
+                    </Border>
+                    <Label Grid.Row="0" FontFamily="Poppins" FontSize="36" FontWeight="Bold" VerticalAlignment="Bottom" Margin="40,0,0,0" >Add a Voucher</Label>
+
+                    <!--Add a promo form-->
+                    <Grid Grid.Row="1" x:Name="formAddPromo" Margin="50,0,50,0" >
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" ></ColumnDefinition>
+                            <ColumnDefinition Width="2*" ></ColumnDefinition>
+                            <ColumnDefinition Width="1*" ></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.7*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="6*" ></RowDefinition>
+                        </Grid.RowDefinitions>
+                        
+                        <!--Name-->
+                        <Label Grid.Row="1" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center">Name</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="2" Grid.Column="0" BorderBrush="#FF242222" Margin="0,0,5,0"   >
+                            <TextBox x:Name="nameAddPromo" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="#FF242222" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                        </Border>
+
+                        <!--Discount Type-->
+                        <Label Grid.Row="1" Grid.Column="1" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center">Discount Type</Label>
+                        <ComboBox x:Name="typeAddPromo" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" FontFamily="Poppins" FontSize="16" >
+                            <ComboBoxItem Content="direct" ></ComboBoxItem>
+                            <ComboBoxItem Content="percentage" ></ComboBoxItem>
+                        </ComboBox>
+
+                        <!--Value-->
+                        <Label Grid.Row="3" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center">Value</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="4" Grid.Column="0" BorderBrush="#FF242222" Margin="0,0,5,0"   >
+                            <TextBox x:Name="valueAddPromo" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="#FF242222" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                        </Border>
+
+                        <!--Amount of voucher per room-->
+                        <Label Grid.Row="3" Grid.Column="1" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center">Amount Of Voucher Per Room</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="4" Grid.Column="1" BorderBrush="#FF242222" Margin="0,0,5,0"   >
+                            <TextBox x:Name="amountAddPromo" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="#FF242222" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                        </Border>
+
+
+                    </Grid>
+
+                    <!--Buttons-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,20,0" >
+                        <!--Cancel Button-->
+                        <Border BorderThickness="1" Cursor="Hand" x:Name="cancelAddPromo" Grid.Row="8" CornerRadius="10" Grid.Column="0" Padding="30,0,30,0" Margin="10,15,10,15" Background="#F6F6F6" BorderBrush="#FF767575" >
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" Foreground="#FF3D3D3D" >Cancel</Label>
+                        </Border>
+
+                        <!--Confirm Add a Promo-->
+                        <Border BorderThickness="1" Cursor="Hand" x:Name="confirmAddPromo" Grid.Row="8" CornerRadius="10" Grid.Column="0" Padding="30,0,30,0" Margin="10,15,10,15" Background="#FFCFFFF8" BorderBrush="#FF767575" >
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" Foreground="#FF3D3D3D" >Confirm Add Voucher</Label>
+                        </Border>
+
+                    </StackPanel>
+
+                </Grid>
+
+                <!--EDIT PROMO-->
+                <Grid x:Name="promoEditView" ShowGridLines="False" Grid.Column="1 " Background="White" >
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*" ></RowDefinition>
+                        <RowDefinition Height="10*" ></RowDefinition>
+                        <RowDefinition Height="1.5*" ></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <!--Title-->
+                    <Border BorderThickness="0,0,0,1" Grid.Row="0" BorderBrush="#FF8A8A8A" >
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FF7B7B7B" ShadowDepth="2" BlurRadius="2" Opacity="0.8"/>
+                        </Border.Effect>
+                    </Border>
+                    <Label x:Name="editPromoTitle" Grid.Row="0" FontFamily="Poppins" FontSize="36" FontWeight="Bold" VerticalAlignment="Bottom" Margin="40,0,0,0" >Edit Voucher</Label>
+
+                    <!--Add a promo form-->
+                    <Grid Grid.Row="1" x:Name="formEditPromo" Margin="50,0,50,0" >
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*" ></ColumnDefinition>
+                            <ColumnDefinition Width="2*" ></ColumnDefinition>
+                            <ColumnDefinition Width="1*" ></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.7*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="1*" ></RowDefinition>
+                            <RowDefinition Height="6*" ></RowDefinition>
+                        </Grid.RowDefinitions>
+
+                        <!--Name-->
+                        <Label Grid.Row="1" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center">Name</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="2" Grid.Column="0" BorderBrush="#FF242222" Margin="0,0,5,0"   >
+                            <TextBox x:Name="nameEditPromo" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="#FF242222" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                        </Border>
+
+                        <!--Discount Type-->
+                        <Label Grid.Row="1" Grid.Column="1" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center">Discount Type</Label>
+                        <ComboBox SelectedValuePath="Content" x:Name="typeEditPromo" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1" FontFamily="Poppins" FontSize="16" >
+                            <ComboBoxItem Content="direct" ></ComboBoxItem>
+                            <ComboBoxItem Content="percentage" ></ComboBoxItem>
+                        </ComboBox>
+
+                        <!--Value-->
+                        <Label Grid.Row="3" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center">Value</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="4" Grid.Column="0" BorderBrush="#FF242222" Margin="0,0,5,0"   >
+                            <TextBox x:Name="valueEditPromo" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="#FF242222" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                        </Border>
+
+                        <!--Amount of voucher per room-->
+                        <Label Grid.Row="3" Grid.Column="1" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center">Amount Of Voucher Per Room</Label>
+                        <Border CornerRadius="5" BorderThickness="1" Grid.Row="4" Grid.Column="1" BorderBrush="#FF242222" Margin="0,0,5,0"   >
+                            <TextBox x:Name="amountEditPromo" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0" BorderBrush="{x:Null}" Foreground="#FF242222" Background="{x:Null}" SelectionBrush="{x:Null}" FontFamily="Poppins" FontSize="16" />
+                        </Border>
+
+
+                    </Grid>
+
+                    <!--Buttons-->
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right" Margin="0,0,20,0" >
+                        <!--Cancel Button-->
+                        <Border BorderThickness="1" Cursor="Hand" x:Name="cancelEditPromo" Grid.Row="8" CornerRadius="10" Grid.Column="0" Padding="30,0,30,0" Margin="10,15,10,15" Background="#F6F6F6" BorderBrush="#FF767575" >
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" Foreground="#FF3D3D3D" >Cancel</Label>
+                        </Border>
+
+                        <!--REMOVE Button-->
+                        <Border BorderThickness="1" Cursor="Hand" x:Name="removePromo" Grid.Row="8" CornerRadius="10" Grid.Column="0" Padding="30,0,30,0" Margin="10,15,10,15" Background="#FFFFB5B5" BorderBrush="#FF767575" >
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" Foreground="#FF3D3D3D" >Remove Voucher</Label>
+                        </Border>
+
+                        <!--Save Changes Promo-->
+                        <Border BorderThickness="1" Cursor="Hand" x:Name="saveChangesPromo" Grid.Row="8" CornerRadius="10" Grid.Column="0" Padding="30,0,30,0" Margin="10,15,10,15" Background="#FFCFFFF8" BorderBrush="#FF767575" >
+                            <Label Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" FontFamily="Poppins" FontSize="16" HorizontalAlignment="Center" Foreground="#FF3D3D3D" >Confirm Add Voucher</Label>
+                        </Border>
+
+                    </StackPanel>
+
+                </Grid>
+
+
             </Grid>
+            
+            
+            
+            
+            
 
             
             
