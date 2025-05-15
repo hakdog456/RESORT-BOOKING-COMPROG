@@ -9,7 +9,18 @@ Public Class Room
     Public Property Name As String
     Public Property Type As String
     Public Property roomType As RoomType
+    Public Property id As String = New Guid().NewGuid.ToString()
+    Public Property roomTypeId As String
+
+    Private _capacity As Integer
     Public Property Capacity As Integer
+        Get
+            Return _capacity
+        End Get
+        Set(value As Integer)
+            _capacity = value
+        End Set
+    End Property
     Public Property Price As Double
 
     Private _active As Boolean = True
@@ -38,7 +49,7 @@ Public Class Room
         End Set
     End Property
 
-    Public Property Pictures As New List(Of ImageSource) From {}
+    Public Property Pictures As New List(Of RoomPicture) From {}
     Public Property Color As String
 
     Private _statusText As String = "Available"
@@ -59,6 +70,20 @@ Public Class Room
             Return statusColor()
         End Get
     End Property
+
+    'Promos
+    Private _Promos As New List(Of Promo) From {}
+
+    Public Property Promos As List(Of Promo)
+        Get
+            Return _Promos
+        End Get
+        Set(value As List(Of Promo))
+            _Promos = value
+            OnPropertyChanged("Promo")
+        End Set
+    End Property
+
 
     'CONSTRUCTOR
     Sub New(
@@ -88,6 +113,12 @@ Public Class Room
 
         Return color
     End Function
+
+    'Add Booking 
+    Public Sub addBooking(booking As Booking)
+        booking.roomId = id
+        Bookings.Add(booking)
+    End Sub
 
     'Check if Active
     Public Sub checkStatus(dateToday As Date)

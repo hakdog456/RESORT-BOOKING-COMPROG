@@ -4,7 +4,7 @@ Public Class receiptWindow
 
     Public Property CustomerName As String
     Public Property CustomerEmail As String
-    Public Property CustomerContact As Integer
+    Public Property CustomerContact As String
     Public Property RoomName As String
     Public Property RoomType As String
     Public Property Start As String
@@ -17,6 +17,19 @@ Public Class receiptWindow
     Public Property Subtotal As Integer
     Public Property Payment As Integer
     Public Property displayStat As String
+    Public Property bookingId As String
+
+    Private _Promos As New List(Of Promo) From {}
+
+    Public Property Promos As List(Of Promo)
+        Get
+            Return _Promos
+        End Get
+        Set(value As List(Of Promo))
+            _Promos = value
+        End Set
+    End Property
+
 
 
 

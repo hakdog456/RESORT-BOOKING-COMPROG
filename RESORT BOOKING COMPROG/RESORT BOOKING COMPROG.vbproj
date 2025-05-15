@@ -88,14 +88,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Account.vb" />
     <Compile Include="Booking.vb" />
     <Compile Include="bookingDetails.xaml.vb">
       <DependentUpon>bookingDetails.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Promo.vb" />
     <Compile Include="receiptWindow.xaml.vb">
       <DependentUpon>receiptWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Room.vb" />
+    <Compile Include="RoomPicture.vb" />
     <Compile Include="RoomType.vb" />
     <Page Include="bookingDetails.xaml">
       <SubType>Designer</SubType>
@@ -213,6 +216,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ASSETS\test hotel interior.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\lock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\promos.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

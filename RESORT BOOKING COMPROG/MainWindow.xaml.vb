@@ -9,11 +9,21 @@ Imports System.Windows.Media.Imaging
 Imports System.IO
 Imports System.Data.SQLite
 Imports System.Data
+Imports System.Data.Entity.ModelConfiguration.Configuration
+Imports System.Globalization
+Imports System.Windows.Interop
+Imports System.Data.Entity.Migrations.Model
 
 
 
 Class MainWindow
     Implements INotifyPropertyChanged
+
+    'INITIALIZING DATABASE
+    Dim connString As String = "Data source=resortBookingDb.db;Version=3"
+    Dim connection As New SQLiteConnection(connString)
+    Dim command As New SQLiteCommand("", connection)
+
 
 
     'VARIABLES
@@ -21,7 +31,7 @@ Class MainWindow
     Public Property pages As New List(Of String) From {"login", "main"}
 
     'MAIN PAGE VIEWS
-    Dim views As New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
+    Dim views As New List(Of Grid) From {Promos, POS, Calendar, Dashboard, Room, Security}
 
     'NAV BUTTONS
     Dim navBtns As New List(Of Border) From {posSide, calSide, dashSide, roomSide, secSide}
@@ -30,7 +40,7 @@ Class MainWindow
     Dim posWindows As New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
 
     'ROOM MANAGEMENT WINDOWS
-    Dim roomWinndows As New List(Of Grid) From {roomManagementAddRoom, roomManagementRoomList, roomManagementAddRoomType}
+    Dim roomWinndows As New List(Of Grid) From {roomManagementEditRoomType, roomManagementAddRoom, roomManagementRoomList, roomManagementAddRoomType, roomManagementEditRoom}
 
     'BOOKINGS
     Dim bookings As New List(Of Booking) From {}
@@ -41,14 +51,30 @@ Class MainWindow
     'ROOM TYPES
     Dim roomTypes As New ObservableCollection(Of RoomType)
 
+    'PROMOS
+    Dim PromosList As New ObservableCollection(Of Promo)
+
+    'PROMOS APPLIED
+    Dim PromosAppliedList As New ObservableCollection(Of Promo)
+
+
     'ADD ROOM IMAGES
     Dim images As New ObservableCollection(Of ImageSource)
+
+    'EDIT ROOM IMAGES
+    Dim editRoomImages As New ObservableCollection(Of ImageSource)
+
+    'EDIT ROOM FEATURES
+    Dim editRoomFeaturesList As New ObservableCollection(Of String)
 
     'ADD ROOM FEATURES
     Dim features As New ObservableCollection(Of String)
 
     'ADD ROOM TYPE FEATURES
     Dim roomTypeFeatures As New ObservableCollection(Of String)
+
+    'EDIT ROOMTYPE FEATURES
+    Dim editRoomTypeFeaturesList As New ObservableCollection(Of String)
 
 
 
@@ -60,6 +86,8 @@ Class MainWindow
     Private selectedRoom As Room
     Private currentBookingViewed As Booking
     Private selectedRoomType As RoomType
+    Public selectedRoomToEdit As Room
+    Public selectedRoomTypeToEdit As RoomType
 
     'INITIALIZATIONS
     Sub New()
@@ -96,6 +124,7 @@ Class MainWindow
 
         'ROOMS ITERATION
         For Each room As Room In rooms
+
             'Check if a Room is booked today
             room.checkStatus(dateToday)
 
@@ -123,6 +152,7 @@ Class MainWindow
                 For Each room As Room In roomType.Rooms
                     If room Is booking.room Then
                         room.removeBooking(booking)
+                        removeBookingFromDb(booking)
                         bookingTimer_Tick()
                         calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
                     End If
@@ -187,26 +217,486 @@ Class MainWindow
     Sub setBtnBg(btn As Border)
         For Each border As Border In navBtns
             If border Is btn Then
-                border.Background = New SolidColorBrush((ColorConverter.ConvertFromString("#07380A")))
+                border.Background = New SolidColorBrush((ColorConverter.ConvertFromString("#FF0A6464")))
 
             Else
-                border.Background = Nothing
+                border.Background = New SolidColorBrush((ColorConverter.ConvertFromString("#FF242222")))
             End If
         Next
     End Sub
 
+    'FIND ROOMTYPE BY ROOMTYPE ID
+    Function findRoomTypeById(roomTypeId As String)
+        Dim result As RoomType
+
+        For Each roomType As RoomType In roomTypes
+            If roomType.id = roomTypeId Then
+                result = roomType
+            End If
+        Next
+
+        Return result
+    End Function
+
+    'FIND ROOM BY ROOMTYPE ID
+    Function findRoomById(roomId As String, roomType As RoomType)
+        Dim result As Room
+
+        If roomType Is Nothing Then
+            Return Nothing
+        End If
+
+        For Each room As Room In roomType.Rooms
+            If room.id = roomId Then
+                result = room
+            End If
+        Next
+
+        Return result
+    End Function
+
+    'bytearray to image 
+    Private Function ByteArrayToImage(data As Byte()) As BitmapImage
+        Using ms As New MemoryStream(data)
+            Dim img As New BitmapImage()
+            img.BeginInit()
+            img.StreamSource = ms
+            img.CacheOption = BitmapCacheOption.OnLoad
+            img.EndInit()
+            img.Freeze() ' Optional: allows cross-thread access
+            Return img
+        End Using
+    End Function
+
+
+    'Add RoomType to DateBase
+    Sub addRoomTypeToDb(roomType As RoomType)
+        command.Connection = connection
+
+        Dim addRoomType As String = "INSERT INTO RoomType (Name, Id, Color, Price, Capacity, Features) VALUES (@Name, @Id, @Color, @Price, @Capacity, @Features)"
+        Using cmd As New SQLiteCommand(addRoomType, connection)
+            cmd.Parameters.AddWithValue("@Name", roomType.Name)
+            cmd.Parameters.AddWithValue("@Id", roomType.id)
+            cmd.Parameters.AddWithValue("@Color", "none")
+            cmd.Parameters.AddWithValue("@Price", roomType.Price)
+            cmd.Parameters.AddWithValue("@Capacity", roomType.Capacity)
+            cmd.Parameters.AddWithValue("@Features", String.Join("|", roomType.features))
+            cmd.ExecuteNonQuery()
+        End Using
+
+    End Sub
+
+
+    'Add ROOM to DateBase
+    Sub addRoomToDb(room As Room)
+        command.Connection = connection
+
+        Dim addRoom As String = "INSERT INTO Room (Name, Type, Id, RoomTypeId, Capacity, Active, Features, StatusText, Price) VALUES (@Name, @Type, @Id, @RoomTypeId, @Capacity, @Active, @Features, @StatusText, @Price)"
+        Using cmd As New SQLiteCommand(addRoom, connection)
+            cmd.Parameters.AddWithValue("@Name", room.Name)
+            cmd.Parameters.AddWithValue("@Type", room.roomType.Name)
+            cmd.Parameters.AddWithValue("@Id", room.id)
+            cmd.Parameters.AddWithValue("@RoomTypeId", room.roomTypeId)
+            cmd.Parameters.AddWithValue("@Capacity", room.Capacity)
+            cmd.Parameters.AddWithValue("@Active", Convert.ToInt32(room.Active))
+            cmd.Parameters.AddWithValue("@Features", String.Join("|", room.Features))
+            cmd.Parameters.AddWithValue("@StatusText", room.statusText)
+            cmd.Parameters.AddWithValue("@Price", room.Price)
+            cmd.ExecuteNonQuery()
+        End Using
+
+    End Sub
+
+
+    'Update A ROOM to DateBase
+    Sub updateRoomToDb(room As Room)
+        If connection.State <> ConnectionState.Open Then
+            connection.Open()
+        End If
+
+        Dim updateRoom As String = "
+        UPDATE Room SET
+            Name = @Name,
+            Type = @Type,
+            RoomTypeId = @RoomTypeId,
+            Capacity = @Capacity,
+            Active = @Active,
+            Features = @Features,
+            StatusText = @StatusText,
+            Price = @Price
+        WHERE Id = @Id
+    "
+
+
+        Using cmd As New SQLiteCommand(updateRoom, connection)
+            cmd.Parameters.AddWithValue("@Name", room.Name)
+            cmd.Parameters.AddWithValue("@Type", room.roomType.Name)
+            cmd.Parameters.AddWithValue("@RoomTypeId", room.roomTypeId)
+            cmd.Parameters.AddWithValue("@Capacity", room.Capacity)
+            cmd.Parameters.AddWithValue("@Active", Convert.ToInt32(room.Active))
+            cmd.Parameters.AddWithValue("@Features", String.Join("|", room.Features))
+            cmd.Parameters.AddWithValue("@StatusText", room.statusText)
+            cmd.Parameters.AddWithValue("@Price", room.Price)
+            cmd.Parameters.AddWithValue("@Id", room.id)
+
+            cmd.ExecuteNonQuery()
+        End Using
+
+    End Sub
+
+    'Update A ROOM to DateBase
+    Sub updateRoomTypeToDb(roomType As RoomType)
+        If connection.State <> ConnectionState.Open Then
+            connection.Open()
+        End If
+
+        Dim updateRoom As String = "
+        UPDATE RoomType SET
+            Name = @Name,
+            Capacity = @Capacity,
+            Features = @Features,
+            Price = @Price
+        WHERE Id = @Id
+    "
+        Using cmd As New SQLiteCommand(updateRoom, connection)
+            cmd.Parameters.AddWithValue("@Name", roomType.Name)
+            cmd.Parameters.AddWithValue("@Capacity", roomType.Capacity)
+            cmd.Parameters.AddWithValue("@Features", String.Join("|", roomType.features))
+            cmd.Parameters.AddWithValue("@Price", roomType.Price)
+            cmd.Parameters.AddWithValue("@Id", roomType.id)
+
+            cmd.ExecuteNonQuery()
+        End Using
+
+    End Sub
+
+
+
+    'Remove Room to Data Base
+    Sub removeItemInDb(id As String, table As String)
+        Dim deleteQuery As String = "DELETE FROM " & table & " WHERE Id = @Id"
+
+        Using cmd As New SQLiteCommand(deleteQuery, connection)
+            cmd.Parameters.AddWithValue("@Id", id)
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+
+
+    'Add Booking to database
+    Sub addBookingToDb(booking As Booking)
+        Dim addBooking As String = "INSERT INTO Booking (StartDate, EndDate, Name, PartySize, Payment, ContactNumber, Email, RoomName, RoomType, Id, RoomId, Days, RoomTypeId) VALUES (@StartDate, @EndDate, @Name, @PartySize, @Payment, @ContactNumber, @Email, @RoomName, @RoomType, @Id, @RoomId, @Days, @RoomTypeId)"
+        Using cmd As New SQLiteCommand(addBooking, connection)
+            cmd.Parameters.AddWithValue("@StartDate", booking.startDate)
+            cmd.Parameters.AddWithValue("@EndDate", booking.endDate)
+            cmd.Parameters.AddWithValue("@Name", booking.name)
+            cmd.Parameters.AddWithValue("@PartySize", booking.partySize)
+            cmd.Parameters.AddWithValue("@Payment", booking.payment)
+            cmd.Parameters.AddWithValue("@ContactNumber", booking.contactNumber)
+            cmd.Parameters.AddWithValue("@Email", booking.email)
+            cmd.Parameters.AddWithValue("@RoomName", booking.roomName)
+            cmd.Parameters.AddWithValue("@RoomType", booking.roomType)
+            cmd.Parameters.AddWithValue("@Id", booking.id)
+            cmd.Parameters.AddWithValue("@RoomId", selectedRoom.id)
+            cmd.Parameters.AddWithValue("@Days", booking.days)
+            cmd.Parameters.AddWithValue("@RoomTypeId", selectedRoom.roomTypeId)
+
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+
+    'remove a booking to DataBase
+    Sub removeBookingFromDb(booking As Booking)
+        Dim deleteQuery As String = "DELETE FROM Booking WHERE Id = @Id"
+
+        Using cmd As New SQLiteCommand(deleteQuery, connection)
+            cmd.Parameters.AddWithValue("@Id", booking.id)
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+    'bitmap to byteArray
+    Function BitmapImageToByteArray(bitmap As BitmapImage) As Byte()
+        Dim encoder As New JpegBitmapEncoder()
+        encoder.Frames.Add(BitmapFrame.Create(bitmap))
+
+        Using stream As New MemoryStream()
+            encoder.Save(stream)
+            Return stream.ToArray()
+        End Using
+    End Function
+
+
+    'Add Pictures to DataBase
+    Sub addPictureToDb(roomPicture As RoomPicture)
+        Dim addImage As String = "INSERT INTO RoomPicture (RoomId, imageSource, RoomTypeId, Id) VALUES (@RoomId, @imageSource, @RoomTypeId, @Id)"
+        Using cmd As New SQLiteCommand(addImage, connection)
+            cmd.Parameters.AddWithValue("@RoomId", roomPicture.roomId)
+            cmd.Parameters.AddWithValue("@RoomTypeId", roomPicture.roomTypeId)
+            cmd.Parameters.AddWithValue("@Id", roomPicture.id)
+
+            Dim image As Byte() = BitmapImageToByteArray(roomPicture.imageSource)
+
+            Dim imageParam As New SQLiteParameter("@imageSource", DbType.Binary)
+            imageParam.Value = image
+
+            cmd.Parameters.Add(imageParam)
+
+
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+
+    'deletion in db by ID
+    Public Sub DeleteByIdDb(id As String, table As String)
+        Dim query As String = "DELETE FROM " & table & " WHERE Id = @Id"
+
+        Using cmd As New SQLiteCommand(query, connection)
+            cmd.Parameters.AddWithValue("@Id", id)
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+
+
+    'Remove removed Pictures in Db
+    Sub removePicturesInDb(room As Room)
+        If connection.State <> ConnectionState.Open Then
+            connection.Open()
+        End If
+
+        command.Connection = connection
+        command.CommandText = "SELECT Id FROM RoomPicture WHERE RoomId = @RoomId"
+        Dim query = "SELECT Id FROM RoomPicture WHERE RoomId = @RoomId"
+
+        Dim roomPictureIdsToDelete As New List(Of String) From {}
+        Dim roomPictureIdsOfRoom As New List(Of String) From {}
+
+        'gathering current picture Ids of the room
+        For Each picture As RoomPicture In room.Pictures
+            roomPictureIdsOfRoom.Add(picture.id)
+        Next
+
+        'gathering picture Ids from db of the room that are not in the current room
+        Using cmd As New SQLiteCommand(query, connection)
+            cmd.Parameters.AddWithValue("@RoomId", room.id)
+
+            Using reader As SQLiteDataReader = cmd.ExecuteReader()
+                While reader.Read()
+                    Dim Id As String = reader("Id").ToString()
+
+                    If Not roomPictureIdsOfRoom.Contains(Id) Then
+                        roomPictureIdsToDelete.Add(Id)
+                    End If
+
+                End While
+            End Using
+        End Using
+
+
+        'removing room pictures to delete
+        For Each id As String In roomPictureIdsToDelete
+            DeleteByIdDb(id, "RoomPicture")
+        Next
+
+    End Sub
+
+
     'WHEN WINDOW IS LOADED 
     Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
+
         'Hiding main page
         mainPageGrid.Visibility = Visibility.Collapsed
         PosRoomBookingGrid.Visibility = Visibility.Collapsed
         PosRoomDetailsGrid.Visibility = Visibility.Collapsed
 
+        'Initializing Data Base
+        connection.Open()
+
+        'DataBase Connection
+        If connection.State = connection.State.Open Then
+            MsgBox("connection status: " & connection.State.ToString())
+
+            command.Connection = connection
+            command.CommandText = "select * from RoomType"
+
+            'tesring adding to database
+            Dim sql As String = "INSERT INTO RoomType DEFAULT VALUES "
+            'Using cmd As New SQLiteCommand(sql, connection)
+            '    cmd.Parameters.AddWithValue("@Name", "Sample Name")
+            '    cmd.Parameters.AddWithValue("@Id", "Sample Id")
+            '    cmd.Parameters.AddWithValue("@Color", "Sample Color")
+            '    cmd.Parameters.AddWithValue("@Price", 0)
+            '    cmd.Parameters.AddWithValue("@Capacity", 0)
+            '    cmd.Parameters.AddWithValue("@Features", "Sample Feature")
+            '    cmd.ExecuteNonQuery()
+            'End Using
+
+            'Getting Room Types
+            Dim reader As SQLiteDataReader = command.ExecuteReader
+            While reader.Read()
+                Dim name = reader.GetString(0)
+                Dim Id = reader.GetString(1)
+                Dim Color = reader.GetString(2)
+                Dim Price = reader.GetDouble(3)
+                Dim Capacity = reader.GetInt32(4)
+                Dim features = reader.GetString(5)
+
+                MsgBox(name & Id & Color & Price & Capacity & features)
+                Dim roomType As New RoomType(name, Capacity, Price)
+                roomType.features = features.Split("|"c).ToList()
+                roomType.id = Id
+
+                roomTypes.Add(roomType)
+
+            End While
+            reader.Close()
+
+
+            'Getting the rooms
+            command.Connection = connection
+            command.CommandText = "select * from Room"
+
+            Dim roomReader As SQLiteDataReader = command.ExecuteReader
+            While roomReader.Read()
+                Dim name = roomReader.GetString(0)
+                Dim type = roomReader.GetString(1)
+                Dim id = roomReader.GetString(2)
+                Dim roomTypeId = roomReader.GetString(3)
+                Dim capacity = roomReader.GetInt16(4)
+                Dim active = roomReader.GetInt16(5)
+                Dim features = roomReader.GetString(6)
+                Dim statusText = roomReader.GetString(7)
+                Dim price = roomReader.GetDouble(8)
+
+                Dim roomType As RoomType = findRoomTypeById(roomTypeId)
+
+                Dim room As New Room(name, type, capacity, price, roomType)
+                room.id = id
+                room.roomTypeId = roomTypeId
+                room.Active = Convert.ToBoolean(active)
+                room.Features = features.Split("|"c).ToList()
+                room.statusText = statusText
+
+                roomType.AddRoom(room)
+
+            End While
+            roomReader.Close()
+
+
+            'Setting an initial Booking
+            Dim addBooking As String = "INSERT INTO Booking (StartDate, EndDate, Name, PartySize, Payment, ContactNumber, Email, RoomName, RoomType, Id, RoomId, Days) VALUES (@StartDate, @EndDate, @Name, @PartySize, @Payment, @ContactNumber, @Email, @RoomName, @RoomType, @Id, @RoomId, @Days)"
+            Using cmd As New SQLiteCommand(addBooking, connection)
+                'cmd.Parameters.AddWithValue("@StartDate", Date.Now)
+                'cmd.Parameters.AddWithValue("@EndDate", Date.Now.AddDays(4))
+                'cmd.Parameters.AddWithValue("@Name", "Sample Name")
+                'cmd.Parameters.AddWithValue("@PartySize", 3)
+                'cmd.Parameters.AddWithValue("@Payment", 2400)
+                'cmd.Parameters.AddWithValue("@ContactNumber", "09687488130")
+                'cmd.Parameters.AddWithValue("@Email", "dustingualberto@gmail.com")
+                'cmd.Parameters.AddWithValue("@RoomName", "R101")
+                'cmd.Parameters.AddWithValue("@RoomType", "REGULAR")
+                'cmd.Parameters.AddWithValue("@Id", Guid.NewGuid.ToString())
+                'cmd.Parameters.AddWithValue("@RoomId", "e0abe550-f1e5-4949-96cc-5cd45d766af4")
+                'cmd.Parameters.AddWithValue("@Days", Date.Now.AddDays(4) - Date.Now)
+
+                'cmd.ExecuteNonQuery()
+            End Using
+
+
+            'Getting the Bookings
+            command.Connection = connection
+            command.CommandText = "select * from Booking"
+
+            Dim bookingReader As SQLiteDataReader = command.ExecuteReader
+            While bookingReader.Read()
+                Dim startDate As Date = Date.Parse(bookingReader.GetString(0))
+                Dim endDate As Date = Date.Parse(bookingReader.GetString(1))
+                Dim name = bookingReader.GetString(2)
+                Dim partySize = bookingReader.GetInt64(3)
+                Dim payment = bookingReader.GetDouble(4)
+                Dim contactNumber = bookingReader.GetString(5)
+                Dim email = bookingReader.GetString(6)
+                Dim roomName = bookingReader.GetString(7)
+                Dim roomType = bookingReader.GetString(8)
+                Dim id = bookingReader.GetString(9)
+                Dim roomId = bookingReader.GetString(10)
+                Dim days = bookingReader.GetInt64(11)
+                Dim roomTypeId = bookingReader.GetString(12)
+
+                Dim roomTypeObj As RoomType = findRoomTypeById(roomTypeId)
+                Dim room As Room = findRoomById(roomId, roomTypeObj)
+
+                Dim booking As New Booking(room, days, roomName, roomType, name, contactNumber,
+                                               email, partySize, payment, startDate, endDate)
+                booking.id = id
+                booking.roomId = roomId
+                booking.roomTypeId = roomTypeId
+
+                'if the room is deleted then dedlete the booking
+                If room Is Nothing Then
+                    DeleteByIdDb(id, "Booking")
+                Else
+                    room.addBooking(booking)
+                End If
+
+
+
+            End While
+            bookingReader.Close()
+
+
+            'adding initial image
+            Dim addImage As String = "INSERT INTO RoomPicture (RoomId, imageSource) VALUES (@RoomId, @imageSource) "
+            Using cmd As New SQLiteCommand(addImage, connection)
+                'cmd.Parameters.AddWithValue("@RoomId", "e0abe550-f1e5-4949-96cc-5cd45d766af4")
+
+                'Dim image As Byte() = File.ReadAllBytes("C:\Users\DUSTINT\source\repos\RESORT BOOKING COMPROG\RESORT BOOKING COMPROG\ASSETS\test hotel interior.jpg")
+
+                'Dim imageParam As New SQLiteParameter("@imageSource", DbType.Binary)
+                'imageParam.Value = image
+                'cmd.Parameters.Add(imageParam)
+
+                'cmd.ExecuteNonQuery()
+            End Using
+
+
+            'Getting the Images
+            command.Connection = connection
+            command.CommandText = "select * from RoomPicture"
+            Dim RoomPictureReader As SQLiteDataReader = command.ExecuteReader
+            While RoomPictureReader.Read()
+                Dim roomId = RoomPictureReader.GetString(0)
+                Dim roomTypeId = RoomPictureReader.GetString(2)
+                Dim Id = RoomPictureReader.GetString(3)
+                Dim imageByte As Byte() = CType(RoomPictureReader("imageSource"), Byte())
+
+                'Convert to bitmap image
+                Dim imageSource As BitmapImage = ByteArrayToImage(imageByte)
+
+                Dim roomPicture As New RoomPicture(roomId, roomTypeId, imageSource)
+                roomPicture.id = Id
+                Dim roomType As RoomType = findRoomTypeById(roomTypeId)
+                Dim room As Room = findRoomById(roomId, roomType)
+
+                room.Pictures.Add(roomPicture)
+
+            End While
+            RoomPictureReader.Close()
+
+        End If
+
+
+
+
         'Reinitializing views of grid
-        views = New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
-        navBtns = New List(Of Border) From {posSide, calSide, dashSide, roomSide, secSide}
+        views = New List(Of Grid) From {Promos, POS, Calendar, Dashboard, Room, Security}
+        navBtns = New List(Of Border) From {promosSide, posSide, calSide, dashSide, roomSide, secSide}
         posWindows = New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
-        roomWinndows = New List(Of Grid) From {roomManagementAddRoom, roomManagementRoomList, roomManagementAddRoomType}
+        roomWinndows = New List(Of Grid) From {roomManagementEditRoomType, roomManagementAddRoom, roomManagementRoomList, roomManagementAddRoomType, roomManagementEditRoom}
 
 
         'selecting the first pages to show
@@ -257,11 +747,20 @@ Class MainWindow
         kyran.AddRoom("K104")
 
 
-        roomTypes.Add(regular)
-        roomTypes.Add(premium)
-        roomTypes.Add(deluxe)
-        roomTypes.Add(bembang)
-        roomTypes.Add(kyran)
+        Dim childPromo As New Promo("Child Promo", "direct", 500, 1000)
+        PromosList.Add(childPromo)
+        Dim specialPromo As New Promo("Special Promo", "percentage", 10, 1)
+        PromosList.Add(specialPromo)
+
+
+        'ADDING SAMPLE ROOMS
+        'roomTypes.Add(regular)
+        'roomTypes.Add(premium)
+        'roomTypes.Add(deluxe)
+        'roomTypes.Add(bembang)
+        'roomTypes.Add(kyran)
+
+
 
         'Assigning Roomtypes as item source for RoomTypeListBox
         RoomTypeListBox.ItemsSource = roomTypes
@@ -270,9 +769,11 @@ Class MainWindow
         roomTypePickerListBox.ItemsSource = roomTypes
 
         'assigning the first item in rooms for the item of data grid in room management
-        roomTypePickerListBox.SelectedItem = roomTypePickerListBox.Items(0)
-        selectedRoomType = roomTypePickerListBox.Items(0)
-        roomsDataGrid.ItemsSource = roomTypePickerListBox.SelectedItem.Rooms
+        If roomTypes.Count > 0 Then
+            roomTypePickerListBox.SelectedItem = roomTypePickerListBox.Items(0)
+            selectedRoomType = roomTypePickerListBox.Items(0)
+            roomsDataGrid.ItemsSource = roomTypePickerListBox.SelectedItem.Rooms
+        End If
 
         'Assigning Starting Dates for POS date picker
         startDate.SelectedDate = Date.Now
@@ -283,6 +784,9 @@ Class MainWindow
         'Assigning item source for combo box in add room
         addRoomTypeInput.ItemsSource = roomTypes
 
+        'Assigning item source for combo box in edit room
+        editRoomTypeInput.ItemsSource = roomTypes
+
         'Assigning item source of AddRoom Add Images 
         addRoomPicturesCon.ItemsSource = images
 
@@ -291,6 +795,9 @@ Class MainWindow
 
         'Assigning item source of AddRoomType Features
         addRoomTypeFeatures.ItemsSource = roomTypeFeatures
+
+        'Assigning item source of Promos
+        promosCon.ItemsSource = PromosList
 
 
 
@@ -342,11 +849,18 @@ Class MainWindow
     End Sub
 
     'ROOM MANAGEMENT BUTTON CLICKED
+    Private Sub promosSide_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles promosSide.MouseDown
+        selectView(Promos)
+        setBtnBg(promosSide)
+    End Sub
+
+    'PROMOS BUTTON CLICKED
     Private Sub roomSide_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles roomSide.MouseDown
         selectView(Room)
         setBtnBg(roomSide)
 
     End Sub
+
 
     'SECURITY BUTTON CLICKED
     Private Sub secSide_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles secSide.MouseDown
@@ -366,11 +880,13 @@ Class MainWindow
     'VIEW ROOMS BUTTON CLICKED
     Private Sub viewRoomsBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles viewRoomsBtn.MouseDown
         selectViewGeneric(PosRoomCheck, posWindows)
+        clearPos()
     End Sub
 
-    'BOOK BUTTON
+    'BOOK BUTTON - OPEN BOOKING POS VIEW
     Private Sub bookBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles bookBtn.MouseDown
         selectViewGeneric(PosRoomBookingGrid, posWindows)
+
         roomNameTxtBox.Text = selectedRoom.Name
         roomTypeTxtBox.Text = selectedRoom.Type
         roomOccupancyTxtBox.Text = selectedRoom.Capacity
@@ -400,6 +916,11 @@ Class MainWindow
 
         Next
 
+
+        'showing promos
+        bookingPosAvailablePromos.ItemsSource = PromosList
+        bookingPosAppliedPromos.ItemsSource = PromosAppliedList
+
     End Sub
 
 
@@ -422,11 +943,9 @@ Class MainWindow
             Dim startParsedTime As Date
             Dim endParsedTime As Date
 
-
-
             If Date.TryParse(startTime, startParsedTime) And Date.TryParse(endTime, endParsedTime) Then
-                finalStartDateTime = New Date(startDate.Year, startDate.Month, startDate.Day, startParsedTime.Hour, startParsedTime.Minute, 0)
-                finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
+                finalStartDateTime = New Date(startDate.Year, startDate.Month, startDate.Day)
+                finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day)
             End If
 
         End If
@@ -439,9 +958,6 @@ Class MainWindow
 
         totalDaysTxtBox.Text = daysGap
         amountPayTxtBox.Text = daysGap * selectedRoom.Price
-
-
-
 
     End Sub
 
@@ -465,6 +981,7 @@ Class MainWindow
         totalDaysTxtBox.Clear()
         amountPayTxtBox.Clear()
         paymentTxtBox.Clear()
+        PromosAppliedList.Clear()
 
         selectViewGeneric(PosRoomCheck, posWindows)
     End Sub
@@ -526,7 +1043,9 @@ Class MainWindow
 
                 'Adding the new Booking 
                 Dim newBooking As New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime)
-                selectedRoom.Bookings.Add(newBooking)
+                newBooking.Promos = PromosAppliedList.ToList()
+                selectedRoom.addBooking(newBooking)
+                addBookingToDb(newBooking)
                 clearPos()
                 bookingTimer_Tick()
 
@@ -603,6 +1122,27 @@ Class MainWindow
         Return Nothing
     End Function
 
+
+    'next and previous of image viewer
+    Dim currentIndex = 0
+    Private Sub NextButton_Click(sender As Object, e As RoutedEventArgs) Handles NextButton.Click
+
+        If selectedRoom.Pictures.Count = 0 Then Return
+
+        currentIndex = (currentIndex + 1) Mod selectedRoom.Pictures.Count
+        ImageViewer.Source = selectedRoom.Pictures(currentIndex).imageSource
+
+    End Sub
+
+    Private Sub PrevButton_Click(sender As Object, e As RoutedEventArgs) Handles PrevButton.Click
+        If selectedRoom.Pictures.Count = 0 Then Return
+
+        currentIndex = (currentIndex - 1 + selectedRoom.Pictures.Count) Mod selectedRoom.Pictures.Count
+        ImageViewer.Source = selectedRoom.Pictures(currentIndex).imageSource
+
+    End Sub
+
+
     'View Room Function - when a room is clicked
     Private Sub ViewRoom(sender As Object, e As MouseButtonEventArgs)
         selectViewGeneric(PosRoomDetailsGrid, posWindows)
@@ -630,6 +1170,10 @@ Class MainWindow
                     'selectedRoom.checkStatus(New Date.Today)
                     roomFeatures.ItemsSource = selectedRoom.Features
                     roomBookings.ItemsSource = selectedRoom.Bookings
+
+                    If selectedRoom.Pictures.Count > 0 Then
+                        ImageViewer.Source = selectedRoom.Pictures(0).imageSource
+                    End If
 
                 End If
 
@@ -669,10 +1213,32 @@ Class MainWindow
     Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
 
         If calendarBox.SelectedDate IsNot Nothing Then
-            calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
+
+            Dim bookingsOnDay = getBookingsOnDate(calendarBox.SelectedDate)
 
             Dim selectedDate As Date = calendarBox.SelectedDates(0)
             dateSelectedLbl.Content = "- " & selectedDate.ToString("MMMM d, yyyy")
+
+
+            'CheckBox how many reserved on Occupied Rooms
+            Dim reservedRoomsOnDay = 0
+            Dim occupiedRoomsOnDay = 0
+            Dim dateToday = Date.Now()
+
+            For Each booking As Booking In bookingsOnDay
+                If dateToday >= booking.startDate AndAlso dateToday <= booking.endDate Then
+                    occupiedRoomsOnDay += 1
+                    booking.color = "#FF6587C5"
+                Else
+                    reservedRoomsOnDay += 1
+                    booking.color = "#FF92BD8C"
+                End If
+            Next
+
+            reservedRoomsPerDayLabel.Content = reservedRoomsOnDay
+            occupiedRoomsPerDayLabel.Content = occupiedRoomsOnDay
+            calendarBookings.ItemsSource = bookingsOnDay
+
 
         End If
 
@@ -692,11 +1258,14 @@ Class MainWindow
         Dim bookingToView = CType(calendarBookings.SelectedItem, Booking)
         currentBookingViewed = bookingToView
 
-        Dim bookingDetails As New bookingDetails(Me, bookingToView)
-        AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
-        AddHandler bookingDetails.showReceipt, AddressOf handleShowReceipt
+        If currentBookingViewed IsNot Nothing Then
+            Dim bookingDetails As New bookingDetails(Me, bookingToView)
+            AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
+            AddHandler bookingDetails.showReceipt, AddressOf handleShowReceipt
 
-        bookingDetails.Show()
+            bookingDetails.Show()
+        End If
+
     End Sub
 
     'handles when the booking details window initiated a remove Booking
@@ -722,8 +1291,15 @@ Class MainWindow
 
     End Sub
 
+    Dim none As New List(Of Room) From {}
+
     'room management when a room type is selected
     Private Sub roomTypePickerListBox_SelectionChanged(sender As Object, e As SelectionChangedEventArgs) Handles roomTypePickerListBox.SelectionChanged
+        If roomTypePickerListBox.SelectedItem Is Nothing Then
+            roomsDataGrid.ItemsSource = none
+            Return
+        End If
+
         roomsDataGrid.ItemsSource = roomTypePickerListBox.SelectedItem.Rooms
         selectedRoomType = roomTypePickerListBox.SelectedItem
     End Sub
@@ -789,7 +1365,7 @@ Class MainWindow
         images.Remove(itemToDelete)
     End Sub
 
-    'button click to add a room 
+    'Add Room Confirm button click to add a room 
     Private Sub AddRoomBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles AddRoomBtn.MouseDown
         Dim name As String = addRoomNameInput.Text
         Dim Type As String = addRoomTypeInput.Text
@@ -798,9 +1374,22 @@ Class MainWindow
 
         Dim room As New Room(name, Type, capacity, Price, selectedRoomType)
         room.Features = features.ToList()
-        room.Pictures = images.ToList()
+
+
+        Dim pictures As New List(Of RoomPicture)
+
+        For Each image As ImageSource In images
+            Dim roomPicture As New RoomPicture(room.id, selectedRoomType.id, image)
+            pictures.Add(roomPicture)
+            addPictureToDb(roomPicture)
+
+        Next
+
+        room.Pictures = pictures
 
         selectedRoomType.AddRoom(room)
+        addRoomToDb(room)
+
 
         addRoomNameInput.Clear()
         addRoomTypeInput.SelectedItem = selectedRoomType
@@ -874,6 +1463,7 @@ Class MainWindow
         roomType.features = roomTypeFeatures.ToList()
 
         roomTypes.Add(roomType)
+        addRoomTypeToDb(roomType)
 
         addRoomTypeNameInput.Clear()
         addRoomTypeCapacityInput.Clear()
@@ -883,6 +1473,322 @@ Class MainWindow
         selectViewGeneric(roomManagementRoomList, roomWinndows)
 
     End Sub
+
+    'Edit Room Button to view edit Room view
+    Private Sub editRoomBtn_Click(sender As Object, e As RoutedEventArgs)
+        selectViewGeneric(roomManagementEditRoom, roomWinndows)
+        Dim btn As Button = CType(sender, Button)
+        selectedRoomToEdit = CType(btn.DataContext, Room)
+
+        editRoomTitle.Content = "Edit Room " & selectedRoomToEdit.Name
+        editRoomNameInput.Text = selectedRoomToEdit.Name
+        editRoomTypeInput.SelectedItem = selectedRoomToEdit.roomType
+        editRoomCapacityInput.Text = selectedRoomToEdit.Capacity
+        editRoomPriceInput.Text = selectedRoomToEdit.Price
+        editRoomFeatures.ItemsSource = editRoomFeaturesList
+
+        'getting pictures in the room that is edditing
+        For Each picture As RoomPicture In selectedRoomToEdit.Pictures
+            editRoomImages.Add(picture.imageSource)
+        Next
+
+        'getting features of the room that is editing
+        For Each feature As String In selectedRoomToEdit.Features
+            editRoomFeaturesList.Add(feature)
+        Next
+
+
+        editRoomPicturesCon.ItemsSource = editRoomImages
+        editRoomFeatures.ItemsSource = editRoomFeaturesList
+
+
+    End Sub
+
+    'removing pictures in roomedit
+    Private Sub removePicturesEdit_MouseDown(sender As Object, e As MouseButtonEventArgs)
+        Dim btn As Border = CType(sender, Border)
+        Dim itemToDelete = btn.DataContext
+
+        editRoomImages.Remove(itemToDelete)
+    End Sub
+
+    'adding pictures in room edit
+    Private Sub editRoomAddPictureBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles editRoomAddPictureBtn.MouseDown
+        Dim dialog As New OpenFileDialog()
+        dialog.Filter = "Image files (*.jpg, *.png, *.bmp)|*.jpg;*.png;*.bmp"
+
+        If dialog.ShowDialog = True Then
+            Dim imagePath As String = dialog.FileName
+            Dim bitmap As New BitmapImage()
+            bitmap.BeginInit()
+            bitmap.UriSource = New Uri(imagePath, UriKind.Absolute)
+            bitmap.CacheOption = BitmapCacheOption.OnLoad
+            bitmap.EndInit()
+
+            editRoomImages.Add(bitmap)
+        End If
+    End Sub
+
+    'add Edit Room features button click
+    Private Sub editFeaturesBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles editFeaturesBtn.MouseDown
+        If editFeatureInput.Text IsNot "" Then
+            Dim feature As String = "✔" & editFeatureInput.Text
+            editRoomFeaturesList.Add(feature)
+            editFeatureInput.Clear()
+
+        End If
+
+    End Sub
+
+
+    'remove feature button in room editing
+    Private Sub editRoomRemoveFeature_MouseDown(sender As Object, e As MouseButtonEventArgs)
+        Dim btn As Border = CType(sender, Border)
+        Dim itemToDelete = btn.DataContext
+
+        editRoomFeaturesList.Remove(itemToDelete.ToString())
+
+    End Sub
+
+    'save changes Edit Room
+    Private Sub saveChangesRoomBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles saveChangesRoomBtn.MouseDown
+        'creating a new changed copy of the Room
+        Dim name As String = editRoomNameInput.Text
+        Dim Type As String = editRoomTypeInput.Text
+        Dim capacity As Integer = Val(editRoomCapacityInput.Text)
+        Dim Price As Double = Val(editRoomPriceInput.Text)
+
+        Dim room As New Room(name, Type, capacity, Price, selectedRoomToEdit.roomType)
+        room.Features = editRoomFeaturesList.ToList()
+        room.id = selectedRoomToEdit.id
+        room.roomTypeId = selectedRoomToEdit.roomTypeId
+
+
+        Dim pictures As New List(Of RoomPicture)
+
+        'adding room pictures to a pictures list
+        For Each image As ImageSource In editRoomImages
+            Dim roomPicture As New RoomPicture(room.id, selectedRoomType.id, image)
+            pictures.Add(roomPicture)
+            addPictureToDb(roomPicture)
+        Next
+        room.Pictures = pictures
+
+        selectedRoomToEdit.Name = room.Name
+        selectedRoomToEdit.Type = room.Type
+        selectedRoomToEdit.Capacity = room.Capacity
+        selectedRoomToEdit.Price = room.Price
+        selectedRoomToEdit.Pictures = room.Pictures
+        selectedRoomToEdit.Features = room.Features
+
+        updateRoomToDb(room)
+
+        'checking unused picture references
+        removePicturesInDb(room)
+
+        editRoomNameInput.Clear()
+        editRoomTypeInput.SelectedItem = Nothing
+        editRoomCapacityInput.Clear()
+        editRoomPriceInput.Clear()
+        editRoomFeaturesList.Clear()
+        editRoomImages.Clear()
+
+        selectViewGeneric(roomManagementRoomList, roomWinndows)
+        roomsDataGrid.ItemsSource = Nothing
+        roomsDataGrid.ItemsSource = selectedRoomType.Rooms
+
+        editRoomImages.Clear()
+
+        RoomTypeListBox.ItemsSource = Nothing
+        RoomTypeListBox.ItemsSource = roomTypes
+
+    End Sub
+
+    'Remove Room Button Click
+    Private Sub removeRoomBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles removeRoomBtn.MouseDown
+        removeItemInDb(selectedRoomToEdit.id, "Room")
+        findRoomTypeById(selectedRoomToEdit.roomTypeId).removeRoom(selectedRoomToEdit)
+
+        'remove pictures of room
+        selectedRoomToEdit.Pictures.Clear()
+        removePicturesInDb(selectedRoomToEdit)
+
+        selectViewGeneric(roomManagementRoomList, roomWinndows)
+        roomsDataGrid.ItemsSource = Nothing
+        roomsDataGrid.ItemsSource = selectedRoomType.Rooms
+
+        editRoomImages.Clear()
+        editRoomFeaturesList.Clear()
+
+    End Sub
+
+    'open edit RoomType
+    Private Sub roomTypeBtn_MouseLeftButtonDown(sender As Object, e As MouseButtonEventArgs)
+
+        selectViewGeneric(roomManagementEditRoomType, roomWinndows)
+        Dim border As Border = CType(sender, Border)
+        Dim getRoomType = CType(border.DataContext, RoomType)
+
+        Dim roomType As RoomType = findRoomTypeById(getRoomType.id)
+
+        selectedRoomTypeToEdit = roomType
+
+        editRoomTypeTitle.Content = "Edit RoomType " & roomType.Name
+        editTypeNameInput.Text = roomType.Name
+        editRoomTypePriceInput.Text = roomType.Price
+        editRoomTypeCapacityInput.Text = roomType.Capacity
+
+        editRoomTypeFeaturesList.Clear()
+        For Each feature As String In roomType.features
+            editRoomTypeFeaturesList.Add(feature)
+        Next
+
+        editRoomTypeFeatures.ItemsSource = editRoomTypeFeaturesList
+
+
+
+    End Sub
+
+    'add editRoomTypeFeatures Button
+    Private Sub editRoomTypeFeaturesBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles editRoomTypeFeaturesBtn.MouseDown
+        If editRoomTypeFeatureInput.Text IsNot "" Then
+            Dim feature As String = "✔" & editRoomTypeFeatureInput.Text
+            editRoomTypeFeaturesList.Add(feature)
+            editRoomTypeFeatureInput.Clear()
+
+        End If
+
+    End Sub
+
+
+    'save changes Edit RoomType Button
+    Private Sub saveChangesRoomTypeBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles saveChangesRoomTypeBtn.MouseDown
+        'creating a new changed copy of the Room
+        Dim name As String = editTypeNameInput.Text
+        Dim capacity As Integer = Val(editRoomTypeCapacityInput.Text)
+        Dim Price As Double = Val(editRoomTypePriceInput.Text)
+
+        Dim roomType As New RoomType(name, capacity, Price)
+        roomType.features = editRoomTypeFeaturesList.ToList()
+        Dim pictures As New List(Of RoomPicture)
+        roomType.id = selectedRoomTypeToEdit.id
+
+        'updating the current room type selected
+        selectedRoomTypeToEdit.Name = name
+        selectedRoomTypeToEdit.Capacity = capacity
+        selectedRoomTypeToEdit.Price = Price
+        selectedRoomTypeToEdit.features = editRoomTypeFeaturesList.ToList()
+
+        updateRoomTypeToDb(roomType)
+
+        editTypeNameInput.Clear()
+        editRoomTypeCapacityInput.Clear()
+        editRoomTypePriceInput.Clear()
+        editRoomTypeFeaturesList.Clear()
+
+        selectViewGeneric(roomManagementRoomList, roomWinndows)
+        roomsDataGrid.ItemsSource = Nothing
+        roomsDataGrid.ItemsSource = selectedRoomType.Rooms
+
+        roomTypePickerListBox.ItemsSource = roomTypes.ToList()
+        roomTypePickerListBox.ItemsSource = roomTypes
+
+    End Sub
+
+    'remove Feature button
+    Private Sub removeRoomTypeFeatureBtn_MouseDown(sender As Object, e As MouseButtonEventArgs)
+        Dim btn As Border = CType(sender, Border)
+        Dim itemToDelete = btn.DataContext
+
+        editRoomTypeFeaturesList.Remove(itemToDelete.ToString())
+
+    End Sub
+
+    'remove RoomType button
+    Private Sub removeRoomTypeBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles removeRoomTypeBtn.MouseDown
+
+        'removing items from database
+        removeItemInDb(selectedRoomTypeToEdit.id, "RoomType")
+        For Each room As Room In selectedRoomTypeToEdit.Rooms
+            room.Pictures = New List(Of RoomPicture) From {}
+            removePicturesInDb(room)
+
+            removeItemInDb(room.id, "Room")
+        Next
+
+        roomTypes.Remove(selectedRoomTypeToEdit)
+
+
+        selectViewGeneric(roomManagementRoomList, roomWinndows)
+
+    End Sub
+
+    Private Sub Border_MouseDown(sender As Object, e As MouseButtonEventArgs)
+        MsgBox("rawr")
+    End Sub
+
+    'addPromoToApplied 
+    Private Sub addPromoToApplied(sender As Object, e As MouseButtonEventArgs)
+        Dim border As Border = CType(sender, Border)
+        Dim promoSelected = CType(border.DataContext, Promo)
+
+        'new copy of the promo
+        Dim promo = New Promo(promoSelected)
+        promo.amount = 1
+        promo.promoClassId = promoSelected.promoClassId
+
+        Dim meron As Boolean = False
+
+        For Each appliedPromo As Promo In PromosAppliedList
+            If promo.promoClassId = appliedPromo.promoClassId Then
+                If promoSelected.amount > appliedPromo.amount Then
+                    appliedPromo.amount += 1
+                Else
+                    MsgBox("AMOUNT OF TIMES VOUCHER APPLIED EXCEEDED")
+                End If
+                meron = True
+            End If
+        Next
+
+        If Not meron Then
+            PromosAppliedList.Add(promo)
+        End If
+
+    End Sub
+
+    'minus promo
+    Private Sub minusPromo(sender As Object, e As MouseButtonEventArgs)
+        Dim border As Border = CType(sender, Border)
+        Dim promoSelected = CType(border.DataContext, Promo)
+
+        For Each promoReference As Promo In PromosList
+            If promoSelected.promoClassId = promoReference.promoClassId Then
+                If promoSelected.amount > 1 Then
+                    promoSelected.amount -= 1
+                Else
+                    PromosAppliedList.Remove(promoSelected)
+                End If
+            End If
+        Next
+
+    End Sub
+
+    'plus promo
+    Private Sub plusPromo(sender As Object, e As MouseButtonEventArgs)
+        Dim border As Border = CType(sender, Border)
+        Dim promoSelected = CType(border.DataContext, Promo)
+
+        For Each promoReference As Promo In PromosList
+            If promoSelected.promoClassId = promoReference.promoClassId Then
+                If promoSelected.amount < promoReference.amount Then
+                    promoSelected.amount += 1
+                Else
+                    MsgBox("AMOUNT OF TIMES VOUCHER APPLIED EXCEEDED")
+                End If
+            End If
+        Next
+    End Sub
+
 
 
 

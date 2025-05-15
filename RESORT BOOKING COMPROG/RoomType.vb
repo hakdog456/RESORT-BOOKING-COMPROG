@@ -6,6 +6,7 @@ Public Class RoomType
     Implements INotifyPropertyChanged
 
     Public Property Name As String
+    Public Property id As String = New Guid().NewGuid.ToString()
     Public Property Color As String
     Public Property Rooms As New ObservableCollection(Of Room) From {}
     Public Property Price As Double
@@ -23,6 +24,18 @@ Public Class RoomType
         End Set
     End Property
 
+    Private _Promos As New List(Of Promo) From {}
+
+    Public Property Promos As List(Of Promo)
+        Get
+            Return _Promos
+        End Get
+        Set(value As List(Of Promo))
+            _Promos = value
+            OnPropertyChanged("Promo")
+        End Set
+    End Property
+
 
     'CONSTRUCTOR
     Sub New(name As String, capacity As Integer, price As Double)
@@ -32,11 +45,15 @@ Public Class RoomType
     End Sub
 
     Public Function AddRoom(name As String)
-        Me.Rooms.Add(New Room(name, Me.Name, Me.Capacity, Me.Price, Me))
+        Dim room As Room = New Room(name, Me.Name, Me.Capacity, Me.Price, Me)
+        room.roomTypeId = id
+        Me.Rooms.Add(room)
         Me.RoomsCount = Rooms.Count
     End Function
 
     Public Function AddRoom(room As Room)
+        room.roomTypeId = id
+        room.Promos = Me.Promos
         Me.Rooms.Add(room)
         Me.RoomsCount = Rooms.Count
     End Function
