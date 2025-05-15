@@ -93,6 +93,10 @@
     <Compile Include="bookingDetails.xaml.vb">
       <DependentUpon>bookingDetails.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomerView.xaml.vb">
+      <DependentUpon>CustomerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Discount.vb" />
     <Compile Include="Promo.vb" />
     <Compile Include="receiptWindow.xaml.vb">
       <DependentUpon>receiptWindow.xaml</DependentUpon>
@@ -101,6 +105,10 @@
     <Compile Include="RoomPicture.vb" />
     <Compile Include="RoomType.vb" />
     <Page Include="bookingDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -163,6 +171,7 @@
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
     </EmbeddedResource>
+    <None Include=".editorconfig" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
@@ -222,6 +231,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ASSETS\ICONS\promos.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\officialLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="LOGO %282%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\LOGO %282%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\viewerPic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

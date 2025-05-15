@@ -89,6 +89,8 @@
         'transfering the datacontext to window
         mainGrid.DataContext = Me
 
+        promos.ItemsSource = booking.Promos
+
     End Sub
 
     Private Sub forceCheckOutBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles forceCheckOutBtn.MouseDown

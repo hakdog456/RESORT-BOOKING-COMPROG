@@ -6,267 +6,297 @@
         xmlns:local="clr-namespace:RESORT_BOOKING_COMPROG"
         mc:Ignorable="d"
         Title="Receipt"
-        Width="595" Height="842"
+        Width="595" Height="Auto"
+        SizeToContent="Height"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen">
 
     <!-- Fullscreen Grid -->
     <Grid Background="White">
-        <!-- Fixed-size content container -->
-        <Border Width="595" Height="842"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="White"
-                BorderBrush="Black"
-                BorderThickness="1">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="4.5*" ></RowDefinition>
-                    <RowDefinition Height="14*" ></RowDefinition>
-                </Grid.RowDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
 
-
-
-                <!--Header grid-->
-                <Grid x:Name="Header_Grid" Grid.Row="0" >
+            <!-- Dynamic-size content container -->
+            <Border Width="595" MinHeight="842"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Background="White"
+                    BorderBrush="Black"
+                    BorderThickness="1">
+                <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="2*"/>
-                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Background="LightBlue">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="5*"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
-                        <Image Grid.Column="1" Source="/Logo.png" Width="90" Height="75" Margin="0,10,0,0"/>
-                    </Grid>
+                    <!--Header grid-->
+                    <Grid x:Name="Header_Grid" Grid.Row="0" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="5*"/>
-                            <ColumnDefinition Width="2*"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
-                            <TextBlock>
-                        <Run Text="SAN ANTONIO NOMPASS " FontWeight="SemiBold" FontSize="19"/>
-                        <LineBreak/>    
-                        <Run Text="          CITY OF TARLAC, 113 BLK. 3 SAN ANTONIO"  FontSize="9"/>
-                            </TextBlock>
-                        </Label>
+                        <Grid Grid.Row="0" Background="LightBlue" Height="100">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="1" Source="/Logo.png" Width="90" Height="75" Margin="0,10,0,0"/>
+                        </Grid>
 
-                    </Grid>
-                </Grid>
-
-                <!--body grid-->
-                <Grid x:Name="Body_Grid" Grid.Row="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="10*"/>
-                        <ColumnDefinition Width="1*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="15*"/>
-                        <RowDefinition Height="1*"/>
-                    </Grid.RowDefinitions>
-
-                    <!--Body Content-->
-                    <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
-                        <Grid x:Name="Body_Content" Grid.Column="1"  >
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="0.7*"/>
-                                <RowDefinition Height="1.1*"/>
-                                <RowDefinition Height="0.7*"/>
-                                <RowDefinition Height="2.0*"/>
-                                <RowDefinition Height="0.7*"/>
-                                <RowDefinition Height="1.4*"/>
-                                <RowDefinition Height="0.7*"/>
-                                <RowDefinition Height="1.2*"/>
-                                <RowDefinition Height="0.7*"/>
-                            </Grid.RowDefinitions>
-
-                            <!--Customer Details -->
-                            <Border x:Name="CustomerDetailsLabel" BorderBrush="Black" BorderThickness="0,1,0,0" Background="LightBlue">
-                                <Label Grid.Row="0" Content="CUSTOMER DETAILS" HorizontalAlignment="Left" FontSize="20"/>
-                            </Border>
-                            <Grid x:Name="CustomerDetailsValue" Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="0.1*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                </Grid.ColumnDefinitions>
-                                <!--First Column/ labels -->
-                                <Label Grid.Column="0" FontWeight="Bold" FontSize="11" Margin="4,0,0,0">
-                                    <TextBlock Margin="0,3,0,0"><Run Text="Customer Name"/><LineBreak/><Run Text="Customer Email"/><LineBreak/><Run Text="Customer Contact"/></TextBlock>
-                                </Label>
-                                <!-- Second Column/ Display Colon-->
-                                <TextBlock x:Name="Colon" Grid.Column="1" Foreground="Black" Text=":&#xA;:&#xA;:" Margin="0,9,0,0" FontSize="11"/>
-                                <!--ThirdColumn/ values -->
-                                <Label Grid.Column="2" FontSize="11" Margin="0,3,0,0" FontWeight="Regular">
-                                    <TextBlock x:Name="CustomerDetails" TextWrapping="Wrap"/>
-                                </Label>
-
-                                <!--End Customer Details-->
-                            </Grid>
-
-                            <!--Booking Details -->
-                            <Border x:Name="BookingDetailsLabel" BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="2" Background="LightBlue" >
-                                <Label Grid.Row="2" Content="BOOKING DETAILS" HorizontalAlignment="Left" FontSize="20"/>
-                            </Border>
-                            <Grid x:Name="BookingDetails" Grid.Row="3" Margin="0,2,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="0.1*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!--First Column/ labels -->
-                                <Label Grid.Column="0" FontWeight="Bold" FontSize="11" Margin="4,0,0,0">
-                                    <TextBlock Margin="0,3,0,0"><Run Text="Room Name"/><LineBreak/><Run Text="Room Type"/><LineBreak/><Run Text="Start Date"/><LineBreak/><Run Text="End Date"/><LineBreak/><Run Text="Total Days"/><LineBreak/><Run Text="Room Occupancy"/><LineBreak/><Run Text="Party Size"/></TextBlock>
-                                </Label>
-
-                                <!-- Second Column/ Display Colon-->
-                                <TextBlock Grid.Column="1" Foreground="Black" Text=":&#xA;:&#xA;:&#xA;:&#xA;:&#xA;:&#xA;:"  FontSize="11" Margin="0,9,0,0"/>
-
-                                <!--ThirdColumn/ values -->
-                                <Label Grid.Column="2" FontSize="11" Margin="0,3,0,0" FontWeight="Normal">
-                                    <TextBlock x:Name="BookingDetailss" TextWrapping="Wrap"/>
-                                </Label>
-                                <!--End Booking Details-->
-                            </Grid>
-
-                            <!-- Summary Charges Details -->
-                            <Border x:Name="SumamryChargesLabel" BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="4"  Background="LightBlue" >
-                                <Label Grid.Row="4" Content="SUMMARY OF CHARGES" HorizontalAlignment="Left" FontSize="20"/>
-                            </Border>
-                            <Grid x:Name="SummaryChargesLabel" Grid.Row="5" Margin="0,9,0,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="0.1*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!--First Column/ labels -->
-                                <Label Grid.Column="0" FontWeight="Bold" FontSize="11" Margin="4,-2,0,0">
-                                    <TextBlock><Run Text="Billing Name"/><LineBreak/><Run Text="Room Cost/Night"/><LineBreak/><Run Text="Night/s"/><LineBreak/><Run Text="Room Subtotal"/><LineBreak/></TextBlock>
-                                </Label>
-
-                                <!-- Second Column/ Display Colon-->
-                                <TextBlock Grid.Column="1" Foreground="Black" Text=":&#xA;:&#xA;:&#xA;:" FontSize="11.4" Margin="0,2,0,0"/>
-
-                                <!--ThirdColumn/ values -->
-                                <Label Grid.Column="2" FontSize="11" Margin="0,-1,0,0" FontWeight="Normal">
-                                    <TextBlock x:Name="SummarContent" TextWrapping="Wrap"/>
-                                </Label>
-                                <!--End Booking Details-->
-                            </Grid>
-
-                            <!-- Payment Details -->
-                            <Border x:Name="PaymentDetailsLabel" BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="6"   Background="LightBlue">
-                                <Label Grid.Row="6" Content="PAYMENT DETAILS" HorizontalAlignment="Left" FontSize="20"/>
-                            </Border>
-
-                            <Border BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="8"  Background="LightBlue" >
-
-                            </Border>
-                            <!-- Payment Details -->
-                            <Grid x:Name="PaymentDetailsValues" Grid.Row="7">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="2*"/>
-                                    <RowDefinition Height="4*"/>
-                                </Grid.RowDefinitions>
-                                <!--Payment Label-->
-                                <Border x:Name="header_label" BorderBrush="Black" BorderThickness="0,1,0,1" Grid.Row="0">
-                                    <Grid  >
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="2*"></ColumnDefinition>
-                                            <ColumnDefinition Width="1.3*"></ColumnDefinition>
-                                            <ColumnDefinition Width="1.7*"></ColumnDefinition>
-                                            <ColumnDefinition Width="1.9*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="Black" >
-                                            <Label HorizontalAlignment="Center" FontWeight="SemiBold">PAYMENT ID</Label>
-                                        </Border>
-                                        <Border Grid.Column="1" BorderThickness="0,0,1,0" BorderBrush="Black">
-                                            <Label HorizontalAlignment="Center" FontWeight="SemiBold">DATE</Label>
-                                        </Border>
-                                        <Border Grid.Column="2" BorderThickness="0,0,1,0" BorderBrush="Black">
-                                            <Label HorizontalAlignment="Center" FontWeight="SemiBold">STATUS</Label>
-                                        </Border>
-                                        <Border Grid.Column="3" BorderThickness="0,0,0,0" BorderBrush="Black">
-                                            <Label HorizontalAlignment="Center" FontWeight="SemiBold">AMOUNT PAID</Label>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-                                <!--Payment Value-->
-                                <Border x:Name="values" BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Row="1">
-                                    <Grid  >
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="2*"></ColumnDefinition>
-                                            <ColumnDefinition Width="1.3*"></ColumnDefinition>
-                                            <ColumnDefinition Width="1.7*"></ColumnDefinition>
-                                            <ColumnDefinition Width="1.9*"></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="Black">
-                                            <Label x:Name="IDnumber" HorizontalAlignment="Center"/>
-                                        </Border>
-                                        <Border Grid.Column="1" BorderThickness="0,0,1,0" BorderBrush="Black">
-                                            <Label x:Name="StartDate" HorizontalAlignment="Center"></Label>
-                                        </Border>
-                                        <Border Grid.Column="2" BorderThickness="0,0,1,0" BorderBrush="Black">
-                                            <Label x:Name="displayStats" HorizontalAlignment="Center"></Label>
-                                        </Border>
-                                        <Border Grid.Column="3" BorderThickness="0,0,0,0" BorderBrush="Black">
-                                            <Label x:Name="AmountPaid" HorizontalAlignment="Center"></Label>
-                                        </Border>
-                                    </Grid>
-                                </Border>
-                                <!--End Payment-->
-                            </Grid>
-
-                            <!--fotter-->
-                            <Grid x:Name="Footer"  Grid.Row="10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="1.8*"></RowDefinition>
-                                    <RowDefinition Height="2*"></RowDefinition>
-                                </Grid.RowDefinitions>
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"></ColumnDefinition>
-                                    <ColumnDefinition Width="1*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
-
-                                <Border Grid.Column="0" BorderThickness="0,0,0,1" BorderBrush="Black">
-                                    <Label Content="Total Paid" FontWeight="SemiBold" FontSize="8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                </Border>
-                                <Border Grid.Column="1" BorderThickness="0,0,0,1" BorderBrush="Black">
-                                    <Label x:Name="TotalPaid" HorizontalAlignment="Right"  FontSize="8" FontWeight="SemiBold"/>
-                                </Border>
-
-                                <Label Grid.Row="1" Content="To Pay:" FontSize="11" FontWeight="Bold"></Label>
-                                <Label Grid.Row="1" Grid.Column="1" FontSize="11" x:Name="Remaining" HorizontalAlignment="Right" FontWeight="Bold"></Label>
-
-
-                            </Grid>
-
+                        <Grid Grid.Row="1" Height="50">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="5*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Top">
+                                <TextBlock>
+                            <Run Text="SAN ANTONIO NOMPASS " FontWeight="SemiBold" FontSize="19"/>
+                            <LineBreak/>    
+                            <Run Text="          CITY OF TARLAC, 113 BLK. 3 SAN ANTONIO"  FontSize="9"/>
+                                </TextBlock>
+                            </Label>
 
                         </Grid>
-                    </Border>
+                    </Grid>
+
+                    <!--body grid-->
+                    <Grid x:Name="Body_Grid" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="10*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!--Body Content-->
+                        <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1">
+                            <Grid x:Name="Body_Content" Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!--Customer Details -->
+                                <Border x:Name="CustomerDetailsLabel" BorderBrush="Black" BorderThickness="0,1,0,0" Background="LightBlue" Height="40">
+                                    <Label Grid.Row="0" Content="CUSTOMER DETAILS" HorizontalAlignment="Left" FontSize="20"/>
+                                </Border>
+                                <Grid x:Name="CustomerDetailsValue" Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="0.1*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <!--First Column/ labels -->
+                                    <Label Grid.Column="0" FontWeight="Bold" FontSize="11" Margin="4,0,0,0">
+                                        <TextBlock Margin="0,3,0,0"><Run Text="Customer Name"/><LineBreak/><Run Text="Customer Email"/><LineBreak/><Run Text="Customer Contact"/></TextBlock>
+                                    </Label>
+                                    <!-- Second Column/ Display Colon-->
+                                    <TextBlock x:Name="Colon" Grid.Column="1" Foreground="Black" Text=":&#xA;:&#xA;:" Margin="0,9,0,0" FontSize="11"/>
+                                    <!--ThirdColumn/ values -->
+                                    <Label Grid.Column="2" FontSize="11" Margin="0,3,0,0" FontWeight="Regular">
+                                        <TextBlock x:Name="CustomerDetails" TextWrapping="Wrap"/>
+                                    </Label>
+
+                                    <!--End Customer Details-->
+                                </Grid>
+
+                                <!--Booking Details -->
+                                <Border x:Name="BookingDetailsLabel" BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="2" Background="LightBlue" Height="40">
+                                    <Label Grid.Row="2" Content="BOOKING DETAILS" HorizontalAlignment="Left" FontSize="20"/>
+                                </Border>
+                                <Grid x:Name="BookingDetails" Grid.Row="3" Margin="0,2,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="0.1*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!--First Column/ labels -->
+                                    <Label Grid.Column="0" FontWeight="Bold" FontSize="11" Margin="4,0,0,0">
+                                        <TextBlock Margin="0,3,0,0"><Run Text="Room Name"/><LineBreak/><Run Text="Room Type"/><LineBreak/><Run Text="Start Date"/><LineBreak/><Run Text="End Date"/><LineBreak/><Run Text="Total Nights"/><LineBreak/><Run Text="Room Occupancy"/><LineBreak/><Run Text="Party Size"/></TextBlock>
+                                    </Label>
+
+                                    <!-- Second Column/ Display Colon-->
+                                    <TextBlock Grid.Column="1" Foreground="Black" Text=":&#xA;:&#xA;:&#xA;:&#xA;:&#xA;:&#xA;:"  FontSize="11" Margin="0,9,0,0"/>
+
+                                    <!--ThirdColumn/ values -->
+                                    <Label Grid.Column="2" FontSize="11" Margin="0,3,0,0" FontWeight="Normal">
+                                        <TextBlock x:Name="BookingDetailss" TextWrapping="Wrap"/>
+                                    </Label>
+                                    <!--End Booking Details-->
+                                </Grid>
+
+                                <!-- Summary Charges Details -->
+                                <Border x:Name="SumamryChargesLabel" BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="4" Background="LightBlue" Height="40">
+                                    <Label Grid.Row="4" Content="SUMMARY OF CHARGES" HorizontalAlignment="Left" FontSize="20"/>
+                                </Border>
+
+                                <Border Grid.Row="5">
+                                    <Grid x:Name="SummaryChargesLabel" Margin="0,9,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Regular charges section -->
+                                        <Grid Grid.Row="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="0.1*"/>
+                                                <ColumnDefinition Width="3*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!--First Column/ labels -->
+                                            <Label Grid.Column="0" FontWeight="Bold" FontSize="11" Margin="4,-2,0,0">
+                                                <TextBlock><Run Text="Billing Name"/><LineBreak/><Run Text="Room Cost/Night"/><LineBreak/><Run Text="Night/s"/><LineBreak/><Run Text="Exceeded Room Capacity Charge"/><LineBreak/><Run Text="Room Subtotal"/><LineBreak/></TextBlock>
+                                            </Label>
+
+                                            <!-- Second Column/ Display Colon-->
+                                            <TextBlock Grid.Column="1" Foreground="Black" Text=":&#xA;:&#xA;:&#xA;:&#xA;:" FontSize="11.4" Margin="0,2,0,0"/>
+
+                                            <!--ThirdColumn/ values -->
+                                            <Label Grid.Column="2" FontSize="11" Margin="0,-1,0,0" FontWeight="Normal">
+                                                <TextBlock x:Name="SummarContent" TextWrapping="Wrap"/>
+                                            </Label>
+                                        </Grid>
+
+                                        <!-- Discounts section -->
+                                        <Grid Grid.Row="1" Margin="0,10,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="0.1*"/>
+                                                <ColumnDefinition Width="3*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Label for discounts -->
+                                            <Label Grid.Column="0" Content="Discounts" FontWeight="Bold" FontSize="11" Margin="4,0,0,0"/>
+
+                                            <!-- Colon -->
+                                            <TextBlock Grid.Column="1" Text=":" FontSize="11.4" Margin="0,5,0,0"/>
+
+                                            <!-- Discounts list -->
+                                            <Border Grid.Column="2" BorderBrush="LightGray" BorderThickness="1" Margin="0,0,0,10">
+                                                <ListBox x:Name="DiscountsList" MaxHeight="100" FontSize="11">
+                                                    <ListBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="3*"/>
+                                                                    <ColumnDefinition Width="1*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Grid.Column="0" Text="{Binding Name}" TextWrapping="Wrap" FontFamily="Poppins" FontWeight="Normal"/>
+                                                                <TextBlock Grid.Column="1" Text="{Binding Amount}" HorizontalAlignment="Right" FontFamily="Poppins" FontWeight="Bold"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ListBox.ItemTemplate>
+                                                </ListBox>
+                                            </Border>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Payment Details -->
+                                <Border x:Name="PaymentDetailsLabel" BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="6" Background="LightBlue" Height="40">
+                                    <Label Grid.Row="6" Content="PAYMENT DETAILS" HorizontalAlignment="Left" FontSize="20"/>
+                                </Border>
+
+                                <Border BorderBrush="Black" BorderThickness="0,1,0,0" Grid.Row="8" Background="LightBlue" Height="20">
+                                </Border>
+
+                                <!-- Payment Details -->
+                                <Grid x:Name="PaymentDetailsValues" Grid.Row="7">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <!--Payment Label-->
+                                    <Border x:Name="header_label" BorderBrush="Black" BorderThickness="0,1,0,1" Grid.Row="0" Height="30">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                                                <ColumnDefinition Width="1.3*"></ColumnDefinition>
+                                                <ColumnDefinition Width="1.7*"></ColumnDefinition>
+                                                <ColumnDefinition Width="1.9*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="Black" >
+                                                <Label HorizontalAlignment="Center" FontWeight="SemiBold">PAYMENT ID</Label>
+                                            </Border>
+                                            <Border Grid.Column="1" BorderThickness="0,0,1,0" BorderBrush="Black">
+                                                <Label HorizontalAlignment="Center" FontWeight="SemiBold">DATE</Label>
+                                            </Border>
+                                            <Border Grid.Column="2" BorderThickness="0,0,1,0" BorderBrush="Black">
+                                                <Label HorizontalAlignment="Center" FontWeight="SemiBold">STATUS</Label>
+                                            </Border>
+                                            <Border Grid.Column="3" BorderThickness="0,0,0,0" BorderBrush="Black">
+                                                <Label HorizontalAlignment="Center" FontWeight="SemiBold">AMOUNT PAID</Label>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                    <!--Payment Value-->
+                                    <Border x:Name="values" BorderBrush="Black" BorderThickness="0,0,0,1" Grid.Row="1" MinHeight="40">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                                                <ColumnDefinition Width="1.3*"></ColumnDefinition>
+                                                <ColumnDefinition Width="1.7*"></ColumnDefinition>
+                                                <ColumnDefinition Width="1.9*"></ColumnDefinition>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="Black">
+                                                <Label x:Name="IDnumber" HorizontalAlignment="Center"/>
+                                            </Border>
+                                            <Border Grid.Column="1" BorderThickness="0,0,1,0" BorderBrush="Black">
+                                                <Label x:Name="StartDate" HorizontalAlignment="Center"></Label>
+                                            </Border>
+                                            <Border Grid.Column="2" BorderThickness="0,0,1,0" BorderBrush="Black">
+                                                <Label x:Name="displayStats" HorizontalAlignment="Center"></Label>
+                                            </Border>
+                                            <Border Grid.Column="3" BorderThickness="0,0,0,0" BorderBrush="Black">
+                                                <Label x:Name="AmountPaid" HorizontalAlignment="Center"></Label>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                    <!--End Payment-->
+                                </Grid>
+
+                                <!--footer-->
+                                <Grid x:Name="Footer" Grid.Row="8" Margin="0,20,0,10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                        <RowDefinition Height="Auto"></RowDefinition>
+                                    </Grid.RowDefinitions>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                                        <ColumnDefinition Width="1*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" BorderThickness="0,0,0,1" BorderBrush="Black" Height="30">
+                                        <Label Content="Total Paid" FontWeight="SemiBold" FontSize="11" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <Border Grid.Column="1" BorderThickness="0,0,0,1" BorderBrush="Black" Height="30">
+                                        <Label x:Name="TotalPaid" HorizontalAlignment="Right" FontSize="11" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                    </Border>
+
+                                    <Label Grid.Row="1" Content="To Pay:" FontSize="14" FontWeight="Bold" Margin="0,10,0,0"></Label>
+                                    <Label Grid.Row="1" Grid.Column="1" FontSize="14" x:Name="Remaining" HorizontalAlignment="Right" FontWeight="Bold" Margin="0,10,0,0"></Label>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </Grid>
-
-
-
-
-
-
-
-                <!--end grid-->
-            </Grid>
-
-        </Border>
+            </Border>
+        </ScrollViewer>
     </Grid>
 </Window>
-
-

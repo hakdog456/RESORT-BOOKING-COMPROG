@@ -82,7 +82,7 @@ Public Class Promo
     End Property
 
 
-    'Container
+    'Constructor
     Sub New(name As String, type As String, value As Double, amount As Integer)
         Me.name = name
         Me.type = type
@@ -96,6 +96,20 @@ Public Class Promo
         Me.value = promo.value
         Me.amount = promo.amount
     End Sub
+
+
+    'FUNCTIONS 
+
+    Public Function less(total As Double)
+        Dim result As Double = 0
+        If type = "percentage" Then
+            Dim divider As Double = value / 100
+            result = ((total * divider) * -1) * amount
+        ElseIf type = "direct" Then
+            result = (value * -1) * amount
+        End If
+        Return result
+    End Function
 
 
     'Notify Function

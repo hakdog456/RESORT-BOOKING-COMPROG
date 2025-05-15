@@ -13,6 +13,7 @@ Imports System.Data.Entity.ModelConfiguration.Configuration
 Imports System.Globalization
 Imports System.Windows.Interop
 Imports System.Data.Entity.Migrations.Model
+Imports System.Data.Entity.SqlServer
 
 
 
@@ -41,6 +42,9 @@ Class MainWindow
 
     'ROOM MANAGEMENT WINDOWS
     Dim roomWinndows As New List(Of Grid) From {roomManagementEditRoomType, roomManagementAddRoom, roomManagementRoomList, roomManagementAddRoomType, roomManagementEditRoom}
+
+    'PROMOS WINDOWS
+    Dim promoViews As New List(Of Grid) From {promoEditView, promoListView, promoAddView}
 
     'BOOKINGS
     Dim bookings As New List(Of Booking) From {}
@@ -88,6 +92,7 @@ Class MainWindow
     Private selectedRoomType As RoomType
     Public selectedRoomToEdit As Room
     Public selectedRoomTypeToEdit As RoomType
+    Public selectedPromo As Promo
 
     'INITIALIZATIONS
     Sub New()
@@ -238,6 +243,23 @@ Class MainWindow
         Return result
     End Function
 
+    'FIND BOOKING BY ID
+    Function findBookingById(bookingId As String)
+        Dim result As Booking
+
+        getBookings()
+
+        For Each booking As Booking In bookings
+            If booking.id = bookingId Then
+                result = booking
+            End If
+        Next
+
+        Return result
+    End Function
+
+
+
     'FIND ROOM BY ROOMTYPE ID
     Function findRoomById(roomId As String, roomType As RoomType)
         Dim result As Room
@@ -367,7 +389,36 @@ Class MainWindow
 
             cmd.ExecuteNonQuery()
         End Using
+    End Sub
 
+    'Update A PROMO to DateBase
+    Sub updatePromoToDb(promo As Promo)
+        If connection.State <> ConnectionState.Open Then
+            connection.Open()
+        End If
+
+        Dim updatePromo As String = "
+        UPDATE Promo SET
+            Id = @Id,
+            Name = @Name,
+            Type = @Type,
+            Value = @Value,
+            BookingId = @BookingId,
+            PromoClassId = @PromoClassId,
+            amount = @amount
+        WHERE Id = @Id
+    "
+        Using cmd As New SQLiteCommand(updatePromo, connection)
+            cmd.Parameters.AddWithValue("@Id", promo.id)
+            cmd.Parameters.AddWithValue("@Name", promo.name)
+            cmd.Parameters.AddWithValue("@Type", promo.type)
+            cmd.Parameters.AddWithValue("@Value", promo.value)
+            cmd.Parameters.AddWithValue("@BookingId", promo.bookingId)
+            cmd.Parameters.AddWithValue("@PromoClassId", promo.promoClassId)
+            cmd.Parameters.AddWithValue("@amount", promo.amount)
+
+            cmd.ExecuteNonQuery()
+        End Using
     End Sub
 
 
@@ -401,6 +452,29 @@ Class MainWindow
             cmd.Parameters.AddWithValue("@RoomId", selectedRoom.id)
             cmd.Parameters.AddWithValue("@Days", booking.days)
             cmd.Parameters.AddWithValue("@RoomTypeId", selectedRoom.roomTypeId)
+
+            cmd.ExecuteNonQuery()
+        End Using
+    End Sub
+
+    'add promo to Db
+    Sub addPromoDb(promo As Promo)
+        Dim addBooking As String = "INSERT INTO Promo (Id, Name, Type, Value, BookingId, PromoClassId, amount) VALUES (@Id, @Name, @Type, @Value, @BookingId, @PromoClassId, @amount)"
+        Using cmd As New SQLiteCommand(addBooking, connection)
+            cmd.Parameters.AddWithValue("@Id", promo.id)
+            cmd.Parameters.AddWithValue("@Name", promo.name)
+            cmd.Parameters.AddWithValue("@Type", promo.type)
+            cmd.Parameters.AddWithValue("@Value", promo.value)
+
+            ' Handle the BookingId parameter to use default value when needed
+            If Not promo.bookingId Is Nothing Then
+                cmd.Parameters.AddWithValue("@BookingId", promo.bookingId)
+            Else
+                cmd.Parameters.AddWithValue("@BookingId", "none")
+            End If
+
+            cmd.Parameters.AddWithValue("@PromoClassId", promo.promoClassId)
+            cmd.Parameters.AddWithValue("@amount", promo.amount)
 
             cmd.ExecuteNonQuery()
         End Using
@@ -643,10 +717,43 @@ Class MainWindow
                     room.addBooking(booking)
                 End If
 
-
-
             End While
             bookingReader.Close()
+
+
+            'Getting the Promos / Vouchers
+            command.Connection = connection
+            command.CommandText = "select * from Promo"
+
+            Dim promoReader As SQLiteDataReader = command.ExecuteReader
+            While promoReader.Read()
+                Dim id = promoReader.GetString(0)
+                Dim name = promoReader.GetString(1)
+                Dim type = promoReader.GetString(2)
+                Dim value = promoReader.GetDouble(3)
+                Dim bookingId = promoReader.GetString(4)
+                Dim promoClassId = promoReader.GetString(5)
+                Dim amount = promoReader.GetInt64(6)
+
+                'creating the object
+                Dim promo = New Promo(name, type, value, amount)
+                promo.id = id
+                promo.bookingId = bookingId
+                promo.promoClassId = promoClassId
+
+                If bookingId = "none" Then
+                    PromosList.Add(promo)
+                Else
+                    Dim bookingSelected As Booking = findBookingById(bookingId)
+                    If bookingSelected Is Nothing Then
+                        DeleteByIdDb(id, "Promo")
+                    Else
+                        bookingSelected.Promos.Add(promo)
+                    End If
+                End If
+
+            End While
+            promoReader.Close()
 
 
             'adding initial image
@@ -697,12 +804,15 @@ Class MainWindow
         navBtns = New List(Of Border) From {promosSide, posSide, calSide, dashSide, roomSide, secSide}
         posWindows = New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
         roomWinndows = New List(Of Grid) From {roomManagementEditRoomType, roomManagementAddRoom, roomManagementRoomList, roomManagementAddRoomType, roomManagementEditRoom}
+        promoViews = New List(Of Grid) From {promoEditView, promoListView, promoAddView}
 
 
         'selecting the first pages to show
         selectView(POS)
         setBtnBg(posSide)
         selectViewGeneric(roomManagementRoomList, roomWinndows)
+        selectViewGeneric(promoListView, promoViews)
+
 
 
         'Adding room types and rooms per room type
@@ -745,12 +855,6 @@ Class MainWindow
         kyran.AddRoom("K102")
         kyran.AddRoom("K103")
         kyran.AddRoom("K104")
-
-
-        Dim childPromo As New Promo("Child Promo", "direct", 500, 1000)
-        PromosList.Add(childPromo)
-        Dim specialPromo As New Promo("Special Promo", "percentage", 10, 1)
-        PromosList.Add(specialPromo)
 
 
         'ADDING SAMPLE ROOMS
@@ -916,10 +1020,10 @@ Class MainWindow
 
         Next
 
-
         'showing promos
         bookingPosAvailablePromos.ItemsSource = PromosList
         bookingPosAppliedPromos.ItemsSource = PromosAppliedList
+
 
     End Sub
 
@@ -1044,6 +1148,10 @@ Class MainWindow
                 'Adding the new Booking 
                 Dim newBooking As New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime)
                 newBooking.Promos = PromosAppliedList.ToList()
+                For Each promo As Promo In PromosAppliedList
+                    promo.bookingId = newBooking.id
+                    addPromoDb(promo)
+                Next
                 selectedRoom.addBooking(newBooking)
                 addBookingToDb(newBooking)
                 clearPos()
@@ -1723,8 +1831,29 @@ Class MainWindow
 
     End Sub
 
-    Private Sub Border_MouseDown(sender As Object, e As MouseButtonEventArgs)
-        MsgBox("rawr")
+    'Promo item click
+    Private Sub promoItemClick(sender As Object, e As MouseButtonEventArgs)
+        Dim border As Border = CType(sender, Border)
+        Dim promoSelected = CType(border.DataContext, Promo)
+
+        selectedPromo = promoSelected
+
+        editPromoTitle.Content = "Edit Promo " & selectedPromo.name
+
+        nameEditPromo.Text = selectedPromo.name
+
+        For Each item As ComboBoxItem In typeEditPromo.Items
+            If item.Content.ToString() = selectedPromo.type Then
+                typeEditPromo.SelectedItem = item
+                Exit For
+            End If
+        Next
+
+        valueEditPromo.Text = selectedPromo.value
+        amountEditPromo.Text = selectedPromo.amount
+
+        selectViewGeneric(promoEditView, promoViews)
+
     End Sub
 
     'addPromoToApplied 
@@ -1788,6 +1917,97 @@ Class MainWindow
             End If
         Next
     End Sub
+
+    'Add Promo Show Form
+    Private Sub addPromo_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles addPromo.MouseDown
+        selectViewGeneric(promoAddView, promoViews)
+    End Sub
+
+    'confirm add promo
+    Private Sub confirmAddPromo_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles confirmAddPromo.MouseDown
+        Dim name = nameAddPromo.Text
+        Dim type = typeAddPromo.Text
+        Dim value As Double = Val(valueAddPromo.Text)
+        Dim amount As Integer = Val(amountAddPromo.Text)
+
+        Dim newPromo As New Promo(name, type, value, amount)
+
+        PromosList.Add(newPromo)
+        addPromoDb(newPromo)
+
+        nameAddPromo.Clear()
+        typeAddPromo.SelectedItem = Nothing
+        valueAddPromo.Clear()
+        amountAddPromo.Clear()
+
+        selectViewGeneric(promoListView, promoViews)
+
+    End Sub
+
+    'cancel the add promo
+    Private Sub cancelAddPromo_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles cancelAddPromo.MouseDown
+        selectViewGeneric(promoListView, promoViews)
+
+        nameAddPromo.Clear()
+        typeAddPromo.SelectedItem = Nothing
+        valueAddPromo.Clear()
+        amountAddPromo.Clear()
+
+    End Sub
+
+    'cancel editing promo
+    Private Sub cancelEditPromo_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles cancelEditPromo.MouseDown
+
+        selectViewGeneric(promoListView, promoViews)
+
+        nameEditPromo.Clear()
+        typeEditPromo.SelectedItem = Nothing
+        valueEditPromo.Clear()
+        amountEditPromo.Clear()
+
+    End Sub
+
+    'save changes for edit Promo
+    Private Sub saveChangesPromo_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles saveChangesPromo.MouseDown
+        Dim name = nameEditPromo.Text
+        Dim type = typeEditPromo.Text
+        Dim value As Double = Val(valueEditPromo.Text)
+        Dim amount As Integer = Val(amountEditPromo.Text)
+
+        selectedPromo.name = name
+        selectedPromo.type = type
+        selectedPromo.value = value
+        selectedPromo.amount = amount
+
+        updatePromoToDb(selectedPromo)
+
+        selectViewGeneric(promoListView, promoViews)
+
+        nameEditPromo.Clear()
+        typeEditPromo.SelectedItem = Nothing
+        valueEditPromo.Clear()
+        amountEditPromo.Clear()
+
+    End Sub
+
+    'remove Promo
+    Private Sub removePromo_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles removePromo.MouseDown
+
+        PromosList.Remove(selectedPromo)
+
+        removeItemInDb(selectedPromo.id, "Promo")
+
+        nameEditPromo.Clear()
+        typeEditPromo.SelectedItem = Nothing
+        valueEditPromo.Clear()
+        amountEditPromo.Clear()
+
+        selectViewGeneric(promoListView, promoViews)
+
+    End Sub
+
+
+
 
 
 
