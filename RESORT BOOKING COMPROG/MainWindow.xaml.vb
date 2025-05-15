@@ -12,6 +12,7 @@ Imports System.Data
 Imports System.Data.Entity.ModelConfiguration.Configuration
 Imports System.Globalization
 Imports System.Windows.Interop
+Imports System.Data.Entity.Migrations.Model
 
 
 
@@ -30,7 +31,7 @@ Class MainWindow
     Public Property pages As New List(Of String) From {"login", "main"}
 
     'MAIN PAGE VIEWS
-    Dim views As New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
+    Dim views As New List(Of Grid) From {Promos, POS, Calendar, Dashboard, Room, Security}
 
     'NAV BUTTONS
     Dim navBtns As New List(Of Border) From {posSide, calSide, dashSide, roomSide, secSide}
@@ -49,6 +50,13 @@ Class MainWindow
 
     'ROOM TYPES
     Dim roomTypes As New ObservableCollection(Of RoomType)
+
+    'PROMOS
+    Dim PromosList As New ObservableCollection(Of Promo)
+
+    'PROMOS APPLIED
+    Dim PromosAppliedList As New ObservableCollection(Of Promo)
+
 
     'ADD ROOM IMAGES
     Dim images As New ObservableCollection(Of ImageSource)
@@ -116,6 +124,7 @@ Class MainWindow
 
         'ROOMS ITERATION
         For Each room As Room In rooms
+
             'Check if a Room is booked today
             room.checkStatus(dateToday)
 
@@ -208,10 +217,10 @@ Class MainWindow
     Sub setBtnBg(btn As Border)
         For Each border As Border In navBtns
             If border Is btn Then
-                border.Background = New SolidColorBrush((ColorConverter.ConvertFromString("#07380A")))
+                border.Background = New SolidColorBrush((ColorConverter.ConvertFromString("#FF0A6464")))
 
             Else
-                border.Background = Nothing
+                border.Background = New SolidColorBrush((ColorConverter.ConvertFromString("#FF242222")))
             End If
         Next
     End Sub
@@ -678,18 +687,14 @@ Class MainWindow
             End While
             RoomPictureReader.Close()
 
-
-
-
-
         End If
 
 
 
 
         'Reinitializing views of grid
-        views = New List(Of Grid) From {POS, Calendar, Dashboard, Room, Security}
-        navBtns = New List(Of Border) From {posSide, calSide, dashSide, roomSide, secSide}
+        views = New List(Of Grid) From {Promos, POS, Calendar, Dashboard, Room, Security}
+        navBtns = New List(Of Border) From {promosSide, posSide, calSide, dashSide, roomSide, secSide}
         posWindows = New List(Of Grid) From {PosRoomCheck, PosRoomDetailsGrid, PosRoomBookingGrid}
         roomWinndows = New List(Of Grid) From {roomManagementEditRoomType, roomManagementAddRoom, roomManagementRoomList, roomManagementAddRoomType, roomManagementEditRoom}
 
@@ -742,6 +747,12 @@ Class MainWindow
         kyran.AddRoom("K104")
 
 
+        Dim childPromo As New Promo("Child Promo", "direct", 500, 1000)
+        PromosList.Add(childPromo)
+        Dim specialPromo As New Promo("Special Promo", "percentage", 10, 1)
+        PromosList.Add(specialPromo)
+
+
         'ADDING SAMPLE ROOMS
         'roomTypes.Add(regular)
         'roomTypes.Add(premium)
@@ -784,6 +795,10 @@ Class MainWindow
 
         'Assigning item source of AddRoomType Features
         addRoomTypeFeatures.ItemsSource = roomTypeFeatures
+
+        'Assigning item source of Promos
+        promosCon.ItemsSource = PromosList
+
 
 
 
@@ -834,11 +849,18 @@ Class MainWindow
     End Sub
 
     'ROOM MANAGEMENT BUTTON CLICKED
+    Private Sub promosSide_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles promosSide.MouseDown
+        selectView(Promos)
+        setBtnBg(promosSide)
+    End Sub
+
+    'PROMOS BUTTON CLICKED
     Private Sub roomSide_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles roomSide.MouseDown
         selectView(Room)
         setBtnBg(roomSide)
 
     End Sub
+
 
     'SECURITY BUTTON CLICKED
     Private Sub secSide_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles secSide.MouseDown
@@ -858,11 +880,13 @@ Class MainWindow
     'VIEW ROOMS BUTTON CLICKED
     Private Sub viewRoomsBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles viewRoomsBtn.MouseDown
         selectViewGeneric(PosRoomCheck, posWindows)
+        clearPos()
     End Sub
 
-    'BOOK BUTTON
+    'BOOK BUTTON - OPEN BOOKING POS VIEW
     Private Sub bookBtn_MouseDown(sender As Object, e As MouseButtonEventArgs) Handles bookBtn.MouseDown
         selectViewGeneric(PosRoomBookingGrid, posWindows)
+
         roomNameTxtBox.Text = selectedRoom.Name
         roomTypeTxtBox.Text = selectedRoom.Type
         roomOccupancyTxtBox.Text = selectedRoom.Capacity
@@ -892,6 +916,11 @@ Class MainWindow
 
         Next
 
+
+        'showing promos
+        bookingPosAvailablePromos.ItemsSource = PromosList
+        bookingPosAppliedPromos.ItemsSource = PromosAppliedList
+
     End Sub
 
 
@@ -914,11 +943,9 @@ Class MainWindow
             Dim startParsedTime As Date
             Dim endParsedTime As Date
 
-
-
             If Date.TryParse(startTime, startParsedTime) And Date.TryParse(endTime, endParsedTime) Then
-                finalStartDateTime = New Date(startDate.Year, startDate.Month, startDate.Day, startParsedTime.Hour, startParsedTime.Minute, 0)
-                finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day, endParsedTime.Hour, endParsedTime.Minute, 0)
+                finalStartDateTime = New Date(startDate.Year, startDate.Month, startDate.Day)
+                finalEndDateTime = New Date(endDate.Year, endDate.Month, endDate.Day)
             End If
 
         End If
@@ -931,9 +958,6 @@ Class MainWindow
 
         totalDaysTxtBox.Text = daysGap
         amountPayTxtBox.Text = daysGap * selectedRoom.Price
-
-
-
 
     End Sub
 
@@ -957,6 +981,7 @@ Class MainWindow
         totalDaysTxtBox.Clear()
         amountPayTxtBox.Clear()
         paymentTxtBox.Clear()
+        PromosAppliedList.Clear()
 
         selectViewGeneric(PosRoomCheck, posWindows)
     End Sub
@@ -1018,6 +1043,7 @@ Class MainWindow
 
                 'Adding the new Booking 
                 Dim newBooking As New Booking(selectedRoom, days, selectedRoom.Name, selectedRoom.Type, name, contactNumber, email, partySize, payment, finalStartDateTime, finalEndDateTime)
+                newBooking.Promos = PromosAppliedList.ToList()
                 selectedRoom.addBooking(newBooking)
                 addBookingToDb(newBooking)
                 clearPos()
@@ -1187,10 +1213,32 @@ Class MainWindow
     Private Sub calendarBox_SelectedDatesChanged(sender As Object, e As SelectionChangedEventArgs) Handles calendarBox.SelectedDatesChanged
 
         If calendarBox.SelectedDate IsNot Nothing Then
-            calendarBookings.ItemsSource = getBookingsOnDate(calendarBox.SelectedDate)
+
+            Dim bookingsOnDay = getBookingsOnDate(calendarBox.SelectedDate)
 
             Dim selectedDate As Date = calendarBox.SelectedDates(0)
             dateSelectedLbl.Content = "- " & selectedDate.ToString("MMMM d, yyyy")
+
+
+            'CheckBox how many reserved on Occupied Rooms
+            Dim reservedRoomsOnDay = 0
+            Dim occupiedRoomsOnDay = 0
+            Dim dateToday = Date.Now()
+
+            For Each booking As Booking In bookingsOnDay
+                If dateToday >= booking.startDate AndAlso dateToday <= booking.endDate Then
+                    occupiedRoomsOnDay += 1
+                    booking.color = "#FF6587C5"
+                Else
+                    reservedRoomsOnDay += 1
+                    booking.color = "#FF92BD8C"
+                End If
+            Next
+
+            reservedRoomsPerDayLabel.Content = reservedRoomsOnDay
+            occupiedRoomsPerDayLabel.Content = occupiedRoomsOnDay
+            calendarBookings.ItemsSource = bookingsOnDay
+
 
         End If
 
@@ -1210,11 +1258,14 @@ Class MainWindow
         Dim bookingToView = CType(calendarBookings.SelectedItem, Booking)
         currentBookingViewed = bookingToView
 
-        Dim bookingDetails As New bookingDetails(Me, bookingToView)
-        AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
-        AddHandler bookingDetails.showReceipt, AddressOf handleShowReceipt
+        If currentBookingViewed IsNot Nothing Then
+            Dim bookingDetails As New bookingDetails(Me, bookingToView)
+            AddHandler bookingDetails.removeBookingFromMain, AddressOf handleRemoveBooking
+            AddHandler bookingDetails.showReceipt, AddressOf handleShowReceipt
 
-        bookingDetails.Show()
+            bookingDetails.Show()
+        End If
+
     End Sub
 
     'handles when the booking details window initiated a remove Booking
@@ -1567,6 +1618,7 @@ Class MainWindow
         roomsDataGrid.ItemsSource = selectedRoomType.Rooms
 
         editRoomImages.Clear()
+        editRoomFeaturesList.Clear()
 
     End Sub
 
@@ -1670,6 +1722,73 @@ Class MainWindow
         selectViewGeneric(roomManagementRoomList, roomWinndows)
 
     End Sub
+
+    Private Sub Border_MouseDown(sender As Object, e As MouseButtonEventArgs)
+        MsgBox("rawr")
+    End Sub
+
+    'addPromoToApplied 
+    Private Sub addPromoToApplied(sender As Object, e As MouseButtonEventArgs)
+        Dim border As Border = CType(sender, Border)
+        Dim promoSelected = CType(border.DataContext, Promo)
+
+        'new copy of the promo
+        Dim promo = New Promo(promoSelected)
+        promo.amount = 1
+        promo.promoClassId = promoSelected.promoClassId
+
+        Dim meron As Boolean = False
+
+        For Each appliedPromo As Promo In PromosAppliedList
+            If promo.promoClassId = appliedPromo.promoClassId Then
+                If promoSelected.amount > appliedPromo.amount Then
+                    appliedPromo.amount += 1
+                Else
+                    MsgBox("AMOUNT OF TIMES VOUCHER APPLIED EXCEEDED")
+                End If
+                meron = True
+            End If
+        Next
+
+        If Not meron Then
+            PromosAppliedList.Add(promo)
+        End If
+
+    End Sub
+
+    'minus promo
+    Private Sub minusPromo(sender As Object, e As MouseButtonEventArgs)
+        Dim border As Border = CType(sender, Border)
+        Dim promoSelected = CType(border.DataContext, Promo)
+
+        For Each promoReference As Promo In PromosList
+            If promoSelected.promoClassId = promoReference.promoClassId Then
+                If promoSelected.amount > 1 Then
+                    promoSelected.amount -= 1
+                Else
+                    PromosAppliedList.Remove(promoSelected)
+                End If
+            End If
+        Next
+
+    End Sub
+
+    'plus promo
+    Private Sub plusPromo(sender As Object, e As MouseButtonEventArgs)
+        Dim border As Border = CType(sender, Border)
+        Dim promoSelected = CType(border.DataContext, Promo)
+
+        For Each promoReference As Promo In PromosList
+            If promoSelected.promoClassId = promoReference.promoClassId Then
+                If promoSelected.amount < promoReference.amount Then
+                    promoSelected.amount += 1
+                Else
+                    MsgBox("AMOUNT OF TIMES VOUCHER APPLIED EXCEEDED")
+                End If
+            End If
+        Next
+    End Sub
+
 
 
 

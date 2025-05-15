@@ -24,6 +24,18 @@ Public Class RoomType
         End Set
     End Property
 
+    Private _Promos As New List(Of Promo) From {}
+
+    Public Property Promos As List(Of Promo)
+        Get
+            Return _Promos
+        End Get
+        Set(value As List(Of Promo))
+            _Promos = value
+            OnPropertyChanged("Promo")
+        End Set
+    End Property
+
 
     'CONSTRUCTOR
     Sub New(name As String, capacity As Integer, price As Double)
@@ -41,6 +53,7 @@ Public Class RoomType
 
     Public Function AddRoom(room As Room)
         room.roomTypeId = id
+        room.Promos = Me.Promos
         Me.Rooms.Add(room)
         Me.RoomsCount = Rooms.Count
     End Function

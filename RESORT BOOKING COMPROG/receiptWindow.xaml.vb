@@ -19,6 +19,18 @@ Public Class receiptWindow
     Public Property displayStat As String
     Public Property bookingId As String
 
+    Private _Promos As New List(Of Promo) From {}
+
+    Public Property Promos As List(Of Promo)
+        Get
+            Return _Promos
+        End Get
+        Set(value As List(Of Promo))
+            _Promos = value
+        End Set
+    End Property
+
+
 
 
 

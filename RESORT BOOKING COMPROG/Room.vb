@@ -71,6 +71,20 @@ Public Class Room
         End Get
     End Property
 
+    'Promos
+    Private _Promos As New List(Of Promo) From {}
+
+    Public Property Promos As List(Of Promo)
+        Get
+            Return _Promos
+        End Get
+        Set(value As List(Of Promo))
+            _Promos = value
+            OnPropertyChanged("Promo")
+        End Set
+    End Property
+
+
     'CONSTRUCTOR
     Sub New(
            Name As String,

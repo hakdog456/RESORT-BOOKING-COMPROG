@@ -93,6 +93,7 @@
     <Compile Include="bookingDetails.xaml.vb">
       <DependentUpon>bookingDetails.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Promo.vb" />
     <Compile Include="receiptWindow.xaml.vb">
       <DependentUpon>receiptWindow.xaml</DependentUpon>
     </Compile>
@@ -215,6 +216,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="ASSETS\test hotel interior.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\lock.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ASSETS\ICONS\promos.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
