@@ -220,9 +220,9 @@
         <Border Grid.Row="5" CornerRadius="1" BorderThickness="1" BorderBrush="LightGray" Height="2" VerticalAlignment="Top" />
 
         <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Grid.Row="5" >
-            <Border Cursor="Hand" CornerRadius="4" VerticalAlignment="Center" Padding="10,0,10,0" Background="#FF73DEEE" Margin="3,0,3,0">
+            <!--<Border Cursor="Hand" CornerRadius="4" VerticalAlignment="Center" Padding="10,0,10,0" Background="#FF73DEEE" Margin="3,0,3,0">
                 <Label Foreground="White" FontFamily="Poppins">Extend Booking</Label>
-            </Border>
+            </Border>-->
 
             <Border Cursor="Hand" CornerRadius="4" VerticalAlignment="Center" Padding="10,0,10,0" Background="#FFAA80FE" Margin="3,0,3,0">
                 <Label x:Name="viewReceiptBtn" Foreground="White" FontFamily="Poppins">View Receipt</Label>

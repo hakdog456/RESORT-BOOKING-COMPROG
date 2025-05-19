@@ -592,7 +592,6 @@ Class MainWindow
 
         'DataBase Connection
         If connection.State = connection.State.Open Then
-            MsgBox("connection status: " & connection.State.ToString())
 
             command.Connection = connection
             command.CommandText = "select * from RoomType"
@@ -619,7 +618,6 @@ Class MainWindow
                 Dim Capacity = reader.GetInt32(4)
                 Dim features = reader.GetString(5)
 
-                MsgBox(name & Id & Color & Price & Capacity & features)
                 Dim roomType As New RoomType(name, Capacity, Price)
                 roomType.features = features.Split("|"c).ToList()
                 roomType.id = Id

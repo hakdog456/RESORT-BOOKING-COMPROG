@@ -18,7 +18,7 @@
     <!--MAIN GRID-->
     <Grid>
         <!--LOGIN PAGE-->
-        <Border x:Name="loginPage" ClipToBounds="True" Background="#FF141414" VerticalAlignment="Center" HorizontalAlignment="Center" d:IsHidden="True" d:IsLocked="True" >
+        <Border x:Name="loginPage" ClipToBounds="True" Background="#FF141414" VerticalAlignment="Center" HorizontalAlignment="Center" >
 
             <Grid ShowGridLines="False" Height="617" Width="915" >
                 <Grid.ColumnDefinitions>
@@ -45,14 +45,14 @@
                     </Button.Template>
 
                 </Button>
-                <Image Grid.Column="1" Margin="178,80,179,437" Source="/ASSETS/practice logo.png" Stretch="Fill" Width="100" Height="100"/>
+                <Image Grid.Column="1" Margin="0,50,0,437" Source="/ASSETS/ICONS/officialLogo.png" Stretch="Fill" Width="120" Height="117" UseLayoutRounding="False" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
             </Grid>
 
         </Border>
 
         <!--MAIN PAGE-->
-        <Grid ShowGridLines="False" x:Name="mainPageGrid" >
+        <Grid ShowGridLines="False" x:Name="mainPageGrid" d:IsHidden="True" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" ></ColumnDefinition>
                 <ColumnDefinition Width="8*" ></ColumnDefinition>
@@ -275,6 +275,13 @@
                     </Grid.RowDefinitions>
 
                     <!--Room Details Title-->
+                    <Border  BorderThickness="0,0,0,1" Grid.Row="0" BorderBrush="#FF9B9B9B" CornerRadius="1,1,1,1" Margin="0,0,0,5" >
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FF4A4A4A" BlurRadius="5" ShadowDepth="2" Opacity="0.8" Direction="300"/>
+                        </Border.Effect>
+                    </Border>
+                    
+                    
                     <Label Grid.Row="0" Foreground="#FF242222" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Poppins" FontSize="24" >ROOM DETAILS</Label>
 
                     <!--Room Details Main Grid-->
@@ -360,8 +367,13 @@
 
 
                     </Grid>
-                    
-                    
+
+
+                    <Border  BorderThickness="0,0,0,1" Grid.Row="1" BorderBrush="#FF9B9B9B" CornerRadius="1,1,1,1" >
+                        <Border.Effect>
+                            <DropShadowEffect Color="#FF4A4A4A" BlurRadius="5" ShadowDepth="2" Opacity="0.8" Direction="300"/>
+                        </Border.Effect>
+                    </Border>
 
 
                     <!--Room details buttons-->
